@@ -1,0 +1,8 @@
+﻿namespace Real_Estate.Models
+{
+    public class PropertyStatus : BaseEntity
+    {
+        public string Name { get; set; } = string.Empty;
+        public ICollection<Property> Properties { get; set; } = new List<Property>();
+    }
+}
