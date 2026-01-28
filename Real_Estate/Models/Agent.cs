@@ -4,7 +4,6 @@
     {
         public int UserId { get; set; }
         public User? User { get; set; }
-
         public string LicenseNumber { get; set; } = string.Empty;
         public int ExperienceYears { get; set; }
         public double Rating { get; set; }

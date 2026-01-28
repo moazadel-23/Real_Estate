@@ -18,7 +18,6 @@
         public PropertyType? PropertyType { get; set; }
 
         public int ListingTypeId { get; set; }
-        public ListingType? ListingType { get; set; }
 
         public int PropertyStatusId { get; set; }
         public PropertyStatus? PropertyStatus { get; set; }

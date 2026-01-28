@@ -2,9 +2,9 @@
 {
     public class Feature : BaseEntity
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        public ICollection<PropertyFeature> PropertyFeatures { get; set; }
+        public ICollection<PropertyFeature> PropertyFeatures { get; set; } = new List<PropertyFeature>();
     }
 
 }
