@@ -1,3 +1,3 @@
-#ef Core / SQL
-##database
+# ef Core / SQL
+## database
 create database tables
