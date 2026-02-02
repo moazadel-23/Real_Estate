@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب جديد - السكن الفاخر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(13, 44, 82, 0.8), rgba(13, 44, 82, 0.9)), url('assets/images/hero.png');
+            background-size: cover;
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .auth-header {
+            margin-bottom: 30px;
+        }
+
+        .auth-header h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .divider {
+            position: relative;
+            margin: 30px 0;
+            color: #999;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #eee;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .auth-footer {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .auth-footer a {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-box fade-in">
+            <div class="auth-header">
+                <a href="index.html" class="logo" style="margin-bottom: 20px; display: block;">
+                    <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+                </a>
+                <h2>إنشاء حساب جديد</h2>
+                <p>انضم إلينا وابدأ رحلتك العقارية</p>
+            </div>
+
+            <form action="index.html">
+                <div class="form-group">
+                    <input type="text" placeholder="الاسم الكامل" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="البريد الإلكتروني" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="كلمة المرور" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" placeholder="تأكيد كلمة المرور" required>
+                </div>
+
+                <div class="form-group" style="text-align: right; font-size: 0.9rem;">
+                    <label style="color: var(--light-text); cursor: pointer;">
+                        <input type="checkbox" required> أوافق على <a href="#"
+                            style="color: var(--primary-color);">الشروط والأحكام</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">تسجيل حساب</button>
+            </form>
+
+            <div class="auth-footer">
+                لديك حساب بالفعل؟ <a href="login.html">تسجيل الدخول</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
