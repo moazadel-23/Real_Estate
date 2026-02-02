@@ -22,7 +22,7 @@ namespace Real_Estate.Repository
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Error adding entity of type {EntityType}", typeof(TEntity).Name);
+                _logger.LogError(ex, $"Error adding entity of type {typeof(TEntity).Name}");
                 throw;
             }
         }
@@ -40,7 +40,7 @@ namespace Real_Estate.Repository
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Error deleting entity of type {EntityType}", typeof(TEntity).Name);
+                _logger.LogError(ex, $"Error deleting entity of type {typeof(TEntity).Name}");
                 throw;
             }
         }
@@ -63,7 +63,7 @@ namespace Real_Estate.Repository
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Error updating entity of type {EntityType}", typeof(TEntity).Name);
+                _logger.LogError(ex, $"Error updating entity of type {typeof(TEntity).Name}");
                 throw;
             }
         }
