@@ -40,7 +40,7 @@ namespace Real_Estate.Repository
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, $"Error deleting entity of type {typeof(TEntity).Name}");
+                _logger.LogError(ex, $"Error deleting entity of type {typeof(TEntity).Name} ");
                 throw;
             }
         }
