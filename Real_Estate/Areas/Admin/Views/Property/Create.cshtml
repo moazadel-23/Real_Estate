@@ -1,0 +1,336 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة عقار جديد - السكن الفاخر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <style>
+        .page-header {
+            margin-top: 80px;
+            padding: 60px 0;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+        }
+
+        .form-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-top: -40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+            .upload-area:hover {
+                border-color: var(--accent-color);
+                background: #fafafa;
+            }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <!-- Add Property Link Removed -->
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="container">
+            <h1>إضافة عقار جديد</h1>
+            <p>أدخل تفاصيل عقارك ليصل إلى آلاف المهتمين</p>
+        </div>
+    </div>
+
+    <div class="container" style="margin-bottom: 80px;">
+        <form class="form-section fade-in delay-1" id="addPropertyForm">
+            <h3 style="margin-bottom: 25px; color: var(--primary-color);">بيانات العقار الأساسية</h3>
+
+            <div class="upload-area" id="imageUpload">
+                <i class="fa-solid fa-cloud-upload-alt upload-icon"></i>
+                <h3>اسحب صورة العقار هنا</h3>
+                <p>أو انقر للاختيار من جهازك</p>
+                <input type="file" hidden id="fileInput" accept="image/*">
+            </div>
+
+            <div class="form-group">
+                <label>عنوان الإعلان</label>
+                <input type="text" id="title" placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" required>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>نوع العقار</label>
+                    <select id="category" required>
+                        <option value="villa">فيلا</option>
+                        <option value="apartment">شقة</option>
+                        <option value="office">مكتب</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>السعر (ريال سعودي)</label>
+                    <input type="number" id="price" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>المساحة (م²)</label>
+                    <input type="number" id="area" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label>المدينة</label>
+                    <select id="propertyCity" required>
+                        <option value="">اختر المدينة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>الشارع</label>
+                    <select id="propertyStreet" required>
+                        <option value="">اختر الشارع</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px;">
+                <div class="form-group" style="grid-column: 1/-1;">
+                    <label>الموقع على الخريطة (GPS)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="gpsLat" placeholder="خط العرض" readonly style="background: #f9f9f9;">
+                        <input type="text" id="gpsLng" placeholder="خط الطول" readonly style="background: #f9f9f9;">
+                        <button type="button" class="btn btn-outline" id="getLocationBtn" style="white-space: nowrap;">
+                            <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي
+                        </button>
+                    </div>
+                    <!-- Mini Map Container -->
+                    <div id="miniMap"
+                         style="height: 250px; width: 100%; margin-top: 15px; border-radius: 10px; z-index: 1;"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>عدد الغرف</label>
+                    <input type="number" id="beds" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>عدد دورات المياه</label>
+                    <input type="number" id="baths" placeholder="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>وصف إضافي</label>
+                <textarea rows="5" placeholder="اكتب وصفاً جذاباً للعقار..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width">نشر الإعلان</button>
+        </form>
+    </div>
+
+    <script>
+        // Simple script to handle form submission (Design Only + Mock Logic)
+        const form = document.getElementById('addPropertyForm');
+        const uploadArea = document.getElementById('imageUpload');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Handle Image Preview
+        let uploadedImage = 'assets/images/hero.png'; // Default
+
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    uploadedImage = e.target.result;
+                    // Smaller size for preview
+                    uploadArea.innerHTML = `<img src="${uploadedImage}" style="max-width:200px; max-height:200px; object-fit:contain; border-radius:10px;">`;
+                    uploadArea.style.padding = '20px';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Map Logic
+        let map, marker;
+
+        // Initialize Map
+        function initMap() {
+            // Default center (Riyadh) if no location
+            map = L.map('miniMap').setView([24.7136, 46.6753], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            // Map Click Event
+            map.on('click', function (e) {
+                updateLocation(e.latlng.lat, e.latlng.lng);
+            });
+        }
+
+        // Initialize Map logic on load
+        // Wait for Leaflet to load if async, but it's synchronous here.
+        setTimeout(initMap, 500);
+
+        function updateLocation(lat, lng) {
+            document.getElementById('gpsLat').value = lat.toFixed(6);
+            document.getElementById('gpsLng').value = lng.toFixed(6);
+
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+            map.setView([lat, lng], 15);
+        }
+
+        // GPS Logic (Locate Me)
+        document.getElementById('getLocationBtn').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                document.getElementById('getLocationBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحديد...';
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("المتصفح لا يدعم تحديد الموقع.");
+            }
+        });
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            updateLocation(lat, lng);
+            document.getElementById('getLocationBtn').innerHTML = '<i class="fa-solid fa-check"></i> تم التحديد';
+            document.getElementById('getLocationBtn').classList.add('btn-success');
+        }
+
+        function showError(error) {
+            // ... (Keep existing error handler or simplified)
+            alert("حدث خطأ في تحديد الموقع: " + error.message);
+            document.getElementById('getLocationBtn').innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي';
+        }
+
+
+
+        // Populate Selects from localStorage
+        const locations = JSON.parse(localStorage.getItem('locations') || '[]');
+        const citySelect = document.getElementById('propertyCity');
+        const streetSelect = document.getElementById('propertyStreet');
+
+        function populateLocations() {
+            // Get unique cities
+            const cities = [...new Set(locations.map(l => l.city))];
+
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                citySelect.appendChild(opt);
+            });
+        }
+
+        citySelect.addEventListener('change', () => {
+            const selectedCity = citySelect.value;
+            streetSelect.innerHTML = '<option value="">اختر الشارع</option>';
+
+            if (selectedCity) {
+                const relevantStreets = locations.filter(l => l.city === selectedCity).map(l => l.street);
+                relevantStreets.forEach(street => {
+                    const opt = document.createElement('option');
+                    opt.value = street;
+                    opt.textContent = street;
+                    streetSelect.appendChild(opt);
+                });
+            }
+        });
+
+        populateLocations();
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Get values
+            const title = document.getElementById('title').value;
+            const price = document.getElementById('price').value;
+            const city = document.getElementById('propertyCity').value;
+            const street = document.getElementById('propertyStreet').value;
+            const location = `${city} - ${street}`; // Combine for display
+            const beds = document.getElementById('beds').value;
+            const baths = document.getElementById('baths').value;
+            const area = document.getElementById('area').value;
+            const category = document.getElementById('category').value;
+
+            // Create new property object
+            const newProperty = {
+                id: Date.now(),
+                title: title,
+                price: Number(price).toLocaleString() + ' ر.س',
+                location: location,
+                beds: beds,
+                baths: baths,
+                area: area,
+                image: uploadedImage, // Use uploaded image
+                category: category,
+                gps: {
+                    lat: document.getElementById('gpsLat').value,
+                    lng: document.getElementById('gpsLng').value
+                }
+            };
+
+            // Save to localStorage
+            const existingProps = JSON.parse(localStorage.getItem('properties') || '[]');
+            existingProps.unshift(newProperty); // Add to beginning
+            localStorage.setItem('properties', JSON.stringify(existingProps));
+
+            alert('تم إضافة العقار بنجاح!');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+
+</html>

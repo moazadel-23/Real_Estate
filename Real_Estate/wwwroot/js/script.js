@@ -201,7 +201,7 @@ const animateCounters = () => {
 // Trigger animation when stats section is in view
 let animated = false;
 window.addEventListener('scroll', () => {
-    const statsSection = document.querySelector('.stats');
+    const statsSection = document.querySelector('.stats-container');
     if (statsSection) {
         const sectionTop = statsSection.offsetTop;
         const scrollY = window.scrollY;
@@ -213,13 +213,194 @@ window.addEventListener('scroll', () => {
 });
 
 // Mobile Menu Toggle Logic
+// Sidebar Menu Toggle
+function toggleSidebarMenu() {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    if (sidebar) {
+        sidebar.classList.toggle('active');
+    }
+}
+
+// Mobile Menu Trigger
 document.addEventListener('DOMContentLoaded', () => {
     const menuBtn = document.querySelector('.menu-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
+    if (menuBtn) {
+        menuBtn.addEventListener('click', toggleSidebarMenu);
+    }
+});
 
-    if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('active');
-        });
+
+// Profile Dropdown Logic
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profileDropdown');
+    dropdown.classList.toggle('active');
+}
+
+// Close Dropdown when clicking outside
+document.addEventListener('click', function (event) {
+    const dropdown = document.getElementById('profileDropdown');
+    const profileImg = document.querySelector('.nav-profile-img');
+
+    // If click is outside dropdown AND outside the profile image
+    if (dropdown && profileImg && !dropdown.contains(event.target) && !profileImg.contains(event.target)) {
+        dropdown.classList.remove('active');
+    }
+});
+
+// Update Nav Profile Image from LocalStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const savedProfile = JSON.parse(localStorage.getItem('userProfile'));
+    const navProfilePic = document.getElementById('navProfilePic');
+    if (savedProfile && savedProfile.image && navProfilePic) {
+        navProfilePic.src = savedProfile.image;
+    }
+});
+
+function logout() {
+    if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+        // Clear session/local storage if needed (optional)
+        // localStorage.removeItem('userProfile'); // or keep it
+        window.location.href = 'login.html'; // Redirect to login page
+    }
+}
+
+
+// Desktop Sidebar Collapse Logic
+// Desktop Sidebar Toggle Logic (Open/Close)
+function toggleDesktopSidebar() {
+    const sidebar = document.querySelector('.sidebar-wrapper');
+    const body = document.body;
+
+    if (sidebar) {
+        sidebar.classList.toggle('sidebar-open');
+        body.classList.toggle('sidebar-open');
+
+        // Save preference
+        const isOpen = sidebar.classList.contains('sidebar-open');
+        localStorage.setItem('sidebarOpen', isOpen);
+    }
+}
+
+// Restore Sidebar State on Load
+document.addEventListener('DOMContentLoaded', () => {
+    // Default closed, but check storage
+    const isOpen = localStorage.getItem('sidebarOpen') === 'true';
+    if (isOpen) {
+        const sidebar = document.querySelector('.sidebar-wrapper');
+        const body = document.body;
+        if (sidebar && window.innerWidth >= 992) {
+            sidebar.classList.add('sidebar-open');
+            body.classList.add('sidebar-open');
+        }
+    }
+});
+
+// Theme Toggle Logic
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+
+    updateThemeIcon(isDark);
+}
+
+function updateThemeIcon(isDark) {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        if (isDark) {
+            btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            btn.style.color = 'var(--accent-color)';
+        } else {
+            btn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            btn.style.color = 'var(--primary-color)';
+        }
+    }
+}
+
+// Check Theme on Load
+document.addEventListener('DOMContentLoaded', () => {
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        updateThemeIcon(true);
+    }
+});
+
+// Language Toggle Logic
+const translations = {
+    ar: {
+        nav_home: "الرئيسية",
+        nav_properties: "العقارات",
+        nav_favorites: "المفضلة",
+        nav_services: "خدماتنا",
+        nav_contact: "اتصل بنا",
+        nav_admin: "لوحة الادمن",
+        hero_title: "اكتشف منزل أحلامك <br> بتصميم عصري وفخامة لا تضاهى",
+        hero_subtitle: "نوفر لك أفضل الخيارات العقارية في أرقى الأحياء السكنية",
+        btn_search: '<i class="fa-solid fa-magnifying-glass"></i> بحث',
+        search_placeholder: "ابحث عن عقار..."
+    },
+    en: {
+        nav_home: "Home",
+        nav_properties: "Properties",
+        nav_favorites: "Favorites",
+        nav_services: "Services",
+        nav_contact: "Contact",
+        nav_admin: "Admin Panel",
+        hero_title: "Discover Your Dream Home <br> Modern Design & Luxury",
+        hero_subtitle: "We provide the best real estate options in the finest areas.",
+        btn_search: '<i class="fa-solid fa-magnifying-glass"></i> Search',
+        search_placeholder: "Search for properties..."
+    }
+};
+
+function toggleLanguage() {
+    const currentLang = localStorage.getItem('lang') || 'ar';
+    const newLang = currentLang === 'ar' ? 'en' : 'ar';
+    localStorage.setItem('lang', newLang);
+    updateLanguageUI(newLang);
+}
+
+function updateLanguageUI(lang) {
+    const isEnglish = lang === 'en';
+
+    // Update HTML attributes
+    document.documentElement.lang = lang;
+    document.documentElement.dir = isEnglish ? 'ltr' : 'rtl';
+
+    // Update Text Content
+    const elements = document.querySelectorAll('[data-i18n]');
+    elements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (translations[lang][key]) {
+            // Check if HTML or Text
+            if (key === 'btn_search' || key === 'hero_title') {
+                el.innerHTML = translations[lang][key];
+            } else {
+                el.innerText = translations[lang][key];
+            }
+        }
+    });
+
+    // Update Placeholder if exists
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput && translations[lang]['search_placeholder']) {
+        searchInput.placeholder = translations[lang]['search_placeholder'];
+    }
+
+    // Update Toggle Button Text
+    const langBtn = document.getElementById('langToggle');
+    if (langBtn) {
+        langBtn.innerText = isEnglish ? 'AR' : 'EN';
+    }
+}
+
+// Initial Language Load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedLang = localStorage.getItem('lang');
+    if (savedLang) {
+        updateLanguageUI(savedLang);
     }
 });

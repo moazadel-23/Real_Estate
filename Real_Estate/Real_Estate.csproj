@@ -5,6 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\Controllers\**" />
+    <Content Remove="Areas\Identity\Controllers\**" />
+    <EmbeddedResource Remove="Areas\Identity\Controllers\**" />
+    <None Remove="Areas\Identity\Controllers\**" />
+  </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
@@ -15,11 +22,6 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
 		</PackageReference>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Areas\Admin\Controllers\" />
-	  <Folder Include="Areas\Admin\Views\" />
-	  <Folder Include="Areas\Identity\Controllers\" />
 	</ItemGroup>
 
 </Project>
