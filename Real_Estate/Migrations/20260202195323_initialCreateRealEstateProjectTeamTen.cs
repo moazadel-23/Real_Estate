@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Real_Estate.Migrations
 {
     /// <inheritdoc />
-    public partial class initialCreateRealEstateProjectTeamTen : Migration
+    public partial class InitialCreateRealEstateProjectTeamTen : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

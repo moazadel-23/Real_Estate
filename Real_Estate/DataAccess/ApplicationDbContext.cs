@@ -7,8 +7,8 @@ namespace Real_Estate.DataAccess
         DbSet<Property> Properties { get; set; }
         DbSet<PropertyImage> PropertyImages { get; set; }
         DbSet<Location> Locations { get; set; }
-        DbSet<Favorite> favorites { get; set; }
-        DbSet<User> users { get; set; }
+        DbSet<Favorite> Favorites { get; set; }
+        DbSet<User> Users { get; set; }
 
 
 
