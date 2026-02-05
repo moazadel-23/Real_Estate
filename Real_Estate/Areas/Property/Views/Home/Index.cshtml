@@ -1,0 +1,430 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>السكن الفاخر - للعقارات المتميزة</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-right-group" style="display: flex; align-items: center;">
+                <!-- Desktop Sidebar Toggle -->
+                <button class="desktop-menu-btn" onclick="toggleDesktopSidebar()"
+                        style="margin-left: 15px; font-size: 1.5rem; background: none; border: none; cursor: pointer; color: var(--primary-color);">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <a href="index.html" class="logo">
+                    <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+                </a>
+            </div>
+            <ul class="nav-links" style="display: none;">
+                <!-- Links moved to sidebar -->
+            </ul>
+            <div class="nav-buttons" style="display: flex !important; align-items: center; gap: 20px;">
+                <a href="favorites.html" title="المفضلة" style="font-size: 1.3rem; color: var(--primary-color);">
+                    <i class="fa-solid fa-heart"></i>
+                </a>
+                <a href="cart.html" title="السلة" style="font-size: 1.3rem; color: var(--primary-color);">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggle" onclick="toggleTheme()"
+                        style="background:none; border:none; cursor:pointer; font-size: 1.2rem; color: var(--primary-color);">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+
+                <!-- Language Toggle -->
+                <button id="langToggle" onclick="toggleLanguage()"
+                        style="background:none; border:none; cursor:pointer; font-size: 1rem; color: var(--primary-color); font-weight: bold; border: 1px solid var(--primary-color); border-radius: 5px; padding: 2px 8px;">
+                    EN
+                </button>
+
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown-container">
+                    <div class="nav-profile-img" onclick="toggleProfileDropdown()">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                             alt="Profile" id="navProfilePic">
+                    </div>
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                        <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar Menu (Permanent on Desktop) -->
+    <div class="sidebar-wrapper desktop-visible">
+        <div class="sidebar-overlay" onclick="toggleSidebarMenu()"></div>
+        <div class="sidebar-panel">
+            <div class="sidebar-header">
+                <h3>السكن الفاخر</h3>
+                <!-- Toggle button inside sidebar removed, we use the outside one or close button -->
+                <button class="close-sidebar" onclick="toggleDesktopSidebar()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <ul class="sidebar-links">
+                <li>
+                    <a href="index.html" class="active">
+                        <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">الرئيسية</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#featured">
+                        <i class="fa-solid fa-building"></i> <span data-i18n="nav_properties">العقارات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="favorites.html">
+                        <i class="fa-solid fa-heart"></i> <span data-i18n="nav_favorites">المفضلة</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#services">
+                        <i class="fa-solid fa-bell-concierge"></i> <span data-i18n="nav_services">خدماتنا</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#contact">
+                        <i class="fa-solid fa-envelope"></i> <span data-i18n="nav_contact">
+                            اتصل
+                            بنا
+                        </span>
+                    </a>
+                </li>
+                <li style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+                    <a href="admin-dashboard.html" style="color: var(--accent-color);">
+                        <i class="fa-solid fa-user-shield"></i> <span data-i18n="nav_admin">لوحة الادمن</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <header class="hero" id="home">
+        <div class="overlay"></div>
+        <div class="hero-content">
+            <h1 class="fade-in" data-i18n="hero_title">اكتشف منزل أحلامك <br> بتصميم عصري وفخامة لا تضاهى</h1>
+            <p class="fade-in delay-1" data-i18n="hero_subtitle">
+                نوفر لك أفضل الخيارات العقارية في أرقى الأحياء السكنية
+            </p>
+
+            <!-- Simple Search Box -->
+            <div class="search-box fade-in delay-2">
+                <form id="searchForm">
+                    <div class="search-wrapper">
+                        <div class="input-container">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" placeholder="ابحث عن مدينتك...">
+                        </div>
+                        <div class="input-divider"></div>
+                        <div class="input-container">
+                            <i class="fa-solid fa-home"></i>
+                            <select>
+                                <option value="" disabled selected>نوع العقار</option>
+                                <option value="apartment">شقة</option>
+                                <option value="villa">فيلا</option>
+                                <option value="office">مكتب</option>
+                                <option value="chalet">شاليه</option>
+                                <option value="palace">قصر</option>
+                            </select>
+                        </div>
+                        <div class="input-divider"></div>
+                        <div class="input-container">
+                            <i class="fa-solid fa-dollar-sign"></i>
+                            <select>
+                                <option value="">السعر</option>
+                                <option value="low">أقل من 1 مليون</option>
+                                <option value="medium">1 - 3 مليون</option>
+                                <option value="high">أكثر من 3 مليون</option>
+                            </select>
+                        </div>
+                        <button type="button" class="search-btn-icon">
+                            <i class="fa-solid fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Stats (Moved Inside Hero) -->
+            <div class="stats-container fade-in delay-2"
+                 style="margin: 30px auto 0; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 20px; display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; max-width: 700px;">
+                <div class="stat-item">
+                    <h3 class="counter" data-target="1500"
+                        style="color: var(--accent-color); font-size: 1.8rem; font-weight: 700;">
+                        0
+                    </h3>
+                    <p style="color: var(--primary-color); font-weight: 600; font-size: 0.9rem;">عقار مباع</p>
+                </div>
+                <div class="stat-item">
+                    <h3 class="counter" data-target="850"
+                        style="color: var(--accent-color); font-size: 1.8rem; font-weight: 700;">
+                        0
+                    </h3>
+                    <p style="color: var(--primary-color); font-weight: 600; font-size: 0.9rem;">عميل سعيد</p>
+                </div>
+                <div class="stat-item">
+                    <h3 class="counter" data-target="50"
+                        style="color: var(--accent-color); font-size: 1.8rem; font-weight: 700;">
+                        0
+                    </h3>
+                    <p style="color: var(--primary-color); font-weight: 600; font-size: 0.9rem;">مدينة</p>
+                </div>
+                <div class="stat-item">
+                    <h3 class="counter" data-target="15"
+                        style="color: var(--accent-color); font-size: 1.8rem; font-weight: 700;">
+                        0
+                    </h3>
+                    <p style="color: var(--primary-color); font-weight: 600; font-size: 0.9rem;">سنة خبرة</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Categories Marquee Section -->
+    <section class="section" style="padding-top: 50px; background-color: var(--white);">
+        <div class="container" style="overflow: hidden;">
+            <div class="section-header">
+                <h2>تصفح حسب الفئة</h2>
+            </div>
+            <div class="categories-marquee">
+                <div class="scrolling-wrapper">
+                    <!-- Original Items -->
+                    <div class="category-card">
+                        <img src="../img/cat_apartment.png" alt="شقق">
+                        <div class="cat-overlay">
+                            <h3>شقق</h3>
+                            <p>رفاهية في قلب المدينة</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_villa.png" alt="فلل">
+                        <div class="cat-overlay">
+                            <h3>فلل</h3>
+                            <p>مساحات واسعة</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_office.png" alt="مكاتب">
+                        <div class="cat-overlay">
+                            <h3>مكاتب</h3>
+                            <p>بيئة عمل احترافية</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_chalet.png" alt="شاليهات">
+                        <div class="cat-overlay">
+                            <h3>شاليهات</h3>
+                            <p>إطلالة بحرية</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_palace.png" alt="قصور">
+                        <div class="cat-overlay">
+                            <h3>قصور</h3>
+                            <p>فخامة ملكية</p>
+                        </div>
+                    </div>
+                    <!-- Duplicates -->
+                    <div class="category-card">
+                        <img src="../img/cat_apartment.png" alt="شقق">
+                        <div class="cat-overlay">
+                            <h3>شقق</h3>
+                            <p>رفاهية في قلب المدينة</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_villa.png" alt="فلل">
+                        <div class="cat-overlay">
+                            <h3>فلل</h3>
+                            <p>مساحات واسعة</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_office.png" alt="مكاتب">
+                        <div class="cat-overlay">
+                            <h3>مكاتب</h3>
+                            <p>بيئة عمل احترافية</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_chalet.png" alt="شاليهات">
+                        <div class="cat-overlay">
+                            <h3>شاليهات</h3>
+                            <p>إطلالة بحرية</p>
+                        </div>
+                    </div>
+                    <div class="category-card">
+                        <img src="../img/cat_palace.png" alt="قصور">
+                        <div class="cat-overlay">
+                            <h3>قصور</h3>
+                            <p>فخامة ملكية</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Properties -->
+    <section class="section" id="featured">
+        <div class="container">
+            <div class="section-header">
+                <h2>عقارات مميزة</h2>
+                <p>تصفح أحدث العقارات المضافة لدينا</p>
+            </div>
+
+            <div class="properties-grid" id="propertiesContainer">
+                <!-- Properties will be injected here via JS -->
+            </div>
+
+            <div class="center-btn">
+                <a href="#" class="btn btn-outline">عرض جميع العقارات</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section services-section" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>لماذا تختارنا؟</h2>
+                <p>نقدم خدمات متكاملة لتلبية جميع احتياجاتك العقارية</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+                    </div>
+                    <h3>أفضل الأسعار</h3>
+                    <p>نضمن لك الحصول على أفضل قيمة مقابل استثمارك العقاري.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <h3>توثيق قانوني</h3>
+                    <p>فريق قانوني مختص لضمان سلامة جميع الإجراءات والعقود.</p>
+                </div>
+                <div class="service-card">
+                    <div class="icon-box">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <h3>دعم متواصل</h3>
+                    <p>فريق خدمة عملاء جاهز للرد على استفساراتكم على مدار الساعة.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta">
+        <div class="container">
+            <h2>هل لديك عقار ترغب في بيعه؟</h2>
+            <p>سجل عقارك معنا اليوم واحصل على تقييم مجاني وفرصة للوصول لآلاف المشترين.</p>
+            <a href="#" class="btn btn-primary">سجل عقارك الآن</a>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="contact-wrapper">
+                <div class="contact-info">
+                    <h2>تواصل معنا</h2>
+                    <p>نحن هنا لمساعدتك في إيجاد منزلك المثالي.</p>
+                    <div class="info-item">
+                        <i class="fa-solid fa-map-marker-alt"></i>
+                        <span>الرياض، المملكة العربية السعودية</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <span>+966 50 000 0000</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <span>info@luxuryhomes.com</span>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="الاسم الكامل" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="البريد الإلكتروني" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="رسالتك..." rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary full-width">إرسال الرسالة</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>السكن الفاخر</h3>
+                <p>منصتك الأولى للبحث عن العقارات الفاخرة والمتميزة في المنطقة.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="#home">الرئيسية</a></li>
+                    <li><a href="#featured">العقارات</a></li>
+                    <li><a href="#services">الخدمات</a></li>
+                    <li><a href="#contact">اتصل بنا</a></li>
+                    <li><a href="admin.html" style="color: #666; font-size: 0.8rem;">لوحة المسؤول</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>النشرة البريدية</h3>
+                <form class="newsletter">
+                    <input type="email" placeholder="أدخل بريدك الإلكتروني">
+                    <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 جميع الحقوق محفوظة - السكن الفاخر</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

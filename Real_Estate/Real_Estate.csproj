@@ -23,5 +23,8 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
 		</PackageReference>
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Areas\Property\Views\Home\NewFolder\" />
+	</ItemGroup>
 
 </Project>
