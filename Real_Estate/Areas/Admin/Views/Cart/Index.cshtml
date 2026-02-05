@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة العقارات - السكن الفاخر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            margin-top: 80px;
+            padding: 60px 0;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+        }
+
+        .cart-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            margin-top: -40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 20px 0;
+            gap: 20px;
+        }
+
+            .cart-item:last-child {
+                border-bottom: none;
+            }
+
+        .cart-img {
+            width: 120px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-details {
+            flex: 1;
+        }
+
+        .cart-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        .cart-price {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .remove-btn {
+            color: #dc3545;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+            .remove-btn:hover {
+                transform: scale(1.1);
+            }
+
+        .cart-summary {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .total {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            border-top: 2px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px;
+            color: var(--light-text);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="#" class="active">السلة</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="container">
+            <h1>سلة العقارات</h1>
+            <p>العقارات التي قمت باختيارها للشراء</p>
+        </div>
+    </div>
+
+    <div class="container" style="margin-bottom: 80px;">
+        <div class="cart-container" id="cartContainer">
+            <!-- Items injected here -->
+        </div>
+
+        <div class="cart-summary" id="cartSummary" style="display: none;">
+            <div class="summary-row">
+                <span>عدد العقارات:</span>
+                <span id="itemsCount">0</span>
+            </div>
+            <div class="summary-row total">
+                <span>الإجمالي التقديري:</span>
+                <span id="totalPrice">0 ر.س</span>
+            </div>
+            <button class="btn btn-primary full-width" onclick="checkout()" style="margin-top: 20px;">
+                تأكيد الحجز
+                والشراء
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const container = document.getElementById('cartContainer');
+            const summary = document.getElementById('cartSummary');
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="empty-cart"><i class="fa-solid fa-basket-shopping" style="font-size: 3rem; margin-bottom: 20px;"></i><h3>السلة فارغة</h3><a href="index.html" class="btn btn-outline" style="margin-top: 20px;">تصفح العقارات</a></div>';
+                summary.style.display = 'none';
+                return;
+            }
+
+            summary.style.display = 'block';
+            let html = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                // Parse price to number for total calculation (removing non-numeric chars)
+                let priceNum = parseFloat(item.price.replace(/[^\d]/g, ''));
+                total += priceNum;
+
+                html += `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.title}" class="cart-img">
+                        <div class="cart-details">
+                            <h3 class="cart-title">${item.title}</h3>
+                            <div class="cart-price">${item.price}</div>
+                            <small style="color:var(--light-text)">${item.location}</small>
+                        </div>
+                        <div class="remove-btn" onclick="removeFromCart(${index})">
+                            <i class="fa-solid fa-trash-can fa-lg"></i>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            document.getElementById('itemsCount').innerText = cart.length;
+            document.getElementById('totalPrice').innerText = total.toLocaleString() + ' ر.س';
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function checkout() {
+            if (confirm('هل أنت متأكد من إتمام عملية الحجز؟ سيتم التواصل معك قريباً.')) {
+                localStorage.removeItem('cart');
+                alert('تم استلام طلبك بنجاح!');
+                window.location.href = 'index.html';
+            }
+        }
+
+        loadCart();
+    </script>
+</body>
+
+</html>

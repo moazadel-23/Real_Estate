@@ -1,3 +1,5 @@
+using Real_Estate.Repository;
+
 namespace Real_Estate
 {
     public class Program
@@ -8,6 +10,11 @@ namespace Real_Estate
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<IRepository<Property>, Repository<Property>>();
 
             var app = builder.Build();
 
@@ -27,9 +34,12 @@ namespace Real_Estate
 
             app.MapStaticAssets();
             app.MapControllerRoute(
+         name: "areas",
+         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
-                .WithStaticAssets();
+                pattern: "{area=Admin}/{controller=Property}/{action=Index}/{id?}");
 
             app.Run();
         }

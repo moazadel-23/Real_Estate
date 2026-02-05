@@ -4,6 +4,7 @@
     {
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string MainImg { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public double AreaSize { get; set; }
         public int Bedrooms { get; set; }
