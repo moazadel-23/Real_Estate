@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Real_Estate.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class addDetails : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,15 +34,25 @@ namespace Real_Estate.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,6 +67,8 @@ namespace Real_Estate.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MainImg = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     AreaSize = table.Column<double>(type: "float", nullable: false),
                     Bedrooms = table.Column<int>(type: "int", nullable: false),
@@ -64,7 +76,6 @@ namespace Real_Estate.Migrations
                     Floor = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     LocationId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -76,11 +87,6 @@ namespace Real_Estate.Migrations
                         principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Properties_users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -89,7 +95,7 @@ namespace Real_Estate.Migrations
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId1 = table.Column<int>(type: "int", nullable: false),
+                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PropertyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -105,26 +111,24 @@ namespace Real_Estate.Migrations
                         name: "FK_favorites_users_UserId1",
                         column: x => x.UserId1,
                         principalTable: "users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PropertyImages",
+                name: "PropertySubImage",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsMain = table.Column<bool>(type: "bit", nullable: false),
+                    PropertyImgs = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PropertyId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PropertyImages", x => x.Id);
+                    table.PrimaryKey("PK_PropertySubImage", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PropertyImages_Properties_PropertyId",
+                        name: "FK_PropertySubImage_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
@@ -147,13 +151,8 @@ namespace Real_Estate.Migrations
                 column: "LocationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Properties_UserId",
-                table: "Properties",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyImages_PropertyId",
-                table: "PropertyImages",
+                name: "IX_PropertySubImage_PropertyId",
+                table: "PropertySubImage",
                 column: "PropertyId");
         }
 
@@ -164,16 +163,16 @@ namespace Real_Estate.Migrations
                 name: "favorites");
 
             migrationBuilder.DropTable(
-                name: "PropertyImages");
+                name: "PropertySubImage");
+
+            migrationBuilder.DropTable(
+                name: "users");
 
             migrationBuilder.DropTable(
                 name: "Properties");
 
             migrationBuilder.DropTable(
                 name: "Locations");
-
-            migrationBuilder.DropTable(
-                name: "users");
         }
     }
 }

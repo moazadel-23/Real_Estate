@@ -33,8 +33,8 @@ namespace Real_Estate.Migrations
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId1")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("UserId");
 
@@ -127,14 +127,12 @@ namespace Real_Estate.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("Type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Properties");
                 });
@@ -166,36 +164,65 @@ namespace Real_Estate.Migrations
 
             modelBuilder.Entity("Real_Estate.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
+                    b.Property<string>("Address")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -213,9 +240,7 @@ namespace Real_Estate.Migrations
 
                     b.HasOne("Real_Estate.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Property");
 
@@ -229,10 +254,6 @@ namespace Real_Estate.Migrations
                         .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Real_Estate.Models.User", null)
-                        .WithMany("Properties")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Location");
                 });
@@ -249,11 +270,6 @@ namespace Real_Estate.Migrations
                 });
 
             modelBuilder.Entity("Real_Estate.Models.Location", b =>
-                {
-                    b.Navigation("Properties");
-                });
-
-            modelBuilder.Entity("Real_Estate.Models.User", b =>
                 {
                     b.Navigation("Properties");
                 });
