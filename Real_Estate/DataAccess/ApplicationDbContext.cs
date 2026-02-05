@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Real_Estate.Models;
 
 namespace Real_Estate.DataAccess
 {

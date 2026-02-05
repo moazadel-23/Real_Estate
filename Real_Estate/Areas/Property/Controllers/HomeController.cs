@@ -2,8 +2,9 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Models;
 
-namespace Real_Estate.Controllers
+namespace Real_Estate.Areas.Property.Controllers
 {
+    [Area("Property")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
