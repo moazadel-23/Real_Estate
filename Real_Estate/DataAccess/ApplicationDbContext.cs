@@ -5,13 +5,17 @@ namespace Real_Estate.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) { }
+        DbSet<Property> Properties { get; set; }
+        DbSet<PropertySubImage> PropertySubImage { get; set; }
+        DbSet<Location> Locations { get; set; }
+        DbSet<Favorite> favorites { get; set; }
+        DbSet<User> users { get; set; }
 
-        public DbSet<Property> Properties { get; set; }
-        public DbSet<PropertyImage> PropertyImages { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Favorite> Favorites { get; set; }
-        public DbSet<User> Users { get; set; }
+
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
     }
 }

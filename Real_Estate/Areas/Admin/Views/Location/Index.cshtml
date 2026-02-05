@@ -1,8 +1,9 @@
 ﻿@model IEnumerable<Real_Estate.Models.Location>
 
 @{
-    ViewData["Title"] = "إدارة المواقع";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
 
 <!-- CSS Styles -->
 <style>
@@ -194,7 +195,6 @@
                 <th>المدينة</th>
                 <th>المنطقة</th>
                 <th>الشارع</th>
-                <th>الإحداثيات</th>
                 <th>الإجراءات</th>
             </tr>
         </thead>
@@ -255,14 +255,6 @@
                 <div class="form-group full">
                     <label>الشارع</label>
                     <input type="text" id="street" name="Street" required>
-                </div>
-                <div class="form-group">
-                    <label>خط العرض</label>
-                    <input type="number" step="any" id="lat" name="Latitude" required>
-                </div>
-                <div class="form-group">
-                    <label>خط الطول</label>
-                    <input type="number" step="any" id="long" name="Longitude" required>
                 </div>
             </div>
             <button type="submit" class="btn-submit" id="saveBtn">حفظ البيانات</button>

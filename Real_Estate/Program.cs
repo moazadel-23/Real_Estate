@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Real_Estate.Repository;
+﻿using Real_Estate.Repository;
 
 namespace Real_Estate
 {
@@ -12,14 +11,11 @@ namespace Real_Estate
         
             builder.Services.AddControllersWithViews();
 
-            // Configure DbContext with SQL Server
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-          
             builder.Services.AddScoped<IRepository<Property>, Repository<Property>>();
             builder.Services.AddScoped<IRepository<Location>, Repository<Location>>();
-         
 
             var app = builder.Build();
 
@@ -38,10 +34,13 @@ namespace Real_Estate
 
            
             app.MapControllerRoute(
-                name: "default",
-                pattern: "{area=Property}/{controller=Home}/{action=Index}/{id?}");
+         name: "areas",
+         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-          
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{area=Admin}/{controller=Property}/{action=Index}/{id?}");
+
             app.Run();
         }
     }
