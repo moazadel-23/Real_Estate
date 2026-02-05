@@ -24,8 +24,7 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Areas\Admin\Controllers\" />
-	  <Folder Include="Views\Home\NewFolder\" />
+	  <Folder Include="Areas\Property\Views\Home\NewFolder\" />
 	</ItemGroup>
 
 </Project>
