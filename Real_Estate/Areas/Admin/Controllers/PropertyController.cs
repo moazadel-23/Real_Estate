@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Repository;
-using System.Threading.Tasks;
+
 
 namespace Real_Estate.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class PropertyController : Controller
     {
-        private readonly IRepository<Property> _propertyRepository;
+        private readonly IRepository<Models.Property> _propertyRepository;
 
-        public PropertyController(IRepository<Property> propertyRepository)
+        public PropertyController(IRepository<Models.Property> propertyRepository)
         {
             _propertyRepository = propertyRepository;
         }

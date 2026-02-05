@@ -15,6 +15,7 @@ namespace Real_Estate
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IRepository<Property>, Repository<Property>>();
+            builder.Services.AddScoped<IRepository<Location>, Repository<Location>>();
 
             var app = builder.Build();
 
