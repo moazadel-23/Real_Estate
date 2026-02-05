@@ -4,8 +4,6 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-
-<!-- CSS Styles -->
 <style>
     :root {
         --primary: #2563eb;
@@ -76,7 +74,6 @@
         color: #6b7280;
     }
 
-    /* Modal Styles */
     .modal {
         display: none;
         position: fixed;
@@ -97,7 +94,6 @@
         width: 90%;
         max-width: 500px;
         position: relative;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     }
 
     .close {
@@ -106,7 +102,6 @@
         top: 15px;
         font-size: 24px;
         cursor: pointer;
-        color: #aaa;
     }
 
     .form-grid {
@@ -146,7 +141,6 @@
         font-size: 16px;
     }
 
-    /* Toast Notification */
     .toast {
         position: fixed;
         bottom: 20px;
@@ -166,27 +160,23 @@
         .toast.error {
             border-right: 5px solid var(--danger);
         }
+
     @@keyframes slideIn {
-        from
+        from {
+            transform: translateX(-100%);
+        }
 
-    {
-        transform: translateX(-100%);
-    }
-
-    to {
-        transform: translateX(0);
-    }
-
+        to {
+            transform: translateX(0);
+        }
     }
 </style>
 
-<!-- Header & Add Button -->
 <div class="header-bar">
     <h2>قائمة المواقع</h2>
     <button class="btn btn-add" onclick="openModal('create')">+ إضافة موقع جديد</button>
 </div>
 
-<!-- Table -->
 <div class="table-wrapper">
     <table>
         <thead>
@@ -195,13 +185,14 @@
                 <th>المدينة</th>
                 <th>المنطقة</th>
                 <th>الشارع</th>
+                <th>الإحداثيات</th>
                 <th>الإجراءات</th>
             </tr>
         </thead>
         <tbody id="locationsTableBody">
-            @if (Model != null)
+            @if (Model != null && Model.Any())
             {
-                @foreach (var item in Model)
+                foreach (var item in Model)
                 {
                     <tr id="row-@item.Id">
                         <td>@item.Country</td>
@@ -229,7 +220,6 @@
     </table>
 </div>
 
-<!-- Modal Form -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
@@ -242,19 +232,27 @@
             <div class="form-grid">
                 <div class="form-group full">
                     <label>الدولة</label>
-                    <input type="text" id="country" name="Country" required>
+                    <input type="text" id="country" required>
                 </div>
                 <div class="form-group">
                     <label>المدينة</label>
-                    <input type="text" id="city" name="City" required>
+                    <input type="text" id="city" required>
                 </div>
                 <div class="form-group">
                     <label>المنطقة</label>
-                    <input type="text" id="area" name="Area" required>
+                    <input type="text" id="area" required>
                 </div>
                 <div class="form-group full">
                     <label>الشارع</label>
-                    <input type="text" id="street" name="Street" required>
+                    <input type="text" id="street" required>
+                </div>
+                <div class="form-group">
+                    <label>خط العرض (Lat)</label>
+                    <input type="number" step="any" id="lat" required>
+                </div>
+                <div class="form-group">
+                    <label>خط الطول (Long)</label>
+                    <input type="number" step="any" id="long" required>
                 </div>
             </div>
             <button type="submit" class="btn-submit" id="saveBtn">حفظ البيانات</button>
@@ -267,21 +265,21 @@
     const modal = document.getElementById('modal');
     const form = document.getElementById('locationForm');
 
-    // 1. فتح المودال (إضافة أو تعديل)
     function openModal(mode, btn = null) {
         modal.style.display = 'flex';
         const title = document.getElementById('modalTitle');
+        const saveBtn = document.getElementById('saveBtn');
 
         if (mode === 'create') {
             isEditing = false;
             title.textContent = 'إضافة موقع جديد';
             form.reset();
             document.getElementById('locId').value = '';
-            document.getElementById('saveBtn').textContent = 'حفظ البيانات';
+            saveBtn.textContent = 'حفظ البيانات';
         } else if (mode === 'edit') {
             isEditing = true;
             title.textContent = 'تعديل الموقع';
-            // ملء البيانات من الزر
+
             document.getElementById('locId').value = btn.getAttribute('data-id');
             document.getElementById('country').value = btn.getAttribute('data-country');
             document.getElementById('city').value = btn.getAttribute('data-city');
@@ -289,30 +287,30 @@
             document.getElementById('street').value = btn.getAttribute('data-street');
             document.getElementById('lat').value = btn.getAttribute('data-lat');
             document.getElementById('long').value = btn.getAttribute('data-long');
-            document.getElementById('saveBtn').textContent = 'حفظ التعديلات';
+
+            saveBtn.textContent = 'حفظ التعديلات';
         }
     }
 
     function closeModal() { modal.style.display = 'none'; }
     window.onclick = function(e) { if (e.target == modal) closeModal(); }
 
-    // 2. إرسال النموذج (AJAX)
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const data = {
-            id: document.getElementById('locId').value ? parseInt(document.getElementById('locId').value) : 0,
-            country: document.getElementById('country').value,
-            city: document.getElementById('city').value,
-            area: document.getElementById('area').value,
-            street: document.getElementById('street').value,
-            latitude: parseFloat(document.getElementById('lat').value),
-            longitude: parseFloat(document.getElementById('long').value)
+            Id: document.getElementById('locId').value ? parseInt(document.getElementById('locId').value) : 0,
+            Country: document.getElementById('country').value,
+            City: document.getElementById('city').value,
+            Area: document.getElementById('area').value,
+            Street: document.getElementById('street').value,
+            Latitude: parseFloat(document.getElementById('lat').value) || 0,
+            Longitude: parseFloat(document.getElementById('long').value) || 0
         };
 
-        let url = '/Admin/Location/Create';
-        if (isEditing) url = '/Admin/Location/Edit';
+        let url = isEditing ? '/Admin/Location/Edit' : '/Admin/Location/Create';
 
+        // جلب التوكن من الفورم
         const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
         const btn = document.getElementById('saveBtn');
 
@@ -332,22 +330,23 @@
             const result = await response.json();
 
             if (result.success) {
-                showToast(result.message, 'success');
-                setTimeout(() => location.reload(), 1000); // إعادة تحميل بسيطة
+                showToast(result.message || 'تمت العملية بنجاح', 'success');
+                setTimeout(() => location.reload(), 1000);
             } else {
-                showToast(result.message, 'error');
+                showToast(result.message || 'حدث خطأ ما', 'error');
+                btn.disabled = false;
+                btn.textContent = isEditing ? 'حفظ التعديلات' : 'حفظ البيانات';
             }
         } catch (err) {
-            showToast('حدث خطأ في الاتصال', 'error');
-        } finally {
+            console.error(err);
+            showToast('حدث خطأ في الاتصال بالخادم', 'error');
             btn.disabled = false;
             btn.textContent = isEditing ? 'حفظ التعديلات' : 'حفظ البيانات';
         }
     });
 
-    // 3. دالة الحذف (AJAX)
     async function deleteLocation(id) {
-        if(!confirm('هل أنت متأكد من الحذف؟')) return;
+        if(!confirm('هل أنت متأكد من حذف هذا الموقع؟')) return;
 
         const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
         try {
@@ -363,7 +362,7 @@
                 showToast(result.message, 'error');
             }
         } catch(err) {
-            showToast('خطأ أثناء الحذف', 'error');
+            showToast('خطأ أثناء الاتصال للحذف', 'error');
         }
     }
 

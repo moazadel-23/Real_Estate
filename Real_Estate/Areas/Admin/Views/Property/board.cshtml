@@ -1,0 +1,168 @@
+﻿@model List<Property>
+    @using Real_Estate.Models
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>لوحة تحكم المسؤول - السكن الفاخر</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="~/css/style.css">
+        <style>
+            .admin-header {
+                background-color: var(--primary-color);
+                color: white;
+                padding: 20px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .dashboard-container {
+                background: white;
+                border-radius: 15px;
+                box-shadow: var(--shadow);
+                padding: 30px;
+                margin-top: 30px;
+                overflow-x: auto;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 800px;
+            }
+
+            th,
+            td {
+                padding: 15px;
+                text-align: right;
+                border-bottom: 1px solid #eee;
+            }
+
+            th {
+                background-color: #f8f9fa;
+                color: var(--primary-color);
+                font-weight: 700;
+            }
+
+            tr:hover {
+                background-color: #fafafa;
+            }
+
+            .action-btn {
+                padding: 8px 15px;
+                border-radius: 5px;
+                color: white;
+                font-size: 0.9rem;
+                margin-left: 5px;
+                display: inline-block;
+            }
+
+            .edit-btn {
+                background-color: var(--primary-color);
+            }
+
+            .delete-btn {
+                background-color: #dc3545;
+            }
+
+            .prop-img-mini {
+                width: 50px;
+                height: 50px;
+                border-radius: 5px;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+
+    <body>
+
+       @*  <header class="admin-header">
+            <div class="container" style="display: flex; justify-content: space-between; width: 100%;">
+                <div class="logo" style="color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-user-shield"></i> لوحة التحكم
+                </div>
+                <div>
+                    <a href="admin-dashboard.html" class="btn"
+                        style="background: white; color: var(--primary-color); font-weight: bold;">لوحة التحكم</a>
+                </div>
+            </div>
+        </header> *@
+
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                <h2 style="color: var(--primary-color);">إدارة العقارات</h2>
+                <a href="Create" class="btn btn-primary"><i class="fa-solid fa-plus"></i> إضافة عقار جديد</a>
+            </div>
+
+            <div class="dashboard-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>الصور</th>
+                            <th>العنوان</th>
+                            <th>السعر</th>
+                            <th>الموقع</th>
+                            <th>النوع</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminPropertiesList">
+                        @if (Model != null)
+                        {
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>
+                                <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00"
+                                    class="prop-img-mini">
+                            </td>
+                            <td>@item.Title</td>
+                            <td>@item.Price</td>
+                            <td>
+                                @if (item.Location != null)
+                                {
+                                <span>@item.Location.City</span>
+                                }
+                            </td>
+                            <td>@item.Type</td>
+                            <td>
+                                <a href="edit-property.html" class="action-btn edit-btn">
+                                    <i class="fa-solid fa-pen"></i> تعديل
+                                </a>
+                                <button class="action-btn delete-btn" style="border:none; cursor:pointer;">
+                                    <i class="fa-solid fa-trash"></i> حذف
+                                </button>
+                            </td>
+                        </tr>
+                        }
+                        }
+                        else
+                        {
+                        <tr>
+                            <td colspan="6" style="text-align:center">لا توجد عقارات حالياً</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <script>
+            // No Logic needed for just view
+            const deleteBtns = document.querySelectorAll('.delete-btn');
+            deleteBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    if (confirm('هل تريد حذف العقار؟ (محاكاة)')) {
+                        this.closest('tr').remove();
+                    }
+                });
+            });
+        </script>
+    </body>
+
+    </html>

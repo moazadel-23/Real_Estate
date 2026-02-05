@@ -1,5 +1,627 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model Real_Estate.Models.Property
+@using Real_Estate.Models
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة عقار جديد - السكن الفاخر</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <style>
+        :root {
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background-color: #f4f6f9;
+        }
+
+        /* Sidebar Styles */
+        .admin-sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+        }
+
+            .sidebar-logo span {
+                color: var(--accent-color);
+            }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-item {
+            margin-bottom: 5px;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+            .menu-link:hover,
+            .menu-link.active {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: white;
+            }
+
+            .menu-link span {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .menu-arrow {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        /* Submenu */
+        .submenu {
+            list-style: none;
+            padding-right: 35px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+            .submenu.open {
+                max-height: 500px;
+            }
+
+        .submenu-item {
+            margin: 5px 0;
+        }
+
+        .submenu-link {
+            display: block;
+            padding: 8px 10px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: var(--transition);
+        }
+
+            .submenu-link:hover {
+                color: var(--accent-color);
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+        .menu-link.expanded .menu-arrow {
+            transform: rotate(-90deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-right: var(--sidebar-width);
+            padding: 30px;
+            transition: margin-right 0.3s ease;
+        }
+
+       
+
+        /* --- Form specific additional styles --- */
+        .form-section {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 30px;
+        }
+
+            .upload-area:hover {
+                border-color: var(--accent-color);
+                background: #fafafa;
+            }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .gallery-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+     
+            .admin-sidebar {
+                transform: translateX(100%);
+            }
+
+            .main-content {
+                margin-right: 0;
+            }
+
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle-btn {
+                display: block;
+            }
+        
+
+      
+            .row {
+                grid-template-columns: 1fr;
+            }
+        
+
+            .gallery-preview img {
+                width: 100%;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 1px solid #ddd;
+            }
+    </style>
+</head>
+
+<body>
+
+    <!-- Mobile Toggle -->
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+            </a>
+            <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">لوحة تحكم الإدارة</p>
+        </div>
+
+        <ul class="sidebar-menu">
+            <!-- Dashboard Home -->
+            <li class="menu-item">
+                <a href="admin-dashboard.html" class="menu-link">
+                    <span><i class="fa-solid fa-gauge-high"></i> الرئيسية</span>
+                </a>
+            </li>
+
+            <!-- Properties Dropdown -->
+            <li class="menu-item">
+                <a href="javascript:void(0)" class="menu-link expanded" onclick="toggleSubmenu(this)">
+                    <span><i class="fa-solid fa-building"></i> العقارات</span>
+                    <i class="fa-solid fa-chevron-left menu-arrow"></i>
+                </a>
+                <ul class="submenu open">
+                    <li class="submenu-item">
+                        <a href="admin.html" class="submenu-link">
+                            <i class="fa-solid fa-user-tie"></i> ادمن العقارات
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="add-property.html" class="submenu-link"
+                           style="color: var(--accent-color); background: rgba(255, 255, 255, 0.05);">
+                            <i class="fa-solid fa-plus-circle"></i> إضافة عقار
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="add-location.html" class="submenu-link">
+                            <i class="fa-solid fa-map-location-dot"></i> إضافة موقع
+                        </a>
+                    </li>
+                    <li class="submenu-item">
+                        <a href="manage-locations.html" class="submenu-link">
+                            <i class="fa-solid fa-location-dot"></i> إدارة المواقع
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Other Links -->
+            <li class="menu-item">
+                <a href="index.html" class="menu-link">
+                    <span><i class="fa-solid fa-globe"></i> زيارة الموقع</span>
+                </a>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="menu-link">
+                    <span><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <div class="dashboard-header" style="margin-bottom: 20px;">
+            <h2 style="color: var(--primary-color);">إضافة عقار جديد</h2>
+            <p style="color: #666;">أدخل تفاصيل عقارك ليصل إلى آلاف المهتمين</p>
+        </div>
+
+        <!-- Form Container -->
+        <form class="form-section fade-in delay-1" id="addPropertyForm">
+            <h3 style="margin-bottom: 25px; color: var(--primary-color);">بيانات العقار الأساسية</h3>
+
+            <div class="upload-area" id="imageUpload">
+                <i class="fa-solid fa-cloud-upload-alt upload-icon"></i>
+                <h3>الصورة الرئيسية للعقار</h3>
+                <p>اسحب الصورة هنا أو انقر للاختيار</p>
+                <input type="file" hidden id="fileInput" accept="image/*">
+            </div>
+
+            <div class="upload-area" id="galleryUpload">
+                <i class="fa-regular fa-images upload-icon"></i>
+                <h3>صور إضافية (المعرض)</h3>
+                <p>يمكنك اختيار مجموعة صور معاً</p>
+                <input type="file" hidden id="galleryInput" accept="image/*" multiple>
+                <div class="gallery-preview" id="galleryPreview"></div>
+            </div>
+
+            <div class="form-group">
+                <label>عنوان الإعلان</label>
+                <input type="text" id="title" placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" required>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>نوع العقار</label>
+                    <select asp-for="Type"
+                            asp-items="Html.GetEnumSelectList<PropertyType>()"
+                            class="form-control">
+                        <option value="">-- اختر نوع العقار --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>السعر (ريال سعودي)</label>
+                    <input type="number" id="price" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>المساحة (م²)</label>
+                    <input type="number" id="area" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label>المدينة</label>
+                    <select id="propertyCity" required>
+                        <option value="">اختر المدينة</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>الشارع</label>
+                    <select id="propertyStreet" required>
+                        <option value="">اختر الشارع</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px;">
+                <div class="form-group" style="grid-column: 1/-1;">
+                    <label>الموقع على الخريطة (GPS)</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="hidden" id="gpsLat">
+                        <input type="hidden" id="gpsLng">
+                        <button type="button" class="btn btn-outline" id="getLocationBtn" style="white-space: nowrap;">
+                            <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي
+                        </button>
+                    </div>
+                    <!-- Mini Map Container -->
+                    <div id="miniMap"
+                         style="height: 250px; width: 100%; margin-top: 15px; border-radius: 10px; z-index: 1;"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>عدد الغرف</label>
+                    <input type="number" id="beds" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>عدد دورات المياه</label>
+                    <input type="number" id="baths" placeholder="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>وصف إضافي</label>
+                <textarea rows="5" placeholder="اكتب وصفاً جذاباً للعقار..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary full-width">نشر الإعلان</button>
+        </form>
+    </main>
+
+
+    <script>
+        // --- Sidebar Scripts ---
+        function toggleSubmenu(element) {
+            const submenu = element.nextElementSibling;
+            element.classList.toggle('expanded');
+            submenu.classList.toggle('open');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // --- Form Scripts ---
+        const form = document.getElementById('addPropertyForm');
+        const uploadArea = document.getElementById('imageUpload');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Handle Image Preview (Simple)
+        fileInput.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Robust preview: Hide text, show image, keep input
+                    const icon = uploadArea.querySelector('.upload-icon');
+                    const h3 = uploadArea.querySelector('h3');
+                    const p = uploadArea.querySelector('p');
+                    if (icon) icon.style.display = 'none';
+                    if (p) p.style.display = 'none';
+                    if (h3) { h3.textContent = 'تم اختيار الصورة'; h3.style.marginBottom = '10px'; }
+
+                    let img = uploadArea.querySelector('.preview-img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        img.className = 'preview-img';
+                        img.style.maxWidth = '100%';
+                        img.style.maxHeight = '300px';
+                        img.style.objectFit = 'contain';
+                        img.style.borderRadius = '10px';
+                        img.style.marginBottom = '15px';
+                        // Insert before h3
+                        if (h3) uploadArea.insertBefore(img, h3);
+                        else uploadArea.appendChild(img);
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Handle Gallery Preview (Cumulative + Remove)
+        const galleryUpload = document.getElementById('galleryUpload');
+        const galleryInput = document.getElementById('galleryInput');
+        const galleryPreview = document.getElementById('galleryPreview');
+        let uploadedGalleryFiles = [];
+
+        galleryUpload.addEventListener('click', (e) => {
+            if (e.target !== galleryInput && !e.target.closest('.btn-remove-img')) {
+                galleryInput.click();
+            }
+        });
+
+        galleryInput.addEventListener('change', function () {
+            const newFiles = Array.from(this.files);
+            if (newFiles.length === 0) return;
+
+            uploadedGalleryFiles = [...uploadedGalleryFiles, ...newFiles];
+            renderGallery();
+            this.value = '';
+        });
+
+        function renderGallery() {
+            galleryPreview.innerHTML = '';
+
+            const h3 = galleryUpload.querySelector('h3');
+            const p = galleryUpload.querySelector('p');
+            const icon = galleryUpload.querySelector('.upload-icon');
+
+            if (uploadedGalleryFiles.length > 0) {
+                if (h3) h3.textContent = `${uploadedGalleryFiles.length} صور مختارة`;
+                if (p) p.style.display = 'none';
+                if (icon) icon.style.display = 'none';
+            } else {
+                if (h3) h3.textContent = 'صور إضافية (المعرض)';
+                if (p) p.style.display = 'block';
+                if (icon) icon.style.display = 'block';
+            }
+
+            uploadedGalleryFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.style.position = 'relative';
+                    div.className = 'gallery-item fade-in';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.width = '100%';
+                    img.style.height = '100px';
+                    img.style.objectFit = 'cover';
+                    img.style.borderRadius = '8px';
+                    img.style.border = '1px solid #ddd';
+
+                    const btn = document.createElement('button');
+                    btn.innerHTML = '<i class="fa-solid fa-times"></i>';
+                    btn.className = 'btn-remove-img';
+                    btn.style.position = 'absolute';
+                    btn.style.top = '-8px';
+                    btn.style.left = '-8px';
+                    btn.style.background = '#ff4757';
+                    btn.style.color = 'white';
+                    btn.style.border = '2px solid white';
+                    btn.style.borderRadius = '50%';
+                    btn.style.width = '24px';
+                    btn.style.height = '24px';
+                    btn.style.cursor = 'pointer';
+                    btn.style.display = 'flex';
+                    btn.style.alignItems = 'center';
+                    btn.style.justifyContent = 'center';
+                    btn.style.fontSize = '12px';
+                    btn.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+
+                    btn.onclick = (evt) => {
+                        evt.stopPropagation();
+                        // Remove file at index
+                        uploadedGalleryFiles = uploadedGalleryFiles.filter((_, i) => i !== index);
+                        renderGallery();
+                    };
+
+                    div.appendChild(img);
+                    div.appendChild(btn);
+                    galleryPreview.appendChild(div);
+                }
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Map Logic
+        let map, marker;
+
+        function initMap() {
+            map = L.map('miniMap').setView([24.7136, 46.6753], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            map.on('click', function (e) {
+                updateLocation(e.latlng.lat, e.latlng.lng);
+            });
+        }
+
+        setTimeout(initMap, 500);
+
+        function updateLocation(lat, lng) {
+            document.getElementById('gpsLat').value = lat.toFixed(6);
+            document.getElementById('gpsLng').value = lng.toFixed(6);
+
+            if (marker) {
+                marker.setLatLng([lat, lng]);
+            } else {
+                marker = L.marker([lat, lng]).addTo(map);
+            }
+            map.setView([lat, lng], 15);
+        }
+
+        document.getElementById('getLocationBtn').addEventListener('click', () => {
+            if (navigator.geolocation) {
+                document.getElementById('getLocationBtn').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحديد...';
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("المتصفح لا يدعم تحديد الموقع.");
+            }
+        });
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            updateLocation(lat, lng);
+            document.getElementById('getLocationBtn').innerHTML = '<i class="fa-solid fa-check"></i> تم التحديد';
+            document.getElementById('getLocationBtn').classList.add('btn-success');
+        }
+
+        function showError(error) {
+            alert("حدث خطأ في تحديد الموقع: " + error.message);
+            document.getElementById('getLocationBtn').innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي';
+        }
+
+        // Populate Selects from localStorage
+        const locations = JSON.parse(localStorage.getItem('locations') || '[]');
+        const citySelect = document.getElementById('propertyCity');
+        const streetSelect = document.getElementById('propertyStreet');
+
+        function populateLocations() {
+            const cities = [...new Set(locations.map(l => l.city))];
+            cities.forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                citySelect.appendChild(opt);
+            });
+        }
+
+        citySelect.addEventListener('change', () => {
+            const selectedCity = citySelect.value;
+            streetSelect.innerHTML = '<option value="">اختر الشارع</option>';
+            if (selectedCity) {
+                const relevantStreets = locations.filter(l => l.city === selectedCity).map(l => l.street);
+                relevantStreets.forEach(street => {
+                    const opt = document.createElement('option');
+                    opt.value = street;
+                    opt.textContent = street;
+                    streetSelect.appendChild(opt);
+                });
+            }
+        });
+
+        populateLocations();
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('تم إضافة العقار بنجاح! (واجهة فقط)');
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+
+</html>
