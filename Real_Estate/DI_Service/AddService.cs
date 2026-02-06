@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Real_Estate.Repository;
 
 namespace Real_Estate.DI_Service
 {
@@ -11,6 +12,9 @@ namespace Real_Estate.DI_Service
                 option.Password.RequireNonAlphanumeric = false;
                 option.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddScoped<IRepository<Property>, Repository<Property>>();
+            services.AddScoped<IRepository<Location>, Repository<Location>>();
+
         }
     }
 }
