@@ -1,4 +1,4 @@
-﻿using Real_Estate.Repository;
+﻿using Real_Estate.DI_Service;
 
 namespace Real_Estate
 {
@@ -14,6 +14,9 @@ namespace Real_Estate
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+            // Add services to the container.
+            builder.Services.AddScopedServices();
 
             var app = builder.Build();
 

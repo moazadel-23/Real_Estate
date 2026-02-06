@@ -3,9 +3,9 @@ using Real_Estate.Repository;
 
 namespace Real_Estate.DI_Service
 {
-    public class AddService
+    public static class AddService
     {
-        public void AddScopedServices(IServiceCollection services)
+        public static void AddScopedServices(this IServiceCollection services)
         {
             services.AddIdentity<User, IdentityRole>(option =>
             {
