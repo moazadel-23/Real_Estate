@@ -33,6 +33,7 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
         [HttpPost]
         public IActionResult Register(RegisterVM register)
         {
+
             return View();
         }
     }
