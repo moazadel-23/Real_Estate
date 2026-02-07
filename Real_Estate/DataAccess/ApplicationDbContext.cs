@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Real_Estate.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Real_Estate.DataAccess
 {
