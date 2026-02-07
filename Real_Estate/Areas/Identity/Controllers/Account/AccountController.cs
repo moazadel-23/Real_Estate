@@ -65,14 +65,24 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
             {
                 FullName = register.Name,
                 Email = register.Email,
-                UserName = register.Name
+                UserName = register.Email
             };
             var result = await userManager.CreateAsync(user, register.Password);
             if (!result.Succeeded)
                 return View();
-            var link = Url.Action(nameof(VirfeyEmail), "Account", new { userId = user.Id });
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(VirfeyEmail), "Account", new { userId = user.Id , userToken = token } , Request.Scheme);
             await emailSender.SendEmailAsync(register.Email, "Confirm Your Email", $"<h1>To Confirm Email Click<a href='{link}'> Here</a></h1>");
             return View();
         }
+        public async Task<IActionResult> VirfeyEmail(string userId , string userToken)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            var result = await userManager.ConfirmEmailAsync(user! , userToken);
+            if (!result.Succeeded)
+                return View();
+            return RedirectToAction(nameof(LogIn));
+        }
+
     }
 }
