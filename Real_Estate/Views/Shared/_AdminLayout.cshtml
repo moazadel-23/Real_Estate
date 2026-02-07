@@ -1,14 +1,10 @@
-﻿@* Admin Layout RTL Template *@
-@using Microsoft.AspNetCore.Identity
-@using Real_Estate.Models
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] - لوحة التحكم</title>
+    <title>لوحة التحكم - السكن الفاخر</title>
 
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
@@ -20,7 +16,7 @@
     <style>
         :root {
             --sidebar-width: 280px;
-            --primary-color: #1f2937;
+            --primary-color: #283649;
             --accent-color: #4f46e5;
             --transition: 0.3s ease;
         }
@@ -143,24 +139,22 @@
             transition: margin-right 0.3s ease;
         }
 
-        @@media (max-width: 992px) {
             .admin-sidebar {
                 transform: translateX(100%);
             }
 
-        .main-content {
-            margin-right: 0;
-        }
+            .main-content {
+                margin-right: 0;
+            }
 
-        .admin-sidebar.active {
-            transform: translateX(0);
-        }
+            .admin-sidebar.active {
+                transform: translateX(0);
+            }
 
-        .sidebar-toggle-btn {
-            display: block;
-        }
-
-        }
+            .sidebar-toggle-btn {
+                display: block;
+            }
+        
 
         .sidebar-toggle-btn {
             position: fixed;
@@ -197,7 +191,7 @@
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="@Url.Action("Index", "Home", new { area = "Admin" })" class="sidebar-logo">
+            <a href="admin-dashboard.html" class="sidebar-logo">
                 <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
             </a>
             <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">لوحة تحكم الإدارة</p>
@@ -205,7 +199,7 @@
 
         <ul class="sidebar-menu">
             <li class="menu-item">
-                <a href="@Url.Action("Index", "Home", new { area = "Admin" })" class="menu-link active">
+                <a href="manage" class="menu-link active">
                     <span><i class="fa-solid fa-gauge-high"></i> الرئيسية</span>
                 </a>
             </li>
@@ -217,26 +211,27 @@
                 </a>
                 <ul class="submenu">
                     <li class="submenu-item">
-                        <a href="@Url.Action("board", "Property", new { area = "Admin" })" class="submenu-link">
+                        <a href="board" class="submenu-link">
                             <i class="fa-solid fa-user-tie"></i> إدارة العقارات
                         </a>
                     </li>
                     <li class="submenu-item">
-                        <a href="@Url.Action("Create", "Property", new { area = "Admin" })" class="submenu-link">
+                        <a href="Create" class="submenu-link">
                             <i class="fa-solid fa-plus-circle"></i> إضافة عقار
                         </a>
                     </li>
-               
+
                     <li class="submenu-item">
-                        <a href="@Url.Action("Index", "Location", new { area = "Admin" })" class="submenu-link">
-                            <i class="fa-solid fa-location-dot"></i> إدارة المواقع
+                        <a href="@Url.Action("Index", "Location", new { area = "Admin" })" class="menu-link">
+                            <span><i class="fa-solid fa-globe"></i> ادارة الموقع</span>
                         </a>
                     </li>
+
                 </ul>
             </li>
 
             <li class="menu-item">
-                <a href="/" class="menu-link">
+                <a href="index.html" class="menu-link">
                     <span><i class="fa-solid fa-globe"></i> زيارة الموقع</span>
                 </a>
             </li>

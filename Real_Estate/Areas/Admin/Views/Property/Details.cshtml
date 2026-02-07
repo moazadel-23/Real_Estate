@@ -5,6 +5,7 @@
 
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +22,11 @@
     <!-- Main Style -->
     <link rel="stylesheet" href="~/css/style.css">
 
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
     <style>
         /* Specific page overrides */
         .content-card {
@@ -34,12 +40,13 @@
         /* Slider Styles */
         .property-slider {
             position: relative;
-            width: 100%;
-            height: 550px;
-            /* Increased height */
+            width: 75%;
+            margin: 0 auto 30px auto;
+            /* Centered with bottom margin */
+            height: 750px;
+            /* Increased height significantly */
             border-radius: 15px;
             overflow: hidden;
-            margin-bottom: 30px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
@@ -111,13 +118,60 @@
             z-index: 10;
         }
 
-            .main-container {
-                grid-template-columns: 1fr !important;
+        .main-container {
+            grid-template-columns: 1fr !important;
+        }
+
+        .property-slider {
+            height: 500px;
+        }
+
+        /* Specs Horizontal Layout */
+        .specs-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: space-between;
+        }
+
+        .spec-item {
+            flex: 1 1 auto;
+            min-width: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+
+            .spec-item:hover {
+                background: #fff;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+                transform: translateY(-3px);
             }
 
-            .property-slider {
-                height: 300px;
-            }
+        .action-btn {
+            width: 180px; /* قلل/كبر الرقم براحتك */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .buy-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
     </style>
 </head>
 
@@ -127,13 +181,15 @@
     <nav class="navbar">
         <div class="container nav-container">
             <div class="nav-right-group" style="display: flex; align-items: center;">
-                <a href="index.html" class="logo" style="margin-left: 15px;">
-                    <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
-                </a>
-                <a href="index.html" class="home-btn"
-                   style="color:var(--primary-color); font-weight:600; margin-right:20px;">
+               
+                <a asp-area=""
+                   asp-controller="Property"
+                   asp-action="Index"
+                   class="home-btn"
+                   style="color:var(--primary-color); font-weight:600; margin-right:70px;">
                     <i class="fa-solid fa-arrow-right"></i> العودة للرئيسية
                 </a>
+
             </div>
 
             <div class="nav-buttons" style="display: flex !important; align-items: center; gap: 15px;">
@@ -227,14 +283,28 @@
                     <h1 style="font-size: 1.6rem; color: #333; margin-bottom: 15px; font-weight: 700; line-height: 1.4;">
                         @Model.Title
                     </h1>
-@* 
+                    @*
                     <div class="prop-location" style="margin-bottom: 15px; color: #666; font-size: 0.95rem;">
                         <i class="fa-solid fa-location-dot" style="margin-left: 5px;"></i>
-                       @Model.Location.City
+                        @Model.Location.City
                     </div> *@
 
-                    <div style="color: #999; font-size: 0.85rem;">
-                        منذ @(DateTime.Now.AddDays(-3).ToString("d")) أيام
+                    <div style="color: #999; font-size: 0.85rem; margin-bottom: 20px;">
+                        منذ @(DateTime.Now.AddDays(-3).ToString("d")) 
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <!-- Action Buttons -->
+                    <div class="action-buttons"
+                         style="display: flex; gap: 15px; justify-content: center;">
+
+                        <button class="btn btn-primary action-btn">
+                            <i class="fa-solid fa-cart-shopping"></i> إضافة للسلة
+                        </button>
+
+                        <button class="btn btn-primary action-btn">
+                            <i class="fa-solid fa-money-bill-wave"></i> اشتري الآن
+                        </button>
                     </div>
 
                 </div>
@@ -294,27 +364,20 @@
                     <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333; font-weight: 700; border-right: 4px solid var(--accent-color); padding-right: 15px;">
                         وصف العقار
                     </h3>
-                    <p style="color:#555; line-height:1.8; text-align:justify;">@Model.Description
+                    <p style="color:#555; line-height:1.8; text-align:justify;">
+                        @Model.Description
                         <br>
                         <strong>مميزات الموقع:</strong><br>
                         قريبة من الخدمات والمسجد والسنترال بارك الجديد.
                     </p>
                 </div>
 
-                <!-- Map Placeholder -->
+                <!-- Map -->
                 <div class="content-card">
                     <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333; font-weight: 700; border-right: 4px solid var(--accent-color); padding-right: 15px;">
                         الموقع
                     </h3>
-                    <div class="map-container"
-                         style="height: 300px; background: #eee; border-radius: 10px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg'); background-size: cover;">
-                        <div class="map-overlay"
-                             style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 10px; text-align: center;">
-                            <i class="fa-solid fa-map-location-dot"
-                               style="font-size: 2rem; color:var(--accent-color); margin-bottom:10px; display:block;"></i>
-                            الموقع الدقيق متاح عند التواصل
-                        </div>
-                    </div>
+                    <div id="propertyMap" style="height: 350px; width: 100%; border-radius: 10px; z-index: 1;"></div>
                 </div>
 
             </div>
@@ -468,6 +531,16 @@
 
             // Handle window resize
             window.addEventListener('resize', updateSlider);
+
+            // Leaflet Map Init
+            var map = L.map('propertyMap').setView([24.7136, 46.6753], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            L.marker([24.7136, 46.6753]).addTo(map)
+                .bindPopup('موقع العقار التقريبي')
+                .openPopup();
         });
     </script>
 </body>
