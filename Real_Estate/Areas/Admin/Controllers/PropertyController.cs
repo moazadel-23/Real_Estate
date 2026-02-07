@@ -31,15 +31,18 @@ namespace Real_Estate.Areas.Admin.Controllers
         public async Task<IActionResult> manage()
         {
             var properties = await _propertyRepository.GetAllAsync();
-            return View(properties.AsEnumerable());
+            return View("manage");
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details()
+        public async Task<IActionResult> Details(int id)
         {
-            var properties = await _propertyRepository.GetOneAsync();
-            return View();
+            var property = await _propertyRepository.GetOneAsync(p => p.Id == id); // هنا الشرط
+            if (property == null)
+                return NotFound();
+            return View(property);
         }
+
 
 
         [HttpGet]

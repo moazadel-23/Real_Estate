@@ -1,4 +1,4 @@
-﻿namespace Real_Estate.Models.ViewModel
+﻿namespace Real_Estate.Models
 {
     public class PropertyLocVM
     {

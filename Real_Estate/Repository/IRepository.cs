@@ -6,14 +6,14 @@ namespace Real_Estate.Repository
     {
         Task<IEnumerable<TEntity>> GetAllAsync
             (
-            Expression<Func<TEntity, bool>>? expression = null,
+            Expression<Func<TEntity, bool>>? expression = default,
             Expression<Func<TEntity, object>>[]? include = null,
             bool tracking = true,
             CancellationToken cancellationToken = default
             );
         Task<TEntity> GetOneAsync
             (
-            Expression<Func<TEntity, bool>>? expression = null,
+            Expression<Func<TEntity, bool>>? expression = default,
             Expression<Func<TEntity, object>>[]? include = null,
             bool tracking = true,
             CancellationToken cancellationToken = default

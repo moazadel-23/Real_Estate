@@ -1,260 +1,474 @@
 ﻿@model Real_Estate.Models.Property
+@{
+    Layout = null;
+}
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل العقار - السكن الفاخر</title>
+    <title>شقة للبيع فيو مفتوح - السكن الفاخر</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+
+    <!-- Main Style -->
+    <link rel="stylesheet" href="~/css/style.css">
+
     <style>
-        .details-hero {
-            height: 60vh;
-            position: relative;
-            background-color: #eee;
-            margin-top: 80px;
+        /* Specific page overrides */
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
         }
 
-            .details-hero img {
+        /* Slider Styles */
+        .property-slider {
+            position: relative;
+            width: 100%;
+            height: 550px;
+            /* Increased height */
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+            .slide img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
             }
 
-        .details-container {
-            background: white;
-            border-radius: 20px 20px 0 0;
-            padding: 40px;
-            margin-top: -50px;
-            position: relative;
-            z-index: 10;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
-        }
-
-        .prop-header {
+        /* Navigation Buttons */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
 
-        .prop-title h1 {
-            color: var(--primary-color);
-            margin-bottom: 10px;
-        }
-
-        .prop-price {
-            font-size: 2rem;
-            color: var(--accent-color);
-            font-weight: 700;
-        }
-
-        .prop-specs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 20px;
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .spec-item i {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .description {
-            margin-bottom: 40px;
-        }
-
-            .description h3 {
-                margin-bottom: 15px;
+            .slider-btn:hover {
+                background: rgba(255, 255, 255, 0.9);
                 color: var(--primary-color);
             }
 
-            .description p {
-                color: var(--light-text);
-                line-height: 1.8;
-            }
-
-        .action-area {
-            position: sticky;
-            bottom: 0;
-            background: white;
-            padding: 20px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        .prev-btn {
+            right: 20px;
         }
 
-      
-            .details-hero {
-                height: 40vh;
+        .next-btn {
+            left: 20px;
+        }
+
+        /* Counter Badge */
+        .slider-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+        }
+
+            .main-container {
+                grid-template-columns: 1fr !important;
             }
 
-            .details-container {
-                padding: 25px;
-                margin-top: -30px;
+            .property-slider {
+                height: 300px;
             }
-
-            .prop-header {
-                flex-direction: column;
-            }
-
-            .prop-price {
-                font-size: 1.8rem;
-            }
-        
     </style>
 </head>
 
 <body>
 
-    <!-- Navbar -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">
-                <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="index.html">الرئيسية</a></li>
-                <li><a href="index.html#featured">العقارات</a></li>
-            </ul>
+            <div class="nav-right-group" style="display: flex; align-items: center;">
+                <a href="index.html" class="logo" style="margin-left: 15px;">
+                    <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+                </a>
+                <a href="index.html" class="home-btn"
+                   style="color:var(--primary-color); font-weight:600; margin-right:20px;">
+                    <i class="fa-solid fa-arrow-right"></i> العودة للرئيسية
+                </a>
+            </div>
 
-            <!-- Mobile Menu Toggle -->
-            <div class="menu-toggle" id="mobileMenuBtn">
-                <i class="fa-solid fa-bars"></i>
+            <div class="nav-buttons" style="display: flex !important; align-items: center; gap: 15px;">
+                <a href="favorites.html" class="btn-outline"
+                   style="border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; padding:0;">
+                    <i class="fa-solid fa-heart"></i>
+                </a>
+                <a href="cart.html" class="btn-outline"
+                   style="border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; padding:0;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu" id="mobileMenu">
-        <ul class="mobile-nav-links">
-            <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="index.html#featured">العقارات</a></li>
-            <li><a href="cart.html">السلة</a></li>
-            <li><a href="login.html">دخول</a></li>
-        </ul>
-    </div>
+    <!-- Main Content -->
+    <div class="container" style="padding-top: 100px; padding-bottom: 50px;">
 
-    <div id="propertyContent">
-        <!-- Content injected via JS -->
-    </div>
+        <!-- Breadcrumb -->
+        <div style="margin-bottom: 20px; color: #888; font-size: 0.9rem;">
+            <a href="index.html">الرئيسية</a> <i class="fa-solid fa-chevron-left"
+                                                 style="font-size:0.7rem; margin:0 5px;"></i>
+            <span>عقارات للبيع</span> <i class="fa-solid fa-chevron-left" style="font-size:0.7rem; margin:0 5px;"></i>
+            <span style="color:var(--primary-color); font-weight:bold;">شقة للبيع في مدينتي</span>
+        </div>
 
-    <script>
-        // Data Loading
-        const urlParams = new URLSearchParams(window.location.search);
-        const propId = parseInt(urlParams.get('id')); // ID might be small int or timestamp
+        <div class="main-container" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
 
-        let allProperties = JSON.parse(localStorage.getItem('properties') || '[]');
+            <!-- Main Content (Right) -->
+            <div class="details-col">
 
-        // If properties not in local storage (first visit direct link), mock data needed or fail gracefully
-        if (allProperties.length === 0) {
-            // Fallback for demo if direct access without index.html load first
-            window.location.href = 'index.html';
-        }
+                <!-- Image Slider (Moved Inside Column & Made Taller) -->
+                <div class="property-slider">
+                    <div class="slider-track" id="sliderTrack">
+                        <!-- Slide 1 -->
+                        <div class="slide">
+                            <img src="/img/@Model.MainImg" alt="View 1">
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1599388147239-015842823b5d?auto=format&fit=crop&w=1200&q=80"
+                                 alt="View 2">
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80"
+                                 alt="View 3">
+                        </div>
+                        <!-- Slide 4 -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80"
+                                 alt="View 4">
+                        </div>
+                        <!-- Slide 5 -->
+                        <div class="slide">
+                            <img src="https://images.unsplash.com/photo-1484154218962-a1c002085d2f?auto=format&fit=crop&w=1200&q=80"
+                                 alt="View 5">
+                        </div>
+                    </div>
 
-        const property = allProperties.find(p => p.id === propId);
+                    <!-- Controls -->
+                    <button class="slider-btn prev-btn" id="prevBtn">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    <button class="slider-btn next-btn" id="nextBtn">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
 
-        if (!property) {
-            document.body.innerHTML = '<div style="text-align:center; padding:100px;"><h1>عذراً، العقار غير موجود</h1><a href="index.html">العودة للرئيسية</a></div>';
-        } else {
-            document.getElementById('propertyContent').innerHTML = `
-                <div class="details-hero">
-                    <img src="${/img/@Model.MainImg}" alt="${@Model.Title}">
+                    <!-- Badge -->
+                    <div class="slider-badge">
+                        <i class="fa-solid fa-camera"></i> <span id="slideCounter">1 / 5</span>
+                    </div>
                 </div>
 
-                <div class="details-container fade-in">
-                    <div class="prop-header">
-                        <div class="prop-title">
-                            <span class="card-badge" style="position:static; display:inline-block; margin-bottom:10px; background-color: var(--accent-color); color:white; padding:5px 15px; border-radius:50px;">${@Model.Type === 'villa' ? 'فيلا' : 'شقة'}</span>
-                            <h1>${@Model.Title}</h1>
-                            <div style="color: var(--light-text); display:flex; align-items:center; gap:5px;">
-                                <i class="fa-solid fa-location-dot"></i> ${property.location}
+                <!-- Header Section (Price & Title) -->
+                <div class="content-card prop-info-card" style="position: relative; margin-bottom: 30px;">
+                    <!-- Share Icon -->
+                    <div style="position: absolute; top: 30px; left: 30px;">
+                        <a href="#" style="color: #666; font-size: 1.2rem;"><i class="fa-solid fa-share-nodes"></i></a>
+                    </div>
+
+                    <div class="prop-price"
+                         style="text-align: right; direction: ltr; font-family: sans-serif; margin-bottom: 10px; display: flex; align-items: baseline; justify-content: flex-end; gap: 5px;">
+                        <span style="font-size: 1.2rem; font-weight: 600; color: #333;">ج.م</span>
+                        <span style="font-size: 2.2rem; font-weight: 800; color: #333;">@Model.Price</span>
+                    </div>
+                    <div style="text-align: right; margin-bottom: 15px; font-size: 0.8rem; color: #888;">
+                        قابل للتفاوض
+                    </div>
+
+                    <h1 style="font-size: 1.6rem; color: #333; margin-bottom: 15px; font-weight: 700; line-height: 1.4;">
+                        @Model.Title
+                    </h1>
+@* 
+                    <div class="prop-location" style="margin-bottom: 15px; color: #666; font-size: 0.95rem;">
+                        <i class="fa-solid fa-location-dot" style="margin-left: 5px;"></i>
+                       @Model.Location.City
+                    </div> *@
+
+                    <div style="color: #999; font-size: 0.85rem;">
+                        منذ @(DateTime.Now.AddDays(-3).ToString("d")) أيام
+                    </div>
+
+                </div>
+
+                <!-- Prominent Specifications -->
+                <div class="content-card specifications-section" style="margin-bottom: 30px;">
+                    <h3 style="font-size: 1.3rem; margin-bottom: 25px; color: #333; font-weight: 700; border-right: 4px solid var(--accent-color); padding-right: 15px;">
+                        المواصفات البارزة
+                    </h3>
+
+                    <div class="specs-grid">
+                        <!-- Spec Item -->
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                            <span class="spec-label">النوع</span>
+                            <span class="spec-value">@Model.Type</span>
+                        </div>
+
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fa-solid fa-ruler-combined"></i>
+                            </div>
+                            <span class="spec-label">المساحة (م²)</span>
+                            <span class="spec-value">@Model.AreaSize</span>
+                        </div>
+
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fa-solid fa-bed"></i>
+                            </div>
+                            <span class="spec-label">غرف نوم</span>
+                            <span class="spec-value">@Model.Bedrooms</span>
+                        </div>
+
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fa-solid fa-bath"></i>
+                            </div>
+                            <span class="spec-label">الحمامات</span>
+                            <span class="spec-value">@Model.Bathrooms</span>
+                        </div>
+
+                        <div class="spec-item">
+                            <div class="spec-icon">
+                                <i class="fa-solid fa-couch"></i>
+                            </div>
+                            <span class="spec-label">مفروش</span>
+                            <span class="spec-value">لا</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="content-card" style="margin-bottom: 30px;">
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333; font-weight: 700; border-right: 4px solid var(--accent-color); padding-right: 15px;">
+                        وصف العقار
+                    </h3>
+                    <p style="color:#555; line-height:1.8; text-align:justify;">@Model.Description
+                        <br>
+                        <strong>مميزات الموقع:</strong><br>
+                        قريبة من الخدمات والمسجد والسنترال بارك الجديد.
+                    </p>
+                </div>
+
+                <!-- Map Placeholder -->
+                <div class="content-card">
+                    <h3 style="font-size: 1.3rem; margin-bottom: 15px; color: #333; font-weight: 700; border-right: 4px solid var(--accent-color); padding-right: 15px;">
+                        الموقع
+                    </h3>
+                    <div class="map-container"
+                         style="height: 300px; background: #eee; border-radius: 10px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background-image: url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg'); background-size: cover;">
+                        <div class="map-overlay"
+                             style="background: rgba(255,255,255,0.9); padding: 20px; border-radius: 10px; text-align: center;">
+                            <i class="fa-solid fa-map-location-dot"
+                               style="font-size: 2rem; color:var(--accent-color); margin-bottom:10px; display:block;"></i>
+                            الموقع الدقيق متاح عند التواصل
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar (Left) -->
+            <div class="sidebar-col">
+
+                <!-- Agency Card -->
+                <div class="agent-card content-card" style="text-align: right; padding: 25px; margin-bottom: 20px;">
+                    <h4 style="margin-bottom: 20px; font-size: 1.1rem; color: #333; font-weight: 700;">
+                        مدرجة من قبل
+                        وكالة
+                    </h4>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                        <div>
+                            <span style="font-weight: 700; font-size: 1.1rem; color: #000; display: block;">
+                                New
+                                Avenue
+                            </span>
+                            <div style="color: #888; font-size: 0.8rem;">
+                                عضو منذ مارس 2024
                             </div>
                         </div>
-                        <div class="prop-price">${property.price}</div>
+
+                        <img src="https://ui-avatars.com/api/?name=New+Avenue&background=0D8ABC&color=fff"
+                             style="width: 50px; height: 50px; border-radius: 5px;" alt="Agency Logo">
                     </div>
 
-                    <div class="prop-specs">
-                        <div class="spec-item">
-                            <i class="fa-solid fa-ruler-combined"></i>
-                            <span>${property.area} م²</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fa-solid fa-bed"></i>
-                            <span>${property.beds} غرف</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fa-solid fa-bath"></i>
-                            <span>${property.baths} حمامات</span>
-                        </div>
-                        <div class="spec-item">
-                            <i class="fa-solid fa-car"></i>
-                            <span>موقف سيارة</span>
-                        </div>
-                    </div>
+                    <a href="#"
+                       style="color: #e74c3c; font-size: 0.9rem; font-weight: 600; display: block; margin-bottom: 25px; text-decoration: none;">
+                        الصفحة الشخصية <i class="fa-solid fa-chevron-left" style="font-size: 0.7rem;"></i>
+                    </a>
 
-                    <div class="description">
-                        <h3>تفاصيل العقار</h3>
-                        <p>
-                            استمتع بالعيش في هذا العقار المميز الذي يجمع بين الرفاهية والتصميم العصري.
-                            يتميز العقار بموقع استراتيجي في ${property.location}، بالقرب من جميع الخدمات الحيوية.
-                            التشطيبات عالية الجودة، والنوافذ الواسعة توفر إضاءة طبيعية رائعة طوال اليوم.
-                            <br><br>
-                            مناسب جداً للعائلات الباحثة عن الهدوء والخصوصية والمساحات الواسعة. لا تفوت فرصة امتلاك منزل أحلامك اليوم.
-                        </p>
-                    </div>
-
-                    <div class="action-area">
-                        <button class="btn btn-primary" onclick="addToCartDetails(${property.id})">
-                            <i class="fa-solid fa-cart-shopping"></i> إضافة للسلة
-                        </button>
-                        <a href="https://wa.me/?text=أنا مهتم بهذا العقار: ${property.title}" target="_blank" class="btn btn-outline" style="background:#25d366; color:white; border-color:#25d366;">
-                            <i class="fa-brands fa-whatsapp"></i> تواصل واتساب
+                    <div class="contact-btns">
+                        <a href="#" class="btn-call"
+                           style="background: #fadbd8; color: #c0392b; border: 1px solid #fadbd8; justify-content: center; font-weight: 700; border-radius: 8px;">
+                            <i class="fa-solid fa-phone" style="transform: scaleX(-1);"></i> إظهار الرقم
+                        </a>
+                        <a href="https://wa.me/" class="btn-whatsapp-full"
+                           style="background: #e8f8f5; color: #1e8449; border: 1px solid #e8f8f5; justify-content: center; font-weight: 700; border-radius: 8px;">
+                            <i class="fa-brands fa-whatsapp"></i> واتساب
                         </a>
                     </div>
                 </div>
-            `;
-        }
 
-        // Add to Cart Logic
-        function addToCartDetails(id) {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            if (cart.some(item => item.id === id)) {
-                alert('هذا العقار موجود بالفعل في السلة');
-            } else {
-                cart.push(property);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                alert('تمت إضافة العقار للسلة بنجاح');
-                window.location.href = 'cart.html';
+                <!-- Safety Card -->
+                <div class="content-card" style="padding: 25px;">
+                    <h4 style="margin-bottom: 15px; font-size: 1.1rem; color: #333; font-weight: 700;">سلامتك تهمنا</h4>
+                    <ul class="safety-tips" style="padding: 0; line-height: 1.6;">
+                        <li><i class="fa-solid fa-check"></i> لا تقم بإرسال مبالغ مالية قبل المعاينة</li>
+                        <li><i class="fa-solid fa-check"></i> عاين العقار بنفسك</li>
+                        <li><i class="fa-solid fa-check"></i> تأكد من صحة المستندات القانونية</li>
+                    </ul>
+                    <a href="#"
+                       style="color: #3498db; font-size: 0.85rem; text-decoration: underline; display: block; margin-top: 10px;">
+                        عرض
+                        كل النصائح
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>السكن الفاخر</h3>
+                <p>منصتك الأولى للبحث عن العقارات الفاخرة والمتميزة.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul>
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="index.html#featured">العقارات</a></li>
+                    <li><a href="#">من نحن</a></li>
+                    <li><a href="#">اتصل بنا</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>تواصل معنا</h3>
+                <ul style="color:#ccc;">
+                    <li><i class="fa-solid fa-phone"></i> +966 50 000 0000</li>
+                    <li><i class="fa-solid fa-envelope"></i> info@luxuryhomes.com</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 جميع الحقوق محفوظة - السكن الفاخر</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <!-- Slider Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.getElementById('sliderTrack');
+            const slides = document.querySelectorAll('.slide');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const counter = document.getElementById('slideCounter');
+
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+
+            function updateSlider() {
+                const width = track.clientWidth;
+                // Move track securely
+                track.style.transform = `translateX(\${currentIndex * width}px)`; // RTL: Positive X moves Right (showing left content? No.)
+                // Standard CSS transform logic:
+                // We want to show the Nth slide.
+                // In RTL, the flow is Right to Left. slide[0] is at Rightmost. slide[1] is to its left.
+                // To show slide[1], we need to move text/content to the Right?
+                // Let's rely on standard logic:
+                // In RTL mode, flex-direction is row (starts right).
+                // So slide 0 is at 0px. Slide 1 is at -width (visually left)?
+                // Actually browsers handle transform X directions differently in RTL sometimes.
+                // Let's test standard negative standard logic first, or just check standard.
+                // If dir=rtl, `translateX(100px)` moves element to the Left? No, usually follows axis.
+                // Let's assume standard behavior: slide[0] is at offset 0.
+                // To show slide[1], we need to shift the track so slide[1] is in view.
+                // If items stack R->L: [Slide 0] [Slide 1] [Slide 2] ...
+                // To see Slide 1, we move the track to the Right by 1 width.
+
+                track.style.transform = `translateX(\${currentIndex * 100}%)`;
+
+                counter.textContent = `\${currentIndex + 1} / \${totalSlides}`;
             }
-        }
 
-        // Mobile Menu
-        const menuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (menuBtn) {
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('active');
+            nextBtn.addEventListener('click', () => {
+                // Next image (visually to the left, index + 1)
+                currentIndex = (currentIndex + 1) % totalSlides;
+                updateSlider();
             });
-        }
+
+            prevBtn.addEventListener('click', () => {
+                // Prev image
+                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                updateSlider();
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', updateSlider);
+        });
     </script>
 </body>
 
