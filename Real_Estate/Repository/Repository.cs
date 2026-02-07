@@ -55,7 +55,7 @@ namespace Real_Estate.Repository
             }
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? expression = null, Expression<Func<TEntity, object>>[]? include = null, bool tracking = true, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? expression = null, Expression<Func<TEntity, object>>[]? include = default, bool tracking = true, CancellationToken cancellationToken = default)
         {
             var query = _dbSet.AsQueryable();
             if(expression is not null)
@@ -68,9 +68,9 @@ namespace Real_Estate.Repository
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>>? expression = null, Expression<Func<TEntity, object>>[]? include = null, bool tracking = true, CancellationToken cancellationToken = default)
+        public async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>>? expression = null, Expression<Func<TEntity, object>>[]? include = default, bool tracking = true, CancellationToken cancellationToken = default)
         {
-            return (await GetAllAsync(expression, include, tracking, cancellationToken)).FirstOrDefault();
+            return (await GetAllAsync(expression, include, tracking, cancellationToken)).FirstOrDefault()!;
         }
 
         public void Update(TEntity entity, CancellationToken cancellationToken = default)
