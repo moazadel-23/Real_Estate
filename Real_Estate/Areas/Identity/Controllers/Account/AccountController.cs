@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Models.ViewModel;
+using System.Threading.Tasks;
 
 namespace Real_Estate.Areas.Identity.Controllers.Account
 {
@@ -20,10 +21,31 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
             return View();
         }
         [HttpPost]
-        public IActionResult LogIn(LoginVM login)
+        public async Task<IActionResult> LogIn(LoginVM login)
         {
 
-            return View();
+            if(!ModelState.IsValid)
+                return View(login);
+
+            var user = await userManager.FindByEmailAsync(login.Email);
+            if (user is null)
+            {
+                ModelState.AddModelError("Email", "Invalid Email");
+                return View(login);
+            }
+
+            //user.PasswordHash == login.Password;
+            //var result = await SignInManager.PasswordSignInAsync(user, login.Password, false, false);
+            var result=userManager.CheckPasswordAsync(user, login.Password);
+            if (!result.Result)
+            {
+                ModelState.AddModelError("Password", "Invalid Password");
+                return View(login);
+            }
+
+            return RedirectToAction("index", "home", new { area = "Property" });
+
+
         }
         [HttpGet]
         public IActionResult Register()
@@ -33,6 +55,8 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
         [HttpPost]
         public IActionResult Register(RegisterVM register)
         {
+                if(!ModelState.IsValid)
+                    return View(register);
 
             return View();
         }
