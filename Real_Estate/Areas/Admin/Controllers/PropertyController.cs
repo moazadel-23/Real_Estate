@@ -37,7 +37,7 @@ namespace Real_Estate.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var property = await _propertyRepository.GetOneAsync(p => p.Id == id); // هنا الشرط
+            var property = await _propertyRepository.GetOneAsync(p => p.Id == id); 
             if (property == null)
                 return NotFound();
             return View(property);
