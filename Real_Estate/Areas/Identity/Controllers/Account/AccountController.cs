@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Models.ViewModel;
 using System.Threading.Tasks;
@@ -9,10 +10,12 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
     public class AccountController : Controller
     {
         private readonly UserManager<User> userManager;
+        private readonly IEmailSender emailSender;
 
-        public AccountController(UserManager<User> _userManager)
+        public AccountController(UserManager<User> _userManager, IEmailSender _emailSender)
         {
             userManager = _userManager;
+            emailSender = _emailSender;
         }
 
         [HttpGet]
@@ -53,11 +56,22 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
             return View();
         }
         [HttpPost]
-        public IActionResult Register(RegisterVM register)
+        public async Task<IActionResult> Register(RegisterVM register)
         {
-                if(!ModelState.IsValid)
-                    return View(register);
-
+            var emailIfExite = await userManager.FindByEmailAsync(register.Email);
+            if (emailIfExite is not null)
+                return View();
+            var user = new User
+            {
+                FullName = register.Name,
+                Email = register.Email,
+                UserName = register.Name
+            };
+            var result = await userManager.CreateAsync(user, register.Password);
+            if (!result.Succeeded)
+                return View();
+            var link = Url.Action(nameof(VirfeyEmail), "Account", new { userId = user.Id });
+            await emailSender.SendEmailAsync(register.Email, "Confirm Your Email", $"<h1>To Confirm Email Click<a href='{link}'> Here</a></h1>");
             return View();
         }
     }
