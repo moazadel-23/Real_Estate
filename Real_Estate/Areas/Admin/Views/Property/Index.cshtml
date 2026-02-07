@@ -1,6 +1,4 @@
 ﻿@model IEnumerable<Real_Estate.Models.Property>
-@using Real_Estate.Models
-
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -283,14 +281,19 @@
                     {
                         <div class="property-card">
                             <div class="card-image">
-                                <button class="card-fav-btn fav-btn-@item.Id" onclick="toggleFavorite(@item.Id, event)">
+                                <button class="card-fav-btn fav-btn-@item.Id"
+                                        onclick="toggleFavorite(@item.Id, event)">
                                     <i class="fa-solid fa-heart"></i>
                                 </button>
-                                <a href="property-details.html?id=@item.Id">
+
+                                <a href="Admin/Property/Details?id=@item.Id">
                                     <span class="card-badge">شقة</span>
-                                    <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80" alt="@item.Title">
+
+                                    <img src="/img/@item.MainImg"
+                                         alt="Property Image" />
                                 </a>
                             </div>
+
                             <div class="card-content">
                                 <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
                                     <div class="card-price" style="font-size:1.2rem;font-weight:bold;color:var(--accent-color);">@item.Price</div>

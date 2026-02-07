@@ -140,7 +140,7 @@
             transition: margin-right 0.3s ease;
         }
 
-       
+
 
         /* --- Form specific additional styles --- */
         .form-section {
@@ -151,6 +151,12 @@
             margin-top: 20px;
             position: relative;
             z-index: 10;
+            max-width: 600px;
+            /* Reduced width */
+            margin-left: auto;
+            /* Centering */
+            margin-right: auto;
+            /* Centering */
         }
 
         .upload-area {
@@ -187,37 +193,83 @@
             margin-top: 20px;
         }
 
-     
-            .admin-sidebar {
-                transform: translateX(100%);
-            }
 
-            .main-content {
-                margin-right: 0;
-            }
+        .admin-sidebar {
+            transform: translateX(100%);
+        }
 
-            .admin-sidebar.active {
-                transform: translateX(0);
-            }
+        .main-content {
+            margin-right: 0;
+        }
 
-            .sidebar-toggle-btn {
+        .admin-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-toggle-btn {
+            display: block;
+        }
+
+
+
+        .row {
+            grid-template-columns: 1fr;
+        }
+
+
+        .gallery-preview img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        /* Enhanced Form Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
                 display: block;
+                margin-bottom: 8px;
+                font-weight: 700;
+                color: var(--primary-color);
+                /* Stronger color */
+                font-size: 0.95rem;
             }
-        
 
-      
-            .row {
-                grid-template-columns: 1fr;
-            }
-        
-
-            .gallery-preview img {
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
                 width: 100%;
-                height: 100px;
-                object-fit: cover;
+                padding: 8px 12px;
+                /* Smaller size */
+                border: 2px solid #ccc;
+                /* Stronger border */
                 border-radius: 8px;
-                border: 1px solid #ddd;
+                /* Nice design */
+                background-color: #f8f9fa;
+                font-size: 0.9rem;
+                color: #333;
+                font-family: inherit;
+                transition: all 0.3s ease;
             }
+
+                .form-group input:focus,
+                .form-group select:focus,
+                .form-group textarea:focus {
+                    border-color: var(--accent-color);
+                    background-color: #fff;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                    outline: none;
+                }
+
+                .form-group input:hover,
+                .form-group select:hover,
+                .form-group textarea:hover {
+                    border-color: #999;
+                }
     </style>
 </head>
 
@@ -324,9 +376,7 @@
             <div class="row">
                 <div class="form-group">
                     <label>نوع العقار</label>
-                    <select asp-for="Type"
-                            asp-items="Html.GetEnumSelectList<PropertyType>()"
-                            class="form-control">
+                    <select asp-for="Type" asp-items="Html.GetEnumSelectList<PropertyType>()" class="form-control">
                         <option value="">-- اختر نوع العقار --</option>
                     </select>
                 </div>
@@ -336,24 +386,42 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div class="form-group">
-                    <label>المساحة (م²)</label>
-                    <input type="number" id="area" placeholder="0" required>
-                </div>
-                <div class="form-group">
-                    <label>المدينة</label>
-                    <select id="propertyCity" required>
-                        <option value="">اختر المدينة</option>
-                    </select>
-                </div>
+
+            <div class="form-group">
+                <label>المساحة (م²)</label>
+                <input type="number" id="area" placeholder="0" required>
             </div>
 
             <div class="row">
                 <div class="form-group">
-                    <label>الشارع</label>
-                    <select id="propertyStreet" required>
-                        <option value="">اختر الشارع</option>
+                    <label>المدينه</label>
+                    <select name="LocationId" class="form-control" required>
+                        <option value="">اختر المدينة</option>
+                        @if (ViewBag.Locations != null)
+                        {
+                            foreach (var item in ViewBag.Locations)
+                            {
+                                <option value="@item.Id">@item.City</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label>المنطقة</label>
+                    <select name="LocationId" class="form-control" required>
+                        <option value="">اختر المنطقة</option>
+                        @if (ViewBag.Locations != null)
+                        {
+                            foreach (var item in ViewBag.Locations)
+                            {
+                                <option value="@item.Id">@item.Area</option>
+                            }
+                        }
                     </select>
                 </div>
             </div>
@@ -616,11 +684,7 @@
 
         populateLocations();
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('تم إضافة العقار بنجاح! (واجهة فقط)');
-            window.location.href = 'index.html';
-        });
+
     </script>
 </body>
 

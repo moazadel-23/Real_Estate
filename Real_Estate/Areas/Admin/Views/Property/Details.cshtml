@@ -1,0 +1,261 @@
+﻿@model Real_Estate.Models.Property
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل العقار - السكن الفاخر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .details-hero {
+            height: 60vh;
+            position: relative;
+            background-color: #eee;
+            margin-top: 80px;
+        }
+
+            .details-hero img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        .details-container {
+            background: white;
+            border-radius: 20px 20px 0 0;
+            padding: 40px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .prop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .prop-title h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .prop-price {
+            font-size: 2rem;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .prop-specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .spec-item i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .description {
+            margin-bottom: 40px;
+        }
+
+            .description h3 {
+                margin-bottom: 15px;
+                color: var(--primary-color);
+            }
+
+            .description p {
+                color: var(--light-text);
+                line-height: 1.8;
+            }
+
+        .action-area {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+      
+            .details-hero {
+                height: 40vh;
+            }
+
+            .details-container {
+                padding: 25px;
+                margin-top: -30px;
+            }
+
+            .prop-header {
+                flex-direction: column;
+            }
+
+            .prop-price {
+                font-size: 1.8rem;
+            }
+        
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <i class="fa-solid fa-city"></i> السكن<span>الفاخر</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="index.html#featured">العقارات</a></li>
+            </ul>
+
+            <!-- Mobile Menu Toggle -->
+            <div class="menu-toggle" id="mobileMenuBtn">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="index.html#featured">العقارات</a></li>
+            <li><a href="cart.html">السلة</a></li>
+            <li><a href="login.html">دخول</a></li>
+        </ul>
+    </div>
+
+    <div id="propertyContent">
+        <!-- Content injected via JS -->
+    </div>
+
+    <script>
+        // Data Loading
+        const urlParams = new URLSearchParams(window.location.search);
+        const propId = parseInt(urlParams.get('id')); // ID might be small int or timestamp
+
+        let allProperties = JSON.parse(localStorage.getItem('properties') || '[]');
+
+        // If properties not in local storage (first visit direct link), mock data needed or fail gracefully
+        if (allProperties.length === 0) {
+            // Fallback for demo if direct access without index.html load first
+            window.location.href = 'index.html';
+        }
+
+        const property = allProperties.find(p => p.id === propId);
+
+        if (!property) {
+            document.body.innerHTML = '<div style="text-align:center; padding:100px;"><h1>عذراً، العقار غير موجود</h1><a href="index.html">العودة للرئيسية</a></div>';
+        } else {
+            document.getElementById('propertyContent').innerHTML = `
+                <div class="details-hero">
+                    <img src="${/img/@Model.MainImg}" alt="${@Model.Title}">
+                </div>
+
+                <div class="details-container fade-in">
+                    <div class="prop-header">
+                        <div class="prop-title">
+                            <span class="card-badge" style="position:static; display:inline-block; margin-bottom:10px; background-color: var(--accent-color); color:white; padding:5px 15px; border-radius:50px;">${@Model.Type === 'villa' ? 'فيلا' : 'شقة'}</span>
+                            <h1>${@Model.Title}</h1>
+                            <div style="color: var(--light-text); display:flex; align-items:center; gap:5px;">
+                                <i class="fa-solid fa-location-dot"></i> ${property.location}
+                            </div>
+                        </div>
+                        <div class="prop-price">${property.price}</div>
+                    </div>
+
+                    <div class="prop-specs">
+                        <div class="spec-item">
+                            <i class="fa-solid fa-ruler-combined"></i>
+                            <span>${property.area} م²</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-bed"></i>
+                            <span>${property.beds} غرف</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-bath"></i>
+                            <span>${property.baths} حمامات</span>
+                        </div>
+                        <div class="spec-item">
+                            <i class="fa-solid fa-car"></i>
+                            <span>موقف سيارة</span>
+                        </div>
+                    </div>
+
+                    <div class="description">
+                        <h3>تفاصيل العقار</h3>
+                        <p>
+                            استمتع بالعيش في هذا العقار المميز الذي يجمع بين الرفاهية والتصميم العصري.
+                            يتميز العقار بموقع استراتيجي في ${property.location}، بالقرب من جميع الخدمات الحيوية.
+                            التشطيبات عالية الجودة، والنوافذ الواسعة توفر إضاءة طبيعية رائعة طوال اليوم.
+                            <br><br>
+                            مناسب جداً للعائلات الباحثة عن الهدوء والخصوصية والمساحات الواسعة. لا تفوت فرصة امتلاك منزل أحلامك اليوم.
+                        </p>
+                    </div>
+
+                    <div class="action-area">
+                        <button class="btn btn-primary" onclick="addToCartDetails(${property.id})">
+                            <i class="fa-solid fa-cart-shopping"></i> إضافة للسلة
+                        </button>
+                        <a href="https://wa.me/?text=أنا مهتم بهذا العقار: ${property.title}" target="_blank" class="btn btn-outline" style="background:#25d366; color:white; border-color:#25d366;">
+                            <i class="fa-brands fa-whatsapp"></i> تواصل واتساب
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Add to Cart Logic
+        function addToCartDetails(id) {
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            if (cart.some(item => item.id === id)) {
+                alert('هذا العقار موجود بالفعل في السلة');
+            } else {
+                cart.push(property);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                alert('تمت إضافة العقار للسلة بنجاح');
+                window.location.href = 'cart.html';
+            }
+        }
+
+        // Mobile Menu
+        const menuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+
+</html>

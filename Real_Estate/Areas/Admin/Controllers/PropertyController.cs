@@ -34,6 +34,13 @@ namespace Real_Estate.Areas.Admin.Controllers
             return View(properties.AsEnumerable());
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Details()
+        {
+            var properties = await _propertyRepository.GetOneAsync();
+            return View();
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> Create(CancellationToken cancellationToken)
