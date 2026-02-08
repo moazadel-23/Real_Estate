@@ -288,6 +288,18 @@
                         <i class="fa-solid fa-location-dot" style="margin-left: 5px;"></i>
                         @Model.Location.City
                     </div> *@
+                    <!-- Action Buttons -->
+                    <div class="action-buttons" style="display: flex; gap: 15px;">
+                        <button class="btn btn-primary"
+                                style="width: 200px; display: flex; align-items: center; justify-content: center; gap: 5px; background-color: #008bff; color: white; border: none;">
+                            <i class="fa-solid fa-cart-shopping"></i> إضافة للسلة
+                        </button>
+                        <button class="btn btn-primary"
+                                style="width: 200px; display: flex; align-items: center; justify-content: center; gap: 5px; background-color: #007bff; color: white; border: none;">
+                            <i class="fa-solid fa-money-bill-wave"></i> اشتري الآن
+                        </button>
+                    </div>
+
 
                     <div style="color: #999; font-size: 0.85rem; margin-bottom: 20px;">
                         منذ @(DateTime.Now.AddDays(-3).ToString("d")) 
