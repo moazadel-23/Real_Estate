@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إضافة عقار جديد - السكن الفاخر</title>
+    <title>تعديل العقار - السكن الفاخر</title>
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -310,9 +310,8 @@
                         </a>
                     </li>
                     <li class="submenu-item">
-                        <a href="add-property.html" class="submenu-link"
-                           style="color: var(--accent-color); background: rgba(255, 255, 255, 0.05);">
-                            <i class="fa-solid fa-plus-circle"></i> إضافة عقار
+                        <a href="add-property.html" class="submenu-link">
+                            <i class="fa-solid fa-plus-circle"></i> تعديل عقار
                         </a>
                     </li>
                     <li class="submenu-item">
@@ -329,7 +328,7 @@
             </li>
 
             <!-- Other Links -->
-          
+
             <li class="menu-item">
                 <a href="#" class="menu-link">
                     <span><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</span>
@@ -341,74 +340,184 @@
     <!-- Main Content Area -->
     <main class="main-content">
         <div class="dashboard-header" style="margin-bottom: 20px;">
-            <h2 style="color: var(--primary-color);">إضافة عقار جديد</h2>
-            <p style="color: #666;">أدخل تفاصيل عقارك ليصل إلى آلاف المهتمين</p>
+            <h2 style="color: var(--primary-color);">تعديل بيانات العقار</h2>
+            <p style="color: #666;">قم بتحديث تفاصيل العقار للحفاظ على دقة المعلومات</p>
         </div>
 
         <!-- Form Container -->
-        <form asp-action="Create"
-              asp-controller="Property"
-              method="post"
-              enctype="multipart/form-data"
+        <form asp-action="Edit" asp-controller="Property" method="post" enctype="multipart/form-data"
               class="form-section fade-in delay-1">
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="MainImg" />
 
 
             <h3 style="margin-bottom: 25px; color: var(--primary-color);">بيانات العقار الأساسية</h3>
 
-            <div class="upload-area" id="imageUpload">
-                <i class="fa-solid fa-cloud-upload-alt upload-icon"></i>
-                <h3>الصورة الرئيسية للعقار</h3>
-                <p>اسحب الصورة هنا أو انقر للاختيار</p>
-                <<input type="file"
-                        hidden
-                        id="fileInput"
-                        name="Img"
-                        accept="image/*">
+            <div class="upload-area" id="imageUpload" style="position: relative; cursor: pointer;">
+                <input type="file" hidden id="fileInput" name="Img" accept="image/*">
 
+                <!-- لو فيه صورة موجودة -->
+                @if (!string.IsNullOrEmpty(Model.MainImg))
+                {
+                    <img id="previewImg" src="~/img/@Model.MainImg" width="150"
+                         style="margin-top:10px; border-radius:8px;" />
+                }
+                else
+                {
+                    <p style="color:#999;">اضغط هنا لاختيار الصورة الرئيسية</p>
+                }
             </div>
 
-            <div class="upload-area" id="galleryUpload">
-                <i class="fa-regular fa-images upload-icon"></i>
+            <script>
+                const uploadArea = document.getElementById('imageUpload');
+                const fileInput = document.getElementById('fileInput');
+                const previewImg = document.getElementById('previewImg');
+
+                // افتح نافذة اختيار الصورة عند الضغط على الـ div
+                uploadArea.addEventListener('click', () => fileInput.click());
+
+                // عرض الصورة قبل رفعها
+                fileInput.addEventListener('change', function () {
+                    const file = this.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            if (previewImg) {
+                                previewImg.src = e.target.result;
+                            } else {
+                                const img = document.createElement('img');
+                                img.id = 'previewImg';
+                                img.src = e.target.result;
+                                img.width = 150;
+                                img.style.marginTop = '10px';
+                                img.style.borderRadius = '8px';
+                                uploadArea.appendChild(img);
+                            }
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                });
+            </script>
+
+            <div class="upload-area" id="galleryUpload" style="position: relative; cursor: pointer;">
+                <i class="fa-regular fa-images upload-icon" style="font-size: 3rem; color:#ddd;"></i>
                 <h3>صور إضافية (المعرض)</h3>
                 <p>يمكنك اختيار مجموعة صور معاً</p>
-                <input type="file"
-                       hidden
-                       id="galleryInput"
-                       name="SubImgFiles"
-                       accept="image/*"
-                       multiple>
+
+                <input type="file" hidden id="galleryInput" name="SubImgFiles" accept="image/*" multiple>
 
                 <div class="gallery-preview" id="galleryPreview"></div>
             </div>
+
+            <script>
+                const galleryUpload = document.getElementById('galleryUpload');
+                const galleryInput = document.getElementById('galleryInput');
+                const galleryPreview = document.getElementById('galleryPreview');
+                let uploadedGalleryFiles = [];
+
+                // فتح نافذة اختيار الصور عند الضغط على الـ div
+                galleryUpload.addEventListener('click', () => {
+                    galleryInput.click();
+                });
+
+                // معالجة الصور المختارة
+                galleryInput.addEventListener('change', function () {
+                    const newFiles = Array.from(this.files);
+                    if (newFiles.length === 0) return;
+
+                    // إضافة الملفات الجديدة للـ array
+                    uploadedGalleryFiles = [...uploadedGalleryFiles, ...newFiles];
+
+                    renderGallery();
+                    this.value = ''; // إعادة تعيين input
+                });
+
+                function renderGallery() {
+                    galleryPreview.innerHTML = ''; // مسح الصور القديمة
+
+                    if (uploadedGalleryFiles.length > 0) {
+                        galleryUpload.querySelector('h3').textContent = `${uploadedGalleryFiles.length} صور مختارة`;
+                        galleryUpload.querySelector('p').style.display = 'none';
+                        galleryUpload.querySelector('.upload-icon').style.display = 'none';
+                    } else {
+                        galleryUpload.querySelector('h3').textContent = 'صور إضافية (المعرض)';
+                        galleryUpload.querySelector('p').style.display = 'block';
+                        galleryUpload.querySelector('.upload-icon').style.display = 'block';
+                    }
+
+                    uploadedGalleryFiles.forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const div = document.createElement('div');
+                            div.style.position = 'relative';
+                            div.style.display = 'inline-block';
+                            div.style.margin = '5px';
+
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.width = '100px';
+                            img.style.height = '100px';
+                            img.style.objectFit = 'cover';
+                            img.style.borderRadius = '8px';
+                            img.style.border = '1px solid #ddd';
+
+                            const btn = document.createElement('button');
+                            btn.innerHTML = '<i class="fa-solid fa-times"></i>';
+                            btn.style.position = 'absolute';
+                            btn.style.top = '-5px';
+                            btn.style.right = '-5px';
+                            btn.style.background = '#ff4757';
+                            btn.style.color = 'white';
+                            btn.style.border = 'none';
+                            btn.style.borderRadius = '50%';
+                            btn.style.width = '20px';
+                            btn.style.height = '20px';
+                            btn.style.cursor = 'pointer';
+                            btn.onclick = (evt) => {
+                                evt.stopPropagation();
+                                uploadedGalleryFiles.splice(index, 1);
+                                renderGallery();
+                            };
+
+                            div.appendChild(img);
+                            div.appendChild(btn);
+                            galleryPreview.appendChild(div);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+            </script>
+
             <div class="form-group">
                 <label>عنوان الإعلان</label>
-                <input asp-for="Title" class="form-control"
-                       placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" />
+                <input asp-for="@Model.Title" class="form-control" placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" />
             </div>
 
-            <select asp-for="Type"
-                    asp-items="Html.GetEnumSelectList<PropertyType>()"
-                    class="form-control"
-                    required>
-            </select>
+            <div class="form-group">
+                <label>النوع</label>
+                <select asp-for="@Model.Type" asp-items="Html.GetEnumSelectList<PropertyType>()" class="form-control"
+                        required>
+                </select>
+            </div>
 
-              
+
             <div class="row">
                 <div class="form-group">
                     <label>السعر (جنية مصرى)</label>
-                    <input asp-for="Price" type="number" class="form-control" />
+                    <input asp-for="@Model.Price" type="number" class="form-control" />
                 </div>
             </div>
 
 
             <div class="form-group">
                 <label>المساحة (م²)</label>
-                <input asp-for="AreaSize" type="number" class="form-control" />
+                <input asp-for="@Model.AreaSize" type="number" class="form-control" />
             </div>
 
             <div class="form-group">
                 <label>الدور</label>
-                <input asp-for="Floor" type="number" class="form-control" />
+                <input asp-for="@Model.Floor" type="number" class="form-control" />
             </div>
 
             <div class="row">
@@ -424,30 +533,29 @@
 
                 </div>
             </div>
-@* 
+            @*
             <div class="form-group">
                 <label>المنطقة</label>
-                <input asp-for="Area" class="form-control"
-                       placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" />
+                <input asp-for="Area" class="form-control" placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" />
             </div>
- *@
-@* 
+            *@
+            @*
             <div class="form-group">
                 <label>عنوان الإعلان</label>
                 <input type="text" id="Street" placeholder="" required>
             </div> *@
 
-           @*  <div class="row">
+            @* <div class="row">
                 <div class="form-group">
                     <label>المنطقة</label>
                     <select name="LocationId" class="form-control" required>
                         <option value="">اختر المنطقة</option>
                         @if (ViewBag.Locations != null)
                         {
-                            foreach (var item in ViewBag.Locations)
-                            {
-                                <option value="@item.Id">@item.Area</option>
-                            }
+                        foreach (var item in ViewBag.Locations)
+                        {
+                        <option value="@item.Id">@item.Area</option>
+                        }
                         }
                     </select>
                 </div>
@@ -467,25 +575,25 @@
                     <div id="miniMap"
                          style="height: 250px; width: 100%; margin-top: 15px; border-radius: 10px; z-index: 1;"></div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group">
-                    <label>عدد الغرف</label>
-                    <input asp-for="Bedrooms" type="number" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label>عدد دورات المياه</label>
-                    <input asp-for="Bathrooms" type="number" class="form-control" />
-                </div>
-            </div>
 
-            <div class="form-group">
-                <label>وصف إضافي</label>
-                <textarea asp-for="Description" rows="5"
-                          class="form-control"></textarea>
-            </div>
 
-            <button type="submit" class="btn btn-primary full-width">نشر الإعلان</button>
+                <div class="row">
+                    <div class="form-group">
+                        <label>عدد الغرف</label>
+                        <input asp-for="Bedrooms" type="number" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>عدد دورات المياه</label>
+                        <input asp-for="Bathrooms" type="number" class="form-control" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>وصف إضافي</label>
+                    <textarea asp-for="Description" rows="5" class="form-control"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary full-width">حفظ التعديلات</button>
         </form>
     </main>
 

@@ -2,11 +2,12 @@
 {
     public enum PropertyType
     {
-        Apartment,
-        Villa,
-        Office,
-        Palace,
-        Chalet
+        None = 0,
+        Apartment = 1,
+        Villa = 2,
+        Office = 3,
+        Palace = 4,
+        Chalet = 5
     }
     public class Property : BaseEntity
     {

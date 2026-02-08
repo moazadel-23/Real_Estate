@@ -136,12 +136,15 @@
                             </td>
                             <td>@item.Type</td>
                             <td>
-                                <a href="edit-property.html" class="action-btn edit-btn">
+                                <a href="Edit/@item.Id" class="action-btn edit-btn">
                                     <i class="fa-solid fa-pen"></i> تعديل
                                 </a>
-                                <button class="action-btn delete-btn" style="border:none; cursor:pointer;">
-                                    <i class="fa-solid fa-trash"></i> حذف
-                                </button>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                        <button class="action-btn delete-btn" style="border:none; cursor:pointer;">
+                                            <i class="fa-solid fa-trash"></i> حذف
+                                        </button>
+                                    </form>
+
                             </td>
                         </tr>
                         }
@@ -157,17 +160,7 @@
             </div>
         </div>
 
-        <script>
-            // No Logic needed for just view
-            const deleteBtns = document.querySelectorAll('.delete-btn');
-            deleteBtns.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    if (confirm('هل تريد حذف العقار؟ (محاكاة)')) {
-                        this.closest('tr').remove();
-                    }
-                });
-            });
-        </script>
+       
     </body>
 
     </html>
