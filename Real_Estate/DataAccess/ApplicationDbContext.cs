@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Real_Estate.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-
-namespace Real_Estate.DataAccess
+﻿namespace Real_Estate.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
@@ -11,6 +7,7 @@ namespace Real_Estate.DataAccess
         DbSet<Location> Locations { get; set; }
         DbSet<Favorite> favorites { get; set; }
         DbSet<User> users { get; set; }
+        DbSet<UserOtp> UserOtps { get; set; }
 
 
 
