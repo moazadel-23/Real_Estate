@@ -124,19 +124,19 @@
                 <p>سجل دخولك للمتابعة</p>
             </div>
 
-            <form action="index.html">
+            <form method="post">
                 <div class="form-group">
-                    <input type="email" placeholder="البريد الإلكتروني" required>
+                    <input type="email" name="Email" placeholder="البريد الإلكتروني" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder="كلمة المرور" required>
+                    <input type="password" name="Password" placeholder="كلمة المرور" required>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.9rem;">
                     <label style="color: var(--light-text); cursor: pointer;">
                         <input type="checkbox"> تذكرني
                     </label>
-                    <a href="forgot-password.html" style="color: var(--primary-color);">نسيت كلمة المرور؟</a>
+                    <a href="/Identity/Account/ForgetPassword" style="color: var(--primary-color);">نسيت كلمة المرور؟</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary full-width">تسجيل الدخول</button>
@@ -151,7 +151,7 @@
             </div>
 
             <div class="auth-footer">
-                ليس لديك حساب؟ <a href="register.html">إنشاء حساب جديد</a>
+                ليس لديك حساب؟ <a href="/Identity/Account/Register">إنشاء حساب جديد</a>
             </div>
         </div>
     </div>
