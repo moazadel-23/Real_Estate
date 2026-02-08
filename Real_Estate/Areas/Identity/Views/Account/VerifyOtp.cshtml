@@ -1,3 +1,5 @@
+﻿
+@model User
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -36,16 +38,16 @@
             margin-bottom: 25px;
         }
 
-        .auth-header h2 {
-            color: var(--primary-color);
-            margin-bottom: 5px;
-            font-size: 1.5rem;
-        }
+            .auth-header h2 {
+                color: var(--primary-color);
+                margin-bottom: 5px;
+                font-size: 1.5rem;
+            }
 
-        .auth-header p {
-            font-size: 0.9rem;
-            color: var(--light-text);
-        }
+            .auth-header p {
+                font-size: 0.9rem;
+                color: var(--light-text);
+            }
 
         .btn-primary {
             padding: 10px;
@@ -64,10 +66,10 @@
             color: var(--light-text);
         }
 
-        .auth-footer a {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
+            .auth-footer a {
+                color: var(--accent-color);
+                font-weight: 600;
+            }
 
         .otp-inputs {
             display: flex;
@@ -78,21 +80,21 @@
             /* To keep boxes ordered left-to-right or valid for numbers */
         }
 
-        .otp-inputs input {
-            width: 50px;
-            height: 50px;
-            text-align: center;
-            font-size: 1.5rem;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            outline: none;
-            transition: var(--transition);
-        }
+            .otp-inputs input {
+                width: 50px;
+                height: 50px;
+                text-align: center;
+                font-size: 1.5rem;
+                border: 1px solid #ddd;
+                border-radius: 10px;
+                outline: none;
+                transition: var(--transition);
+            }
 
-        .otp-inputs input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 5px rgba(197, 164, 126, 0.5);
-        }
+                .otp-inputs input:focus {
+                    border-color: var(--accent-color);
+                    box-shadow: 0 0 5px rgba(197, 164, 126, 0.5);
+                }
     </style>
 </head>
 
@@ -107,28 +109,32 @@
                 <p>أدخل الرمز المكون من 4 أرقام الذي تم إرساله إلى بريدك</p>
             </div>
 
-            <form action="reset-password.html"> <!-- Redirect to home or reset password page -->
+            <form method="post">
+                <input type="hidden" name="userId" value="@Model.Id" />
+                <!-- Redirect to home or reset password page -->
                 <div class="otp-inputs">
                     <input type="text" maxlength="1" pattern="[0-9]" required
-                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length >= 1) this.nextElementSibling?.focus()">
+                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length >= 1) this.nextElementSibling?.focus()">
                     <input type="text" maxlength="1" pattern="[0-9]" required
-                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length >= 1) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus()">
+                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length >= 1) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus()">
                     <input type="text" maxlength="1" pattern="[0-9]" required
-                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length >= 1) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus()">
+                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length >= 1) this.nextElementSibling?.focus(); else this.previousElementSibling?.focus()">
                     <input type="text" maxlength="1" pattern="[0-9]" required
-                        oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length == 0) this.previousElementSibling?.focus()">
+                           oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length == 0) this.previousElementSibling?.focus()">
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <p style="font-size: 0.9rem; color: #777;">لم يصلك الرمز؟ <a href="#"
-                            style="color: var(--primary-color);">إعادة الإرسال</a></p>
+                    <p style="font-size: 0.9rem; color: #777;">
+                        لم يصلك الرمز؟ <a href="#"
+                                          style="color: var(--primary-color);">إعادة الإرسال</a>
+                    </p>
                 </div>
 
                 <button type="submit" class="btn btn-primary full-width">تحقق</button>
             </form>
 
             <div class="auth-footer">
-                <a href="login.html">العودة لتسجيل الدخول</a>
+                <a href="/Identity/Account/LogIn">العودة لتسجيل الدخول</a>
             </div>
         </div>
     </div>

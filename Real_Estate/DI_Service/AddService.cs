@@ -16,6 +16,7 @@ namespace Real_Estate.DI_Service
             }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddScoped<IRepository<Property>, Repository<Property>>();
             services.AddScoped<IRepository<Location>, Repository<Location>>();
+            services.AddScoped<IRepository<UserOtp>, Repository<UserOtp>>();
             services.AddTransient<IEmailSender, EmailSender>();
 
         }
