@@ -83,6 +83,18 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
                 return View();
             return RedirectToAction(nameof(LogIn));
         }
-
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ForgetPassword(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user is null)
+                return View();
+            return View();
+        }
     }
 }
