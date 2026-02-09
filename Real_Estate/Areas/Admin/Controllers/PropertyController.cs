@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Repository;
+using System.Linq.Expressions;
 
 
 namespace Real_Estate.Areas.Admin.Controllers
@@ -36,11 +37,17 @@ namespace Real_Estate.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var property = await _propertyRepository.GetOneAsync(p => p.Id == id);
-            if (property == null)
-                return NotFound();
+            var property = await _propertyRepository.GetOneAsync(
+     p => p.Id == id,
+     include: new Expression<Func<Models.Property, object>>[] { p => p.PropertySubImgs }
+ );
+
+
+            if (property == null) return NotFound();
+
             return View(property);
         }
+
 
 
         [HttpGet]
@@ -88,7 +95,7 @@ namespace Real_Estate.Areas.Admin.Controllers
                     property.PropertySubImgs = new List<PropertySubImage>();
 
                 // 2️⃣ فولدر تخزين الصور
-                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "SubImg");
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img");
                 Directory.CreateDirectory(folder);
 
                 // 3️⃣ احفظ كل صورة

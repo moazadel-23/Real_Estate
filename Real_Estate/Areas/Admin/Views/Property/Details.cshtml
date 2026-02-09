@@ -172,6 +172,22 @@
             transition: 0.3s;
         }
 
+        .property-slider {
+            overflow: hidden; /* عشان الصور اللي بره الكادر ما تظهرش */
+            position: relative;
+        }
+
+        .slider-track {
+            display: flex; /* عشان الصور تيجي جنب بعض */
+            transition: transform 0.5s ease-in-out; /* حركة التقليب السلسة */
+            width: 100%;
+        }
+
+        .slide {
+            min-width: 100%; /* كل صورة تاخد العرض الكامل */
+            box-sizing: border-box;
+        }
+
     </style>
 </head>
 
@@ -218,36 +234,31 @@
 
         <div class="main-container" style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
 
+
             <!-- Main Content (Right) -->
             <div class="details-col">
+             
 
                 <!-- Image Slider (Moved Inside Column & Made Taller) -->
                 <div class="property-slider">
                     <div class="slider-track" id="sliderTrack">
                         <!-- Slide 1 -->
                         <div class="slide">
-                            <img src="/img/@Model.MainImg" alt="View 1">
+                            <img src="@Url.Content("~/img/" + Model.MainImg)" alt="View 1">
                         </div>
-                        <!-- Slide 2 -->
-                        <div class="slide">
-                            <img src="https://images.unsplash.com/photo-1599388147239-015842823b5d?auto=format&fit=crop&w=1200&q=80"
-                                 alt="View 2">
-                        </div>
-                        <!-- Slide 3 -->
-                        <div class="slide">
-                            <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1200&q=80"
-                                 alt="View 3">
-                        </div>
-                        <!-- Slide 4 -->
-                        <div class="slide">
-                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80"
-                                 alt="View 4">
-                        </div>
-                        <!-- Slide 5 -->
-                        <div class="slide">
-                            <img src="https://images.unsplash.com/photo-1484154218962-a1c002085d2f?auto=format&fit=crop&w=1200&q=80"
-                                 alt="View 5">
-                        </div>
+
+                        <!-- Slides 2 -->
+                        @if (Model.PropertySubImgs != null && Model.PropertySubImgs.Count > 0)
+                        {
+                            foreach (var img in Model.PropertySubImgs)
+                            {
+                                <div class="slide">
+                                    <img src="@Url.Content("~/img/" + img.PropertyImgs)" alt="Property View">
+
+                                </div>
+                            }
+                        }
+
                     </div>
 
                     <!-- Controls -->
@@ -482,13 +493,14 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="/js/script.js"></script>
+
 
     <!-- Slider Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const track = document.getElementById('sliderTrack');
-            const slides = document.querySelectorAll('.slide');
+            const slides = Array.from(track.children);
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
             const counter = document.getElementById('slideCounter');
@@ -497,53 +509,39 @@
             const totalSlides = slides.length;
 
             function updateSlider() {
-                const width = track.clientWidth;
-                // Move track securely
-                track.style.transform = `translateX(\${currentIndex * width}px)`; // RTL: Positive X moves Right (showing left content? No.)
-                // Standard CSS transform logic:
-                // We want to show the Nth slide.
-                // In RTL, the flow is Right to Left. slide[0] is at Rightmost. slide[1] is to its left.
-                // To show slide[1], we need to move text/content to the Right?
-                // Let's rely on standard logic:
-                // In RTL mode, flex-direction is row (starts right).
-                // So slide 0 is at 0px. Slide 1 is at -width (visually left)?
-                // Actually browsers handle transform X directions differently in RTL sometimes.
-                // Let's test standard negative standard logic first, or just check standard.
-                // If dir=rtl, `translateX(100px)` moves element to the Left? No, usually follows axis.
-                // Let's assume standard behavior: slide[0] is at offset 0.
-                // To show slide[1], we need to shift the track so slide[1] is in view.
-                // If items stack R->L: [Slide 0] [Slide 1] [Slide 2] ...
-                // To see Slide 1, we move the track to the Right by 1 width.
+                // بما إن الموقع RTL، بنستخدم القيمة الموجبة للتحريك لليسار
+                // وبنستخدم النسب المئوية (%) عشان تكون متجاوبة (Responsive) أكتر
+                track.style.transform = `translateX(${currentIndex * 100}%)`;
 
-                track.style.transform = `translateX(\${currentIndex * 100}%)`;
-
-                counter.textContent = `\${currentIndex + 1} / \${totalSlides}`;
+                if (counter) {
+                    counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+                }
             }
 
             nextBtn.addEventListener('click', () => {
-                // Next image (visually to the left, index + 1)
                 currentIndex = (currentIndex + 1) % totalSlides;
                 updateSlider();
             });
 
             prevBtn.addEventListener('click', () => {
-                // Prev image
                 currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
                 updateSlider();
             });
 
-            // Handle window resize
+            // تحديث السلايدر عند تغيير حجم الشاشة لضمان الثبات
             window.addEventListener('resize', updateSlider);
 
-            // Leaflet Map Init
-            var map = L.map('propertyMap').setView([24.7136, 46.6753], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(map);
+            // --- كود الخريطة (Leaflet) ---
+            if (document.getElementById('propertyMap')) {
+                var map = L.map('propertyMap').setView([24.7136, 46.6753], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
 
-            L.marker([24.7136, 46.6753]).addTo(map)
-                .bindPopup('موقع العقار التقريبي')
-                .openPopup();
+                L.marker([24.7136, 46.6753]).addTo(map)
+                    .bindPopup('موقع العقار التقريبي')
+                    .openPopup();
+            }
         });
     </script>
 </body>
