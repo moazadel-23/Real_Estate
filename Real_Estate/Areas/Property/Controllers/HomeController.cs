@@ -24,19 +24,16 @@ namespace Real_Estate.Areas.Property.Controllers
                                 .Include(p => p.Location)
                                 .AsQueryable();
 
-            // فلتر النوع
             if (filterModel.PropertyType.HasValue)
             {
                 query = query.Where(p => p.Type == filterModel.PropertyType.Value);
             }
 
-            // فلتر السعر الأقصى
             if (filterModel.MaxPrice.HasValue)
             {
                 query = query.Where(p => p.Price <= filterModel.MaxPrice.Value);
             }
 
-            // فلتر المدينة
             if (!string.IsNullOrEmpty(filterModel.SearchLocation))
             {
                 query = query.Where(p => p.Location != null &&
