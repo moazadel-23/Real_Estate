@@ -28,8 +28,7 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
 
             var model = new ProfileVM
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                FullName = user.FullName,
                 Email = user.Email!,
                 PhoneNumber = user.PhoneNumber ?? "",
                 Address = user.Address
