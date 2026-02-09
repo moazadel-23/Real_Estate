@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -8,13 +8,13 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <Compile Remove="wwwroot\SubImg\**" />
+    <Compile Remove="Areas\Property\Views\Home\NewFolder\**" />
     <Content Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <Content Remove="wwwroot\SubImg\**" />
+    <Content Remove="Areas\Property\Views\Home\NewFolder\**" />
     <EmbeddedResource Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <EmbeddedResource Remove="wwwroot\SubImg\**" />
+    <EmbeddedResource Remove="Areas\Property\Views\Home\NewFolder\**" />
     <None Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <None Remove="wwwroot\SubImg\**" />
+    <None Remove="Areas\Property\Views\Home\NewFolder\**" />
   </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
@@ -26,9 +26,6 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10">
 		</PackageReference>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Areas\Property\Views\Home\NewFolder\" />
 	</ItemGroup>
 
 </Project>
