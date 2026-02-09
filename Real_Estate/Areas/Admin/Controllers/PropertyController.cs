@@ -83,18 +83,30 @@ namespace Real_Estate.Areas.Admin.Controllers
 
             if (SubImgFiles != null && SubImgFiles.Count > 0)
             {
-                property.MainImg = "";
+                // 1️⃣ هيّئ الـ List لو مش موجودة
+                if (property.PropertySubImgs == null)
+                    property.PropertySubImgs = new List<PropertySubImage>();
+
+                // 2️⃣ فولدر تخزين الصور
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "SubImg");
+                Directory.CreateDirectory(folder);
+
+                // 3️⃣ احفظ كل صورة
                 foreach (var file in SubImgFiles)
                 {
-                    var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
-                    Directory.CreateDirectory(folder);
                     var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
                     var filePath = Path.Combine(folder, fileName);
+
                     using var stream = System.IO.File.Create(filePath);
                     await file.CopyToAsync(stream);
-                    property.MainImg += fileName + ";";
+
+                    property.PropertySubImgs.Add(new PropertySubImage
+                    {
+                        PropertyImgs = fileName // أو ImgPath حسب اسم الخاصية عندك
+                    });
                 }
             }
+
 
             await _propertyRepository.AddAsync(property, cancellationToken);
             await _propertyRepository.CommitChange(cancellationToken);

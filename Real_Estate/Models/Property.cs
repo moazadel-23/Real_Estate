@@ -23,6 +23,7 @@
         public bool IsActive { get; set; }
         public int LocationId { get; set; }
         public Location? Location { get; set; }
+        public ICollection<Models.PropertySubImage> PropertySubImgs { get; set; } = new List<Models.PropertySubImage>();
 
     }
 }

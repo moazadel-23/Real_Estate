@@ -561,25 +561,28 @@
 
             uploadedGalleryFiles = [...uploadedGalleryFiles, ...newFiles];
             renderGallery();
-            this.value = '';
+            // this.value = '';
         });
 
         function renderGallery() {
-            galleryPreview.innerHTML = '';
+               galleryPreview.innerHTML = '';
 
-            const h3 = galleryUpload.querySelector('h3');
-            const p = galleryUpload.querySelector('p');
-            const icon = galleryUpload.querySelector('.upload-icon');
+        // --- الجزء المفقود: تحديث الـ input الفعلي بالملفات الموجودة في المصفوفة ---
+        const dataTransfer = new DataTransfer();
+        uploadedGalleryFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+        galleryInput.files = dataTransfer.files; // الآن الـ input يحتوي على كل الصور
+        // -------------------------------------------------------
 
-            if (uploadedGalleryFiles.length > 0) {
-                if (h3) h3.textContent = `${uploadedGalleryFiles.length} صور مختارة`;
-                if (p) p.style.display = 'none';
-                if (icon) icon.style.display = 'none';
-            } else {
-                if (h3) h3.textContent = 'صور إضافية (المعرض)';
-                if (p) p.style.display = 'block';
-                if (icon) icon.style.display = 'block';
-            }
+        const h3 = galleryUpload.querySelector('h3');
+        // ... بقية الكود الخاص بك للعرض (Display) كما هو ...
+
+        // تأكد من تحديث العداد
+        if (uploadedGalleryFiles.length > 0) {
+            if (h3) h3.textContent = `${uploadedGalleryFiles.length} صور مختارة`;
+            // ...
+        }
 
             uploadedGalleryFiles.forEach((file, index) => {
                 const reader = new FileReader();
