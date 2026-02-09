@@ -138,19 +138,20 @@ namespace Real_Estate.Areas.Admin.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Edit(
-          int id,
-          Models.Property property,
-          IFormFile Img,
-          IFormFileCollection SubImgFiles,
-          string DeletedSubImgs,
-          CancellationToken cancellationToken)
+      int id,
+      Models.Property property,
+      IFormFile? MainImg,
+      List<IFormFile>? SubImgFiles,
+      string? DeletedSubImgs,
+      CancellationToken cancellationToken)
         {
             if (id != property.Id)
                 return BadRequest();
 
             if (!ModelState.IsValid)
             {
-                ViewBag.Locations = await _locationRepository.GetAllAsync();
+                var locations = await _locationRepository.GetAllAsync();
+                ViewBag.Locations = locations.GroupBy(l => l.City).Select(g => g.First()).ToList();
                 return View(property);
             }
 
@@ -159,9 +160,9 @@ namespace Real_Estate.Areas.Admin.Controllers
                 include: new Expression<Func<Models.Property, object>>[] { p => p.PropertySubImgs }
             );
 
-            if (oldProperty == null)
-                return NotFound();
+            if (oldProperty == null) return NotFound();
 
+            // ===== تحديث البيانات الأساسية =====
             oldProperty.Title = property.Title;
             oldProperty.Price = property.Price;
             oldProperty.AreaSize = property.AreaSize;
@@ -171,17 +172,19 @@ namespace Real_Estate.Areas.Admin.Controllers
             oldProperty.Bathrooms = property.Bathrooms;
             oldProperty.Description = property.Description;
 
-            var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
+            // ===== مسار تخزين الصور =====
+            var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img");
             Directory.CreateDirectory(folder);
 
-            // تحديث الصورة الرئيسية
-            if (Img != null && Img.Length > 0)
+            // ===== تحديث الصورة الرئيسية =====
+            if (MainImg != null && MainImg.Length > 0)
             {
-                var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
+                var fileName = Guid.NewGuid() + Path.GetExtension(MainImg.FileName);
                 var filePath = Path.Combine(folder, fileName);
                 using var stream = System.IO.File.Create(filePath);
-                await Img.CopyToAsync(stream);
+                await MainImg.CopyToAsync(stream);
 
+                // حذف الصورة القديمة إذا موجودة
                 if (!string.IsNullOrEmpty(oldProperty.MainImg))
                 {
                     var oldPath = Path.Combine(folder, oldProperty.MainImg);
@@ -191,7 +194,7 @@ namespace Real_Estate.Areas.Admin.Controllers
                 oldProperty.MainImg = fileName;
             }
 
-            // حذف الصور القديمة المطلوبة فقط
+            // ===== حذف الصور الفرعية المطلوبة =====
             if (!string.IsNullOrEmpty(DeletedSubImgs))
             {
                 var idsToDelete = DeletedSubImgs.Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -212,7 +215,7 @@ namespace Real_Estate.Areas.Admin.Controllers
                 }
             }
 
-            // إضافة الصور الجديدة
+            // ===== إضافة الصور الفرعية الجديدة =====
             if (SubImgFiles != null && SubImgFiles.Count > 0)
             {
                 foreach (var file in SubImgFiles)
@@ -230,11 +233,14 @@ namespace Real_Estate.Areas.Admin.Controllers
                 }
             }
 
+            // ===== حفظ التعديلات =====
             _propertyRepository.Update(oldProperty, cancellationToken: cancellationToken);
             await _propertyRepository.CommitChange(cancellationToken);
 
-            return RedirectToAction("Index");
+            // ===== Redirect بعد الحفظ =====
+            return RedirectToAction("board", "Property", new { area = "Admin" });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)

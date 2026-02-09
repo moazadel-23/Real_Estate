@@ -355,7 +355,8 @@
             <h3 style="margin-bottom: 25px; color: var(--primary-color);">بيانات العقار الأساسية</h3>
 
             <div class="upload-area" id="imageUpload" style="position: relative; cursor: pointer;">
-                <input type="file" hidden id="galleryInput" name="SubImgFiles" accept="image/*" multiple />
+                <input type="file" hidden id="mainImgInput" name="MainImg" accept="image/*" />
+
 
 
                 <!-- لو فيه صورة موجودة -->
@@ -371,12 +372,11 @@
             </div>
 
             <script>
-                const uploadArea = document.getElementById('imageUpload');
-                const fileInput = document.getElementById('fileInput');
-                const previewImg = document.getElementById('previewImg');
+                              const uploadArea = document.getElementById('imageUpload');
+                const fileInput = document.getElementById('mainImgInput');
 
-                // افتح نافذة اختيار الصورة عند الضغط على الـ div
                 uploadArea.addEventListener('click', () => fileInput.click());
+
 
                 // عرض الصورة قبل رفعها
                 fileInput.addEventListener('change', function () {
@@ -407,8 +407,8 @@
                     <h3 style="font-size: 1.2rem; color: #555;">صور المعرض الإضافية</h3>
                     <p style="color: #888; font-size: 0.9rem;">اضغط هنا لاختيار أو إضافة صور جديدة</p>
 
-                    <input type="file" hidden id="galleryInput" name="SubImgs" accept="image/*" multiple />
-                    <input type="hidden" id="deletedSubImgs" name="DeletedSubImgs" value="" />
+                    <input type="file" hidden id="galleryInput" name="SubImgFiles" multiple />
+
                 </div>
 
                 <div id="galleryPreview" class="gallery-grid" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
