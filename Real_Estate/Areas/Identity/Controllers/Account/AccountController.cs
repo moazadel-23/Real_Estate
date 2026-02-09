@@ -48,7 +48,7 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
                 return View();
             }
 
-            return RedirectToAction("index", "home", new { area = "Property" });
+            return RedirectToAction("index", "Property", new { area = "Admin" });
 
 
         }

@@ -134,9 +134,12 @@
                     </a>
                 </li>
                 <li style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
-                    <a href="Admin/Property/manage" style="color: var(--accent-color);">
-                        <i class="fa-solid fa-user-shield"></i> <span data-i18n="nav_admin">لوحة الادمن</span>
+                    <a href="@Url.Action("Manage", "Property", new { area = "Admin" })"
+                       style="color: var(--accent-color);">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span data-i18n="nav_admin">لوحة الادمن</span>
                     </a>
+
                 </li>
             </ul>
         </div>
@@ -296,7 +299,7 @@
                                     <i class="fa-solid fa-heart"></i>
                                 </button>
 
-                                <a href="Admin/Property/Details?id=@item.Id">
+                                <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })">
                                     <span class="card-badge">@item.Type</span>
 
                                     <img src="/img/@item.MainImg" alt="Property Image" />
@@ -339,10 +342,12 @@
                                             onclick="addToCart(@item.Id)">
                                         <i class="fa-solid fa-cart-plus"></i> شراء
                                     </button>
-                                    <a href="Admin/Property/Details?id=@item.Id" class="btn btn-outline"
+                                    <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })"
+                                       class="btn btn-outline"
                                        style="padding:8px 15px;font-size:0.9rem;flex:1;text-align:center;">
                                         <i class="fa-solid fa-eye"></i> تفاصيل
                                     </a>
+
                                 </div>
                             </div>
                         </div>
@@ -373,8 +378,7 @@
                    style="border: 1px solid #e03c3c; color: #e03c3c; padding:10px; border-radius:5px; background:none; text-decoration: none; text-align: center; display: block; font-weight: 500; transition: 0.3s;">
                     <i class="fa-solid fa-phone"></i> الدخول برقم الهاتف
                 </a>
-
-                <a href="Identity/Account/LogIn"
+                <a href="@Url.Action("Login", "Account", new { area = "Identity" })"
                    class="login-option-btn outline-btn"
                    style="border: 1px solid #e03c3c; color: #e03c3c; padding:10px; border-radius:5px; background:none; text-decoration: none; text-align: center; display: block; font-weight: 500; transition: 0.3s;">
                     <i class="fa-regular fa-envelope"></i> الدخول بالبريد الإلكتروني
