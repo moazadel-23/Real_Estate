@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Models.ViewModel;
 using Real_Estate.Repository;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Real_Estate.Areas.Identity.Controllers.Account
@@ -30,23 +31,21 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
         public async Task<IActionResult> LogIn(LoginVM login)
         {
 
-            if (!ModelState.IsValid)
-                return View(login);
-
             var user = await userManager.FindByEmailAsync(login.Email);
             if (user is null)
             {
-                ModelState.AddModelError("Email", "Invalid Email");
-                return View(login);
+                TempData["LogInError"] = "خطأ في البريد الالكتروني او كلمة المرور";
+                ViewBag.Email = login.Email;
+                ViewBag.Password = login.Password;
+                return View();
             }
-
-            //user.PasswordHash == login.Password;
-            //var result = await SignInManager.PasswordSignInAsync(user, login.Password, false, false);
             var result = userManager.CheckPasswordAsync(user, login.Password);
             if (!result.Result)
             {
-                ModelState.AddModelError("Password", "Invalid Password");
-                return View(login);
+                TempData["LogInError"] = "خطأ في البريد الالكتروني او كلمة المرور";
+                ViewBag.Email = login.Email;
+                ViewBag.Password = login.Password;
+                return View();
             }
 
             return RedirectToAction("index", "home", new { area = "Property" });
@@ -63,7 +62,12 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
         {
             var emailIfExite = await userManager.FindByEmailAsync(register.Email);
             if (emailIfExite is not null)
+            {
+                TempData["EmailExists"] = "البريد الالكتروني مسجل بالفعل";
+                ViewBag.Name = register.Name;
+                ViewBag.Email = register.Email;
                 return View();
+            }
             var user = new User
             {
                 FullName = register.Name,
@@ -72,7 +76,17 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
             };
             var result = await userManager.CreateAsync(user, register.Password);
             if (!result.Succeeded)
+            {
+                StringBuilder builder = new StringBuilder();
+                foreach (var error in result.Errors)
+                {
+                    builder.AppendLine(error.Description);
+                }
+                TempData["ErrorInPassword"] = builder.ToString();
+                ViewBag.Name = register.Name;
+                ViewBag.Email = register.Email;
                 return View();
+            }
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
             var link = Url.Action(nameof(VirfeyEmail), "Account", new { userId = user.Id, userToken = token }, Request.Scheme);
             await emailSender.SendEmailAsync(register.Email, "Confirm Your Email", $"<h1>To Confirm Email Click<a href='{link}'> Here</a></h1>");

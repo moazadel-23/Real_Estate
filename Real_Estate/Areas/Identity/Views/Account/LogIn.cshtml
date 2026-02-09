@@ -112,6 +112,28 @@
             font-size: 1.5rem;
             margin-bottom: 15px !important;
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+            z-index: 9999;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
     </style>
 </head>
 
@@ -128,10 +150,10 @@
 
             <form method="post">
                 <div class="form-group">
-                    <input type="email" name="Email" placeholder="البريد الإلكتروني" required>
+                    <input type="email" name="Email" value="@ViewBag.Email" placeholder="البريد الإلكتروني" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="Password" placeholder="كلمة المرور" required>
+                    <input type="password" name="Password" value="@ViewBag.Password" placeholder="كلمة المرور" required>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 0.9rem;">
@@ -157,6 +179,31 @@
             </div>
         </div>
     </div>
+        <!-- التوستر -->
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- الجافاسكربت -->
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toast-message");
+
+            toastMessage.textContent = message;
+            toast.classList.add("show");
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 10000);
+        }
+    </script>
+    @if (TempData["LogInError"] != null)
+    {
+        <script>
+            showToast(@Html.Raw(Json.Serialize(TempData["LogInError"])));
+        </script>
+    }
 </body>
 
 </html>

@@ -42,7 +42,7 @@ namespace Real_Estate.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("favorites");
+                    b.ToTable("favorites", (string)null);
                 });
 
             modelBuilder.Entity("Real_Estate.Models.Location", b =>
@@ -80,7 +80,7 @@ namespace Real_Estate.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Real_Estate.Models.Property", b =>
@@ -134,7 +134,7 @@ namespace Real_Estate.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("Properties");
+                    b.ToTable("Properties", (string)null);
                 });
 
             modelBuilder.Entity("Real_Estate.Models.PropertySubImage", b =>
@@ -159,7 +159,7 @@ namespace Real_Estate.Migrations
 
                     b.HasIndex("PropertyId");
 
-                    b.ToTable("PropertySubImage");
+                    b.ToTable("PropertySubImage", (string)null);
                 });
 
             modelBuilder.Entity("Real_Estate.Models.User", b =>
@@ -223,7 +223,7 @@ namespace Real_Estate.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Real_Estate.Models.UserOtp", b =>
@@ -244,7 +244,7 @@ namespace Real_Estate.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserOtps");
+                    b.ToTable("UserOtps", (string)null);
                 });
 
             modelBuilder.Entity("Real_Estate.Models.Favorite", b =>

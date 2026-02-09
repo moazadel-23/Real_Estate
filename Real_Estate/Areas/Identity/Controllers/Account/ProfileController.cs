@@ -28,8 +28,7 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
 
             var model = new ProfileVM
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                FullName = user.FullName,
                 Email = user.Email!,
                 PhoneNumber = user.PhoneNumber ?? "",
                 Address = user.Address
@@ -49,8 +48,8 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
             if (user == null)
                 return RedirectToAction("LogIn", "Account");
 
-            user.FirstName = model.FirstName;
-            user.LastName = model.LastName;
+            
+            user.FullName = model.FullName;
             user.Email = model.Email;
             user.UserName = model.Email;
             user.PhoneNumber = model.PhoneNumber;

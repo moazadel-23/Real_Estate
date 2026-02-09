@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -14,7 +15,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* استخدمنا rgba مع 0.6 عشان نخلي الألوان شفافة والصورة تظهر */
             background: linear-gradient(135deg, rgba(10, 25, 47, 0.6), rgba(20, 40, 80, 0.6)), url('/img/hero.png');
             background-blend-mode: overlay;
             background-size: cover;
@@ -38,16 +38,16 @@
             margin-bottom: 25px;
         }
 
-        .auth-header h2 {
-            color: var(--primary-color);
-            margin-bottom: 5px;
-            font-size: 1.5rem;
-        }
+            .auth-header h2 {
+                color: var(--primary-color);
+                margin-bottom: 5px;
+                font-size: 1.5rem;
+            }
 
-        .auth-header p {
-            font-size: 0.9rem;
-            color: var(--light-text);
-        }
+            .auth-header p {
+                font-size: 0.9rem;
+                color: var(--light-text);
+            }
 
         .form-group input {
             background: #f4f6f9;
@@ -57,16 +57,11 @@
             font-size: 0.9rem;
         }
 
-        .form-group input:focus {
-            background: white;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
-        }
-
-        .divider {
-            margin: 20px 0;
-            font-size: 0.8rem;
-        }
+            .form-group input:focus {
+                background: white;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+            }
 
         .auth-footer {
             margin-top: 20px;
@@ -74,10 +69,10 @@
             color: var(--light-text);
         }
 
-        .auth-footer a {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
+            .auth-footer a {
+                color: var(--accent-color);
+                font-weight: 600;
+            }
 
         .btn-primary {
             padding: 10px;
@@ -89,6 +84,27 @@
             font-size: 1.5rem;
             margin-bottom: 15px !important;
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.4s ease;
+            z-index: 9999;
+        }
+
+            .toast.show {
+                opacity: 1;
+                transform: translateY(0);
+            }
     </style>
 </head>
 
@@ -105,13 +121,13 @@
 
             <form method="post">
                 <div class="form-group">
-                    <input type="text" name="Name" placeholder="الاسم الكامل" required>
+                    <input type="text" name="Name" value="@ViewBag.Name" placeholder="الاسم الكامل" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" name="Email" placeholder="البريد الإلكتروني" required>
+                    <input type="email" name="Email" value="@ViewBag.Email" placeholder="البريد الإلكتروني" required>
                 </div>
                 <div class="form-group">
-                    <input type="password" name="Password" placeholder="كلمة المرور" required>
+                    <input type="password" name="Password"  placeholder="كلمة المرور" required>
                 </div>
                 <div class="form-group">
                     <input type="password" name="ConfirmPassword" placeholder="تأكيد كلمة المرور" required>
@@ -132,6 +148,38 @@
             </div>
         </div>
     </div>
-</body>
 
+    <!-- التوستر -->
+    <div id="toast" class="toast">
+        <span id="toast-message"></span>
+    </div>
+
+    <!-- الجافاسكربت -->
+    <script>
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toast-message");
+
+            toastMessage.textContent = message;
+            toast.classList.add("show");
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 10000);
+        }
+    </script>
+    @if (TempData["EmailExists"] != null)
+    {
+        <script>
+            showToast(@Html.Raw(Json.Serialize(TempData["EmailExists"])));
+        </script>
+    }
+    @if (TempData["ErrorInPassword"] != null)
+    {
+        <script>
+            showToast(@Html.Raw(Json.Serialize(TempData["ErrorInPassword"])));
+        </script>
+    }
+
+</body>
 </html>
