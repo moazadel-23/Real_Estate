@@ -385,12 +385,17 @@
                 <input asp-for="Title" class="form-control"
                        placeholder="مثال: فيلا فاخرة للبيع في حي النخيل" />
             </div>
+            <div class="form-group">
+                <label>نوع العقار</label>
+                <select asp-for="Type"
+                        asp-items="Html.GetEnumSelectList<PropertyType>()"
+                        class="form-control"
+                        required>
+                </select>
+            </div>
 
-            <select asp-for="Type"
-                    asp-items="Html.GetEnumSelectList<PropertyType>()"
-                    class="form-control"
-                    required>
-            </select>
+
+         
 
               
             <div class="row">

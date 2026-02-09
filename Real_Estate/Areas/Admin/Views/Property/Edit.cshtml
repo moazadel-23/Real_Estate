@@ -355,7 +355,8 @@
             <h3 style="margin-bottom: 25px; color: var(--primary-color);">بيانات العقار الأساسية</h3>
 
             <div class="upload-area" id="imageUpload" style="position: relative; cursor: pointer;">
-                <input type="file" hidden id="fileInput" name="Img" accept="image/*">
+                <input type="file" hidden id="galleryInput" name="SubImgFiles" accept="image/*" multiple />
+
 
                 <!-- لو فيه صورة موجودة -->
                 @if (!string.IsNullOrEmpty(Model.MainImg))
@@ -400,88 +401,101 @@
                 });
             </script>
 
-            <div class="upload-area" id="galleryUpload" style="position: relative; cursor: pointer;">
-                <i class="fa-regular fa-images upload-icon" style="font-size: 3rem; color:#ddd;"></i>
-                <h3>صور إضافية (المعرض)</h3>
-                <p>يمكنك اختيار مجموعة صور معاً</p>
+            <div class="upload-area-container" style="border: 2px dashed #ddd; border-radius: 12px; padding: 20px; background: #fafafa;">
+                <div class="upload-area" id="galleryUpload" style="text-align: center; cursor: pointer; padding: 20px;">
+                    <i class="fa-regular fa-images" style="font-size: 3rem; color:#ccc;"></i>
+                    <h3 style="font-size: 1.2rem; color: #555;">صور المعرض الإضافية</h3>
+                    <p style="color: #888; font-size: 0.9rem;">اضغط هنا لاختيار أو إضافة صور جديدة</p>
 
-                <input type="file" hidden id="galleryInput" name="SubImgFiles" accept="image/*" multiple>
+                    <input type="file" hidden id="galleryInput" name="SubImgs" accept="image/*" multiple />
+                    <input type="hidden" id="deletedSubImgs" name="DeletedSubImgs" value="" />
+                </div>
 
-                <div class="gallery-preview" id="galleryPreview"></div>
+                <div id="galleryPreview" class="gallery-grid" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px;">
+
+                    @if (Model.PropertySubImgs != null && Model.PropertySubImgs.Count > 0)
+                    {
+                        @foreach (var item in Model.PropertySubImgs)
+                        {
+                            <div class="gallery-item existing-item" id="existing-@item.Id" style="position: relative; display: inline-block;">
+                                <img src="@Url.Content("~/img/" + item.PropertyImgs)" style="width:110px; height:110px; object-fit:cover; border-radius:10px; border:2px solid #eee;" />
+                                <button type="button" class="remove-btn" onclick="removeExistingImage('@item.Id')"
+                                        style="position:absolute; top:-8px; right:-8px; background:#ff4757; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                                    <i class="fa-solid fa-times" style="font-size: 12px;"></i>
+                                </button>
+                            </div>
+                        }
+                    }
+                </div>
             </div>
 
             <script>
                 const galleryUpload = document.getElementById('galleryUpload');
                 const galleryInput = document.getElementById('galleryInput');
                 const galleryPreview = document.getElementById('galleryPreview');
-                let uploadedGalleryFiles = [];
+                const deletedInput = document.getElementById('deletedSubImgs');
 
-                // فتح نافذة اختيار الصور عند الضغط على الـ div
-                galleryUpload.addEventListener('click', () => {
-                    galleryInput.click();
+                let uploadedGalleryFiles = []; // لتخزين الملفات الجديدة فقط
+                let deletedIds = []; // لتخزين IDs الصور القديمة المطلوب حذفها
+
+                // 1. فتح نافذة الاختيار
+                galleryUpload.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'BUTTON' && !e.target.closest('button')) {
+                        galleryInput.click();
+                    }
                 });
 
-                // معالجة الصور المختارة
+                // 2. معالجة اختيار ملفات جديدة
                 galleryInput.addEventListener('change', function () {
                     const newFiles = Array.from(this.files);
-                    if (newFiles.length === 0) return;
-
-                    // إضافة الملفات الجديدة للـ array
                     uploadedGalleryFiles = [...uploadedGalleryFiles, ...newFiles];
-
-                    renderGallery();
-                    this.value = ''; // إعادة تعيين input
+                    renderNewImages();
+                    this.value = ''; // Reset input to allow choosing same file again
                 });
 
-                function renderGallery() {
-                    galleryPreview.innerHTML = ''; // مسح الصور القديمة
+                // 3. حذف صورة موجودة مسبقاً (من الداتابيز)
+                function removeExistingImage(id) {
+                    if (confirm('هل أنت متأكد من حذف هذه الصورة نهائياً؟')) {
+                        // إخفاء العنصر من الشاشة
+                        const element = document.getElementById('existing-' + id);
+                        if (element) element.remove();
 
-                    if (uploadedGalleryFiles.length > 0) {
-                        galleryUpload.querySelector('h3').textContent = `${uploadedGalleryFiles.length} صور مختارة`;
-                        galleryUpload.querySelector('p').style.display = 'none';
-                        galleryUpload.querySelector('.upload-icon').style.display = 'none';
-                    } else {
-                        galleryUpload.querySelector('h3').textContent = 'صور إضافية (المعرض)';
-                        galleryUpload.querySelector('p').style.display = 'block';
-                        galleryUpload.querySelector('.upload-icon').style.display = 'block';
+                        // إضافة الـ ID لقائمة الحذف
+                        deletedIds.push(id);
+                        deletedInput.value = deletedIds.join(',');
                     }
+                }
+
+                // 4. عرض الصور الجديدة المختار حالياً
+                function renderNewImages() {
+                    // نمسح فقط الصور "الجديدة" المعروضة عشان لا نكررها، أو نمسح الكل ونعيد بناء المعرض
+                    // الأفضل نمسح العناصر التي تحمل كلاس 'new-upload' فقط
+                    document.querySelectorAll('.new-upload').forEach(el => el.remove());
 
                     uploadedGalleryFiles.forEach((file, index) => {
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             const div = document.createElement('div');
+                            div.className = 'gallery-item new-upload';
                             div.style.position = 'relative';
                             div.style.display = 'inline-block';
-                            div.style.margin = '5px';
 
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.style.width = '100px';
-                            img.style.height = '100px';
-                            img.style.objectFit = 'cover';
-                            img.style.borderRadius = '8px';
-                            img.style.border = '1px solid #ddd';
+                            div.innerHTML = `
+                                <img src="${e.target.result}" style="width:110px; height:110px; object-fit:cover; border-radius:10px; border:2px solid #007bff;" />
+                                <button type="button"
+                                        style="position:absolute; top:-8px; right:-8px; background:#ff4757; color:white; border:none; border-radius:50%; width:24px; height:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                                    <i class="fa-solid fa-times" style="font-size: 12px;"></i>
+                                </button>
+                                <span style="position:absolute; bottom:5px; left:5px; background:rgba(0,123,255,0.8); color:white; font-size:10px; padding:2px 5px; border-radius:4px;">جديد</span>
+                            `;
 
-                            const btn = document.createElement('button');
-                            btn.innerHTML = '<i class="fa-solid fa-times"></i>';
-                            btn.style.position = 'absolute';
-                            btn.style.top = '-5px';
-                            btn.style.right = '-5px';
-                            btn.style.background = '#ff4757';
-                            btn.style.color = 'white';
-                            btn.style.border = 'none';
-                            btn.style.borderRadius = '50%';
-                            btn.style.width = '20px';
-                            btn.style.height = '20px';
-                            btn.style.cursor = 'pointer';
-                            btn.onclick = (evt) => {
+                            // إضافة وظيفة الحذف للصورة الجديدة
+                            div.querySelector('button').onclick = (evt) => {
                                 evt.stopPropagation();
                                 uploadedGalleryFiles.splice(index, 1);
-                                renderGallery();
+                                renderNewImages();
                             };
 
-                            div.appendChild(img);
-                            div.appendChild(btn);
                             galleryPreview.appendChild(div);
                         };
                         reader.readAsDataURL(file);
@@ -563,18 +577,96 @@
 
             <div class="row" style="margin-top: 20px;">
                 <div class="form-group" style="grid-column: 1/-1;">
-                    <label>الموقع على الخريطة (GPS)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="hidden" id="gpsLat">
-                        <input type="hidden" id="gpsLng">
-                        <button type="button" class="btn btn-outline" id="getLocationBtn" style="white-space: nowrap;">
-                            <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي
+                    <label style="font-weight: bold; color: var(--primary); margin-bottom: 10px; display: block;">
+                        الموقع على الخريطة (GPS)
+                    </label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="hidden" id="gpsLat" name="Latitude">
+                        <input type="hidden" id="gpsLng" name="Longitude">
+
+                        <button type="button" class="btn btn-outline" id="getLocationBtn"
+                                style="white-space: nowrap; background: #f0f4f8; border: 1px solid #0d2c52; color: #0d2c52; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.3s;">
+                            <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي الحالي
                         </button>
                     </div>
-                    <!-- Mini Map Container -->
-                    <div id="miniMap"
-                         style="height: 250px; width: 100%; margin-top: 15px; border-radius: 10px; z-index: 1;"></div>
+
+                    <div id="miniMap" style="height: 300px; width: 100%; border-radius: 12px; border: 2px solid #eee; z-index: 1;"></div>
+                    <p style="font-size: 0.8rem; color: #888; margin-top: 8px;">
+                        <i class="fa-solid fa-circle-info"></i> يمكنك سحب العلامة الزرقاء لتحديد موقع العقار بدقة.
+                    </p>
                 </div>
+            </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // 1. تعريف الإحداثيات الافتراضية (مثلاً القاهرة)
+                    let defaultLat = 30.0444;
+                    let defaultLng = 31.2357;
+
+                    // 2. إعداد الخريطة المصغرة
+                    const miniMap = L.map('miniMap').setView([defaultLat, defaultLng], 13);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap'
+                    }).addTo(miniMap);
+
+                    // 3. إضافة ماركر قابل للسحب (Draggable Marker)
+                    let marker = L.marker([defaultLat, defaultLng], {
+                        draggable: true
+                    }).addTo(miniMap);
+
+                    // وظيفة لتحديث الـ Inputs المخفية عند تغيير الموقع
+                    function updateGpsInputs(lat, lng) {
+                        document.getElementById('gpsLat').value = lat.toFixed(6);
+                        document.getElementById('gpsLng').value = lng.toFixed(6);
+                        console.log("GPS Updated:", lat, lng);
+                    }
+
+                    // تحديث الموقع عند سحب الماركر باليد
+                    marker.on('dragend', function (e) {
+                        const position = marker.getLatLng();
+                        updateGpsInputs(position.lat, position.lng);
+                    });
+
+                    // تحديث الموقع عند الضغط على أي مكان في الخريطة
+                    miniMap.on('click', function (e) {
+                        marker.setLatLng(e.latlng);
+                        updateGpsInputs(e.latlng.lat, e.latlng.lng);
+                    });
+
+                    // 4. وظيفة زرار "تحديد موقعي الآن"
+                    const getLocationBtn = document.getElementById('getLocationBtn');
+                    getLocationBtn.addEventListener('click', function () {
+                        if (navigator.geolocation) {
+                            // إظهار حالة تحميل بسيطة على الزرار
+                            const originalContent = getLocationBtn.innerHTML;
+                            getLocationBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحديد...';
+
+                            navigator.geolocation.getCurrentPosition(function (position) {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+
+                                // نقل الخريطة والماركر للموقع الجديد
+                                miniMap.setView([lat, lng], 16);
+                                marker.setLatLng([lat, lng]);
+
+                                // تحديث القيم المخفية
+                                updateGpsInputs(lat, lng);
+
+                                // إرجاع شكل الزرار
+                                getLocationBtn.innerHTML = originalContent;
+                                alert("تم تحديد موقعك بنجاح!");
+
+                            }, function (error) {
+                                getLocationBtn.innerHTML = originalContent;
+                                alert("عذراً، لم نتمكن من الوصول لموقعك. تأكد من تفعيل الـ GPS في المتصفح.");
+                            });
+                        } else {
+                            alert("متصفحك لا يدعم خاصية تحديد الموقع.");
+                        }
+                    });
+                });
+            </script>
 
 
                 <div class="row">
@@ -819,6 +911,7 @@
 
         populateLocations();
 
+              
 
     </script>
 </body>

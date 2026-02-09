@@ -10,11 +10,13 @@ namespace Real_Estate.Areas.Admin.Controllers
     {
         private readonly IRepository<Models.Property> _propertyRepository;
         private readonly IRepository<Models.Location> _locationRepository;
+        private readonly IRepository<Models.PropertySubImage> _propertySubImageRepository;
 
-        public PropertyController(IRepository<Models.Property> propertyRepository, IRepository<Models.Location> locationRepository)
+        public PropertyController(IRepository<Models.Property> propertyRepository, IRepository<Models.Location> locationRepository,  IRepository<PropertySubImage> propertySubImageRepository)
         {
             _propertyRepository = propertyRepository;
             _locationRepository = locationRepository;
+            _propertySubImageRepository = propertySubImageRepository;
         }
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -120,19 +122,15 @@ namespace Real_Estate.Areas.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var property = await _propertyRepository.GetOneAsync(e => e.Id == id);
-            var locations = await _locationRepository.GetAllAsync();
+            var property = await _propertyRepository.GetOneAsync(
+                e => e.Id == id,
+                include: new Expression<Func<Models.Property, object>>[] { p => p.PropertySubImgs }
+            );
 
-            ViewBag.Locations = locations
-                .GroupBy(l => l.City)
-                .Select(g => g.First())
-                .ToList();
-            if (property == null)
-                return NotFound();
+            if (property == null) return NotFound();
 
             ViewBag.Locations = await _locationRepository.GetAllAsync();
             return View(property);
@@ -140,11 +138,12 @@ namespace Real_Estate.Areas.Admin.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Edit(
-    int id,
-    Models.Property property,
-    IFormFile Img,
-    IFormFileCollection SubImgFiles,
-    CancellationToken cancellationToken)
+          int id,
+          Models.Property property,
+          IFormFile Img,
+          IFormFileCollection SubImgFiles,
+          string DeletedSubImgs,
+          CancellationToken cancellationToken)
         {
             if (id != property.Id)
                 return BadRequest();
@@ -155,11 +154,14 @@ namespace Real_Estate.Areas.Admin.Controllers
                 return View(property);
             }
 
-            var oldProperty = await _propertyRepository.GetOneAsync(e => e.Id == id);
+            var oldProperty = await _propertyRepository.GetOneAsync(
+                e => e.Id == id,
+                include: new Expression<Func<Models.Property, object>>[] { p => p.PropertySubImgs }
+            );
+
             if (oldProperty == null)
                 return NotFound();
 
-            // تحديث البيانات العادية
             oldProperty.Title = property.Title;
             oldProperty.Price = property.Price;
             oldProperty.AreaSize = property.AreaSize;
@@ -172,7 +174,7 @@ namespace Real_Estate.Areas.Admin.Controllers
             var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img");
             Directory.CreateDirectory(folder);
 
-            // تحديث الصورة الرئيسية (لو اتغيرت)
+            // تحديث الصورة الرئيسية
             if (Img != null && Img.Length > 0)
             {
                 var fileName = Guid.NewGuid() + Path.GetExtension(Img.FileName);
@@ -180,13 +182,39 @@ namespace Real_Estate.Areas.Admin.Controllers
                 using var stream = System.IO.File.Create(filePath);
                 await Img.CopyToAsync(stream);
 
+                if (!string.IsNullOrEmpty(oldProperty.MainImg))
+                {
+                    var oldPath = Path.Combine(folder, oldProperty.MainImg);
+                    if (System.IO.File.Exists(oldPath)) System.IO.File.Delete(oldPath);
+                }
+
                 oldProperty.MainImg = fileName;
             }
 
-            // الصور الإضافية (لو اتبعتت)
+            // حذف الصور القديمة المطلوبة فقط
+            if (!string.IsNullOrEmpty(DeletedSubImgs))
+            {
+                var idsToDelete = DeletedSubImgs.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                                .Select(int.Parse)
+                                                .ToList();
+
+                var subImgsToDelete = oldProperty.PropertySubImgs
+                                                 .Where(s => idsToDelete.Contains(s.Id))
+                                                 .ToList();
+
+                foreach (var subImg in subImgsToDelete)
+                {
+                    var filePath = Path.Combine(folder, subImg.PropertyImgs);
+                    if (System.IO.File.Exists(filePath)) System.IO.File.Delete(filePath);
+
+                    oldProperty.PropertySubImgs.Remove(subImg);
+                    _propertySubImageRepository.Delete(subImg);
+                }
+            }
+
+            // إضافة الصور الجديدة
             if (SubImgFiles != null && SubImgFiles.Count > 0)
             {
-                oldProperty.MainImg = "";
                 foreach (var file in SubImgFiles)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
@@ -194,12 +222,17 @@ namespace Real_Estate.Areas.Admin.Controllers
                     using var stream = System.IO.File.Create(filePath);
                     await file.CopyToAsync(stream);
 
-                    oldProperty.MainImg += fileName + ";";
+                    oldProperty.PropertySubImgs.Add(new Models.PropertySubImage
+                    {
+                        PropertyImgs = fileName,
+                        PropertyId = oldProperty.Id
+                    });
                 }
             }
 
             _propertyRepository.Update(oldProperty, cancellationToken: cancellationToken);
             await _propertyRepository.CommitChange(cancellationToken);
+
             return RedirectToAction("Index");
         }
 
