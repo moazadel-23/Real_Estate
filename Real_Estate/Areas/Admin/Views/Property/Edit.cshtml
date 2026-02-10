@@ -357,9 +357,6 @@
             <div class="upload-area" id="imageUpload" style="position: relative; cursor: pointer;">
                 <input type="file" hidden id="mainImgInput" name="MainImg" accept="image/*" />
 
-
-
-                <!-- لو فيه صورة موجودة -->
                 @if (!string.IsNullOrEmpty(Model.MainImg))
                 {
                     <img id="previewImg" src="~/img/@Model.MainImg" width="150"
@@ -377,8 +374,6 @@
 
                 uploadArea.addEventListener('click', () => fileInput.click());
 
-
-                // عرض الصورة قبل رفعها
                 fileInput.addEventListener('change', function () {
                     const file = this.files[0];
                     if (file) {
@@ -408,6 +403,8 @@
                     <p style="color: #888; font-size: 0.9rem;">اضغط هنا لاختيار أو إضافة صور جديدة</p>
 
                     <input type="file" hidden id="galleryInput" name="SubImgFiles" multiple />
+                    <input type="hidden" id="deletedSubImgs" name="DeletedSubImgs" />
+
 
                 </div>
 
@@ -430,6 +427,8 @@
             </div>
 
             <script>
+                let dataTransfer = new DataTransfer();
+
                 const galleryUpload = document.getElementById('galleryUpload');
                 const galleryInput = document.getElementById('galleryInput');
                 const galleryPreview = document.getElementById('galleryPreview');
@@ -448,8 +447,14 @@
                 // 2. معالجة اختيار ملفات جديدة
                 galleryInput.addEventListener('change', function () {
                     const newFiles = Array.from(this.files);
-                    uploadedGalleryFiles = [...uploadedGalleryFiles, ...newFiles];
-                    renderNewImages();
+                                   newFiles.forEach(file => {
+                    uploadedGalleryFiles.push(file);
+                    dataTransfer.items.add(file);
+                });
+
+                galleryInput.files = dataTransfer.files;
+                renderNewImages();
+
                     this.value = ''; // Reset input to allow choosing same file again
                 });
 
@@ -490,11 +495,18 @@
                             `;
 
                             // إضافة وظيفة الحذف للصورة الجديدة
-                            div.querySelector('button').onclick = (evt) => {
-                                evt.stopPropagation();
-                                uploadedGalleryFiles.splice(index, 1);
-                                renderNewImages();
-                            };
+                                           div.querySelector('button').onclick = (evt) => {
+                    evt.stopPropagation();
+
+                    uploadedGalleryFiles.splice(index, 1);
+
+                    dataTransfer = new DataTransfer();
+                    uploadedGalleryFiles.forEach(f => dataTransfer.items.add(f));
+                    galleryInput.files = dataTransfer.files;
+
+                    renderNewImages();
+                };
+
 
                             galleryPreview.appendChild(div);
                         };
