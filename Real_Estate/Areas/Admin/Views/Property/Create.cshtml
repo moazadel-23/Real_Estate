@@ -460,17 +460,21 @@
 
             <div class="row" style="margin-top: 20px;">
                 <div class="form-group" style="grid-column: 1/-1;">
-                    <label>الموقع على الخريطة (GPS)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="hidden" id="gpsLat">
-                        <input type="hidden" id="gpsLng">
-                        <button type="button" class="btn btn-outline" id="getLocationBtn" style="white-space: nowrap;">
-                            <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي
-                        </button>
+                    <div class="form-group">
+                        <label>الموقع على الخريطة (GPS)</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="hidden" name="Location.Latitude" id="gpsLat">
+                            <input type="hidden" name="Location.Longitude" id="gpsLng">
+                            <button type="button" id="getLocationBtn" class="btn btn-outline">
+                                <i class="fa-solid fa-location-crosshairs"></i> تحديد موقعي
+                            </button>
+                        </div>
+
+                        <div id="miniMap" style="height:250px; width:100%; margin-top:10px; border-radius:10px;"></div>
                     </div>
                     <!-- Mini Map Container -->
-                    <div id="miniMap"
-                         style="height: 250px; width: 100%; margin-top: 15px; border-radius: 10px; z-index: 1;"></div>
+              @*       <div id="miniMap"
+                         style="height: 250px; width: 100%; margin-top: 15px; border-radius: 10px; z-index: 1;"></div> *@
                 </div>
             </div>
             <div class="row">

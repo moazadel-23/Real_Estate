@@ -392,6 +392,29 @@
                     <div id="propertyMap" style="height: 350px; width: 100%; border-radius: 10px; z-index: 1;"></div>
                 </div>
 
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+
+                        // لو العقار له Location استخدمه، غير كده قيمة افتراضية
+                        const lat = @(Model.Location != null ? Model.Location.Latitude : 30.0444)
+                        const lng = @(Model.Location != null ? Model.Location.Longitude : 31.2357);
+
+                        // إنشاء الخريطة
+                        var map = L.map('propertyMap').setView([lat, lng], 15);
+
+                        // تحميل الخريطة
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '© OpenStreetMap'
+                        }).addTo(map);
+
+                        // Marker على موقع العقار
+                        L.marker([lat, lng]).addTo(map)
+                            .bindPopup('<b>@Model.Title</b><br>موقع العقار')
+                            .openPopup();
+                    });
+                </script>
+
+
             </div>
 
             <!-- Sidebar (Left) -->

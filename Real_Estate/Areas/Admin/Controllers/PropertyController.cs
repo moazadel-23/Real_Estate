@@ -46,7 +46,7 @@ namespace Real_Estate.Areas.Admin.Controllers
                 }
             }
 
-            // تمرير الاختيارات للـ View عشان تبقى محددة
+       
             ViewBag.SelectedType = type;
             ViewBag.SelectedPrice = priceRange;
 
@@ -87,15 +87,19 @@ namespace Real_Estate.Areas.Admin.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var property = await _propertyRepository.GetOneAsync(
-     p => p.Id == id,
-     include: new Expression<Func<Models.Property, object>>[] { p => p.PropertySubImgs }
- );
-
+                p => p.Id == id,
+                include: new Expression<Func<Models.Property, object>>[]
+                {
+                    p => p.PropertySubImgs,
+                    p => p.Location! 
+                }
+            );
 
             if (property == null) return NotFound();
 
             return View(property);
         }
+
 
 
 
@@ -139,15 +143,12 @@ namespace Real_Estate.Areas.Admin.Controllers
 
             if (SubImgFiles != null && SubImgFiles.Count > 0)
             {
-                // 1️⃣ هيّئ الـ List لو مش موجودة
                 if (property.PropertySubImgs == null)
                     property.PropertySubImgs = new List<PropertySubImage>();
 
-                // 2️⃣ فولدر تخزين الصور
                 var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img");
                 Directory.CreateDirectory(folder);
 
-                // 3️⃣ احفظ كل صورة
                 foreach (var file in SubImgFiles)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
@@ -158,7 +159,7 @@ namespace Real_Estate.Areas.Admin.Controllers
 
                     property.PropertySubImgs.Add(new PropertySubImage
                     {
-                        PropertyImgs = fileName // أو ImgPath حسب اسم الخاصية عندك
+                        PropertyImgs = fileName // ImgPath حسب اسم الخاصية 
                     });
                 }
             }
@@ -280,11 +281,9 @@ namespace Real_Estate.Areas.Admin.Controllers
                 }
             }
 
-            // ===== حفظ التعديلات =====
             _propertyRepository.Update(oldProperty, cancellationToken: cancellationToken);
             await _propertyRepository.CommitChange(cancellationToken);
 
-            // ===== Redirect بعد الحفظ =====
             return RedirectToAction("board", "Property", new { area = "Admin" });
         }
 
