@@ -19,11 +19,40 @@ namespace Real_Estate.Areas.Admin.Controllers
             _propertySubImageRepository = propertySubImageRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string type, string priceRange)
         {
             var properties = await _propertyRepository.GetAllAsync();
+
+            // فلترة حسب النوع
+            if (!string.IsNullOrEmpty(type))
+            {
+                properties = properties.Where(p => p.Type.ToString().ToLower() == type.ToLower());
+            }
+
+            // فلترة حسب السعر
+            if (!string.IsNullOrEmpty(priceRange))
+            {
+                switch (priceRange)
+                {
+                    case "low":
+                        properties = properties.Where(p => p.Price < 1000000);
+                        break;
+                    case "medium":
+                        properties = properties.Where(p => p.Price >= 1000000 && p.Price <= 3000000);
+                        break;
+                    case "high":
+                        properties = properties.Where(p => p.Price > 3000000);
+                        break;
+                }
+            }
+
+            // تمرير الاختيارات للـ View عشان تبقى محددة
+            ViewBag.SelectedType = type;
+            ViewBag.SelectedPrice = priceRange;
+
             return View(properties.AsEnumerable());
         }
+
         public async Task<IActionResult> board()
         {
             var properties = await _propertyRepository.GetAllAsync();
