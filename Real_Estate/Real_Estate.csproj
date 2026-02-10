@@ -8,13 +8,9 @@
 
   <ItemGroup>
     <Compile Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <Compile Remove="Areas\Property\Views\Home\NewFolder\**" />
     <Content Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <Content Remove="Areas\Property\Views\Home\NewFolder\**" />
     <EmbeddedResource Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <EmbeddedResource Remove="Areas\Property\Views\Home\NewFolder\**" />
     <None Remove="Areas\Identity\Views\Home\NewFolder\**" />
-    <None Remove="Areas\Property\Views\Home\NewFolder\**" />
   </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />

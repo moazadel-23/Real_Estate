@@ -22,7 +22,7 @@ namespace Real_Estate.Repository
             {
                 await _dbSet.AddAsync(entity, cancellationToken);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error adding entity of type {typeof(TEntity).Name}");
                 throw;
@@ -35,11 +35,16 @@ namespace Real_Estate.Repository
             {
                 await context.SaveChangesAsync(cancellationToken);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "Error committing changes to the database");
                 throw;
             }
+        }
+
+        public async Task CommitAsync(CancellationToken cancellationToken)
+        {
+            await CommitChange(cancellationToken);
         }
 
         public void Delete(TEntity entity, CancellationToken cancellationToken = default)
@@ -48,7 +53,7 @@ namespace Real_Estate.Repository
             {
                 _dbSet.Remove(entity);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error deleting entity of type {typeof(TEntity).Name}");
                 throw;
@@ -58,12 +63,12 @@ namespace Real_Estate.Repository
         public async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? expression = null, Expression<Func<TEntity, object>>[]? include = default, bool tracking = true, CancellationToken cancellationToken = default)
         {
             var query = _dbSet.AsQueryable();
-            if(expression is not null)
+            if (expression is not null)
                 query = query.Where(expression);
-            if(include is not null)
-                foreach(var includitem in include)
+            if (include is not null)
+                foreach (var includitem in include)
                     query = query.Include(includitem);
-            if(!tracking)
+            if (!tracking)
                 query = query.AsNoTracking();
             return await query.ToListAsync(cancellationToken);
         }
@@ -79,7 +84,7 @@ namespace Real_Estate.Repository
             {
                 _dbSet.Update(entity);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error updating entity of type {typeof(TEntity).Name}");
                 throw;
