@@ -168,6 +168,7 @@ namespace Real_Estate.Areas.Admin.Controllers
             await _propertyRepository.AddAsync(property, cancellationToken);
             await _propertyRepository.CommitChange(cancellationToken);
 
+
             return RedirectToAction("Index");
         }
         [HttpGet]
