@@ -31,6 +31,7 @@ namespace Real_Estate
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
            

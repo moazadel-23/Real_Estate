@@ -30,10 +30,28 @@ namespace Real_Estate.Areas.Admin.Controllers
             return View(properties.AsEnumerable());
         }
         [HttpGet]
-        public async Task<IActionResult> manage()
+        public async Task<IActionResult> manage(string type)
         {
             var properties = await _propertyRepository.GetAllAsync();
-            return View("manage");
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                if (Enum.TryParse<PropertyType>(type, out var propertyType))
+                {
+                    properties = properties.Where(p => p.Type == propertyType).ToList();
+                }
+            }
+            ViewBag.ApartmentCount = properties.Count(e => e.Type == PropertyType.Apartment);
+            ViewBag.VillaCount = properties.Count(e => e.Type == PropertyType.Villa);
+            ViewBag.OfficeCount = properties.Count(e => e.Type == PropertyType.Office);
+            ViewBag.PalaceCount = properties.Count(e => e.Type == PropertyType.Palace);
+            ViewBag.ChaletCount = properties.Count(e => e.Type == PropertyType.Chalet);
+            //Filter
+            int count = properties.Count();
+            ViewBag.PropertyCount = count;
+
+
+            return View("manage", properties);
         }
 
         [HttpGet]

@@ -447,7 +447,7 @@
                     <i class="fa-solid fa-building"></i>
                 </div>
                 <div>
-                    <h3 id="countProperties">1,520</h3>
+                    <h3 id="countProperties">@ViewBag.PropertyCount</h3>
                     <p>إجمالي العقارات</p>
                 </div>
                 <div style="margin-top: 15px; font-size: 0.85rem; color: #43a047;">
@@ -517,18 +517,65 @@
                 <div class="chart-header">
                     <h3>أنواع العقارات</h3>
                 </div>
-                <div style="position: relative; height: 160px; display: flex; justify-content: center; width: 100%;">
+                <div style="position: relative; height: 200px; width: 350px; margin: auto;">
                     <canvas id="propertyTypeChart"></canvas>
                 </div>
-                <div style="margin-top: 15px; display: flex; justify-content: space-around; font-size: 0.8rem; color: #666;">
-                    <span><i class="fa-solid fa-circle" style="color: #36a2eb;"></i> شقق</span>
-                    <span><i class="fa-solid fa-circle" style="color: #ff6384;"></i> فلل</span>
-                    <span><i class="fa-solid fa-circle" style="color: #ffcd56;"></i> أراضي</span>
+
+
+                <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.9rem; color: #666; margin-top: 15px;">
+                    <span><i class="fa-solid fa-circle" style="color: #36a2eb;"></i> Chalet</span>
+                    <span><i class="fa-solid fa-circle" style="color: #ff6384;"></i> Palace</span>
+                    <span><i class="fa-solid fa-circle" style="color: #410d56;"></i> Office</span>
+                    <span><i class="fa-solid fa-circle" style="color: #ffcd56;"></i> Villa</span>
+                    <span><i class="fa-solid fa-circle" style="color: #85cd56;"></i> Apartment</span>
                 </div>
+
+                <!-- Chart.js Library -->
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+                <!-- Chart Script -->
+                <script>
+                    const ctx = document.getElementById('propertyTypeChart').getContext('2d');
+
+                    const data = {
+                        labels: ['Chalet', 'Palace', 'Office', 'Villa', 'Apartment'],
+                        datasets: [{
+                            data: [
+                                @ViewBag.ChaletCount,
+                                @ViewBag.PalaceCount,
+                                @ViewBag.OfficeCount,
+                                @ViewBag.VillaCount,
+                                @ViewBag.ApartmentCount
+                            ],
+                            backgroundColor: [
+                                '#36a2eb',
+                                '#ff6384',
+                                '#410d56',
+                                '#ffcd56',
+                                '#85cd56'
+                            ]
+                        }]
+                    };
+
+                    const config = {
+                        type: 'pie',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false, // يخلي الدايرة تكبر حسب div
+                            plugins: {
+                                legend: { display: false } // Legend خارجي
+                            }
+                        },
+                    };
+
+                    const propertyTypeChart = new Chart(ctx, config);
+                </script>
+
             </div>
         </div>
 
-        <!-- Recent Properties Table -->
+      @*   <!-- Recent Properties Table -->
         <div class="recent-section">
             <div class="recent-header">
                 <h3>أحدث العقارات المضافة</h3>
@@ -611,7 +658,7 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div> *@
 
     </main>
 
