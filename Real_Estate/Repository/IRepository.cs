@@ -22,5 +22,6 @@ namespace Real_Estate.Repository
         void Update(TEntity entity, CancellationToken cancellationToken = default);
         void Delete(TEntity entity, CancellationToken cancellationToken = default);
         Task CommitChange(CancellationToken cancellationToken = default);
+        Task CommitAsync(CancellationToken cancellationToken);
     }
 }
