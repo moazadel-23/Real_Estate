@@ -7,6 +7,72 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <style>
+        .btn-post-ad {
+            background-color: #e60000 !important;
+            color: #ffffff !important;
+            display: inline-block;
+            /* صغرنا الـ padding عشان الزرار يلم نفسه */
+            padding: 8px 20px;
+            /* صغرنا الخط */
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none !important;
+            /* قللنا الانحناء عشان يناسب الحجم الجديد */
+            border-radius: 8px;
+            border: none !important;
+            font-family: sans-serif;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn-post-ad:hover {
+                background-color: #cc0000 !important;
+            }
+
+        .social-btn {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 350px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+
+        /* Google button */
+        .google-btn {
+            background: #fff;
+            color: #000;
+            border: 1px solid #ccc;
+        }
+
+            .google-btn:hover {
+                background: #f7f7f7;
+                border-color: #db4437;
+                color: #db4437;
+            }
+
+        /* Facebook button */
+        .facebook-btn {
+            background: #1877f2;
+            color: #fff;
+            border: 1px solid #1877f2;
+        }
+
+            .facebook-btn:hover {
+                background: #145dbf;
+                border-color: #145dbf;
+            }
+
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>السكن الفاخر - للعقارات المتميزة</title>
@@ -43,9 +109,13 @@
             <ul class="nav-links" style="display: none;">
                 <!-- Links moved to sidebar -->
             </ul>
+
             <div class="nav-buttons" style="display: flex !important; align-items: center; gap: 15px;">
                 <a href="Identity" title="تسجيل الدخول" style="font-size: 1.1rem; color: var(--primary-color);">
-                    </i>
+                </a>
+
+                <a asp-controller="Property" asp-action="Create" class="btn-post-ad">
+                    Post Your Ad
                 </a>
                 <!-- زر تسجيل الدخول -->
                 <button id="loginBtn" onclick="openLoginModal()" style="font-size:1.1rem; color:var(--primary-color); background:none; border:none; cursor:pointer;">
@@ -53,9 +123,6 @@
                 </button>
                 <a href="favorites.html" title="المفضلة" style="font-size: 1.1rem; color: var(--primary-color);">
                     <i class="fa-solid fa-heart"></i>
-                </a>
-                <a href="cart.html" title="السلة" style="font-size: 1.1rem; color: var(--primary-color);">
-                    <i class="fa-solid fa-cart-shopping"></i>
                 </a>
 
                 <!-- Theme Toggle -->
@@ -396,34 +463,61 @@
 
             <div class="login-options" style="display:flex; flex-direction:column; gap:10px; margin:15px 0;">
 
-                <a href="/Account/LoginWithPhone"
+                <a href="@Url.Action("RegisterSeller", "Account", new { area = "Identity" })"
                    class="login-option-btn outline-btn"
-                   style="border: 1px solid #e03c3c; color: #e03c3c; padding:10px; border-radius:5px; background:none; text-decoration: none; text-align: center; display: block; font-weight: 500; transition: 0.3s;">
-                    <i class="fa-solid fa-phone"></i> الدخول برقم الهاتف
+                   style="
+       border: 1px solid #e03c3c;
+       color: #e03c3c;
+       padding: 10px 15px;
+       border-radius: 5px;
+       background: none;
+       text-decoration: none;
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       font-weight: 500;
+       transition: all 0.3s;
+       gap: 8px;
+   "
+                   onmouseover="this.style.background='#e03c3c'; this.style.color='#fff';"
+                   onmouseout="this.style.background='none'; this.style.color='#e03c3c';">
+                    <i class="fa-solid fa-phone"></i> تسجيل حساب بائع
                 </a>
+
                 <a href="@Url.Action("Login", "Account", new { area = "Identity" })"
                    class="login-option-btn outline-btn"
-                   style="border: 1px solid #e03c3c; color: #e03c3c; padding:10px; border-radius:5px; background:none; text-decoration: none; text-align: center; display: block; font-weight: 500; transition: 0.3s;">
+                   style="
+       border: 1px solid #e03c3c;
+       color: #e03c3c;
+       padding: 10px 15px;
+       border-radius: 5px;
+       background: none;
+       text-decoration: none;
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       font-weight: 500;
+       transition: all 0.3s;
+       gap: 8px;
+   "
+                   onmouseover="this.style.background='#e03c3c'; this.style.color='#fff';"
+                   onmouseout="this.style.background='none'; this.style.color='#e03c3c';">
                     <i class="fa-regular fa-envelope"></i> الدخول بالبريد الإلكتروني
                 </a>
 
             </div>
             <div class="separator-text" style="text-align:center; margin:10px 0;">أو</div>
             <div class="social-login-options" style="display:flex; flex-direction:column; gap:15px; margin-top:20px; align-items: center;">
-
-                <a href="/Account/ExternalLogin?provider=Google"
-                   class="login-option-btn"
-                   style="text-decoration: none; display:flex; align-items:center; justify-content:center; gap:12px; width: 100%; max-width: 350px; padding:12px 20px; border-radius:8px; background:#fff; border:1px solid #ccc; font-weight:600; cursor:pointer; transition: all 0.3s ease;">
+                <a href="/Account/ExternalLogin?provider=Google" class="social-btn google-btn">
                     <img src="https://www.gstatic.com/images/branding/product/1x/googleg_48dp.png" width="22" height="22">
-                    <span style="color: #555;">الدخول باستخدام Google</span>
+                    <span>الدخول باستخدام Google</span>
                 </a>
 
-                <a href="/Account/ExternalLogin?provider=Facebook"
-                   class="login-option-btn"
-                   style="text-decoration: none; display:flex; align-items:center; justify-content:center; gap:12px; width: 100%; max-width: 350px; padding:12px 20px; border-radius:8px; background:#fff; border:1px solid #ccc; font-weight:600; cursor:pointer; transition: all 0.3s ease;">
+                <a href="/Account/ExternalLogin?provider=Facebook" class="social-btn facebook-btn">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg" width="22" height="22">
-                    <span style="color: #1877f2;">الدخول باستخدام Facebook</span>
+                    <span>الدخول باستخدام Facebook</span>
                 </a>
+
             </div>
 
             <div class="modal-footer-text" style="text-align:center; margin-top:15px;">
