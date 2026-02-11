@@ -84,7 +84,7 @@ namespace Real_Estate.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id, string type)
         {
             var property = await _propertyRepository.GetOneAsync(
                 p => p.Id == id,
@@ -96,6 +96,12 @@ namespace Real_Estate.Areas.Admin.Controllers
             );
 
             if (property == null) return NotFound();
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                //property = property.Where(e => e.Type.ToString().ToLower() == type.ToLower());
+
+            }
 
             return View(property);
         }

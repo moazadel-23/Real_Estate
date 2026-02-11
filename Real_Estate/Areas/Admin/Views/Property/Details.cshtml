@@ -821,11 +821,6 @@
                         </div>
                     </div>
 
-                    <div class="action-buttons">
-                        <button class="btn btn-primary action-btn">إضافة للسلة</button>
-                        <button class="btn btn-outline action-btn">اشتري الآن</button>
-                    </div>
-
                 </div>
 
                 <!-- Specs Card UNDER Main Card -->
@@ -895,16 +890,16 @@
                             <i class="fa-solid fa-chevron-right"></i>
                         </button>
 
-                        <div class="related-ads-grid"
+                   @*      <div class="related-ads-grid"
                              style="display: flex; gap: 20px; overflow-x: auto; padding: 10px 5px; scrollbar-width: none;">
 
-                        @*      @foreach(var item in Model)
+                             @foreach(var item in Model)
                             {
-                                <!-- Card 1 -->
+                                <!-- card 1 -->
                                 <div class="property-card"
                                      style="min-width: 250px; flex: 1; border: 1px solid #eee; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 5px;">
                                     <div class="card-image" style="height: 160px;">
-                                        <img src="~/img/@Model.MainImg" alt="Property">
+                                        <img src="~/img/@item.MainImg" alt="property">
                                         <span class="card-badge" style="background-color: var(--accent-color);">
                                             موصى
                                             به
@@ -924,14 +919,14 @@
                                         </div>
                                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 0.7rem; color: #888;">
                                             <span><i class="fa-regular fa-clock"></i> منذ 5 ساعات</span>
-                                            <span style="color: #3498db; background: #eaf6ff; padding: 2px 6px; border-radius: 4px;">Verified</span>
+                                            <span style="color: #3498db; background: #eaf6ff; padding: 2px 6px; border-radius: 4px;">verified</span>
                                         </div>
                                     </div>
                                 </div>
                             }
-        *@                 
+                        
 
-                        </div>
+                        </div> *@
                     </div>
                 </div>
                 <!-- Logic for Related Ads Slider -->

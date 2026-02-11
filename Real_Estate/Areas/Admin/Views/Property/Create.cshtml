@@ -419,19 +419,7 @@
                 <input asp-for="Floor" type="number" class="form-control" />
             </div>
 
-            <div class="row">
-                <div class="form-group">
-                    <label>المدينه</label>
-                    <select asp-for="LocationId" class="form-control">
-                        <option value="">اختر المدينة</option>
-                        @foreach (var loc in ViewBag.Locations)
-                        {
-                            <option value="@loc.Id">@loc.City</option>
-                        }
-                    </select>
-
-                </div>
-            </div>
+           
             <div class="form-group">
                 <label>الدوله</label>
                 <input asp-for="Location.Country" class="form-control" />
