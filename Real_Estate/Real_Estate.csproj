@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>c669326e-ced5-4a5a-9f63-24877e585745</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,7 @@
     <None Remove="Areas\Identity\Views\Home\NewFolder\**" />
   </ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="CloudinaryDotNet" Version="1.27.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
 		<PackageReference Include="Scalar.AspNetCore" Version="2.10.3" />
