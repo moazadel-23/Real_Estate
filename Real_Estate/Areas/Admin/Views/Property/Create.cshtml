@@ -1,7 +1,7 @@
 ﻿@model Real_Estate.Models.Property
 @using Real_Estate.Models
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -281,7 +281,6 @@
     <button class="sidebar-toggle-btn" onclick="toggleSidebar()">
         <i class="fa-solid fa-bars"></i>
     </button>
-
     <!-- Sidebar -->
     <aside class="admin-sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -294,7 +293,7 @@
         <ul class="sidebar-menu">
             <!-- Dashboard Home -->
             <li class="menu-item">
-                <a href="Admin/Property/manage" class="menu-link">
+                <a href="Admin/Property/Index" class="menu-link">
                     <span><i class="fa-solid fa-gauge-high"></i> الرئيسية</span>
                 </a>
             </li>
@@ -312,9 +311,8 @@
                         </a>
                     </li>
                     <li class="submenu-item">
-                        <a href="add-property.html" class="submenu-link"
-                           style="color: var(--accent-color); background: rgba(255, 255, 255, 0.05);">
-                            <i class="fa-solid fa-plus-circle"></i> إضافة عقار
+                        <a href="add-property.html" class="submenu-link">
+                            <i class="fa-solid fa-plus-circle"></i> تعديل عقار
                         </a>
                     </li>
                     <li class="submenu-item">
@@ -331,9 +329,12 @@
             </li>
 
             <!-- Other Links -->
-          
+
             <li class="menu-item">
-                <a href="#" class="menu-link">
+                <a asp-area="Identity"
+                   asp-controller="Account"
+                   asp-action="Logout"
+                   class="menu-link">
                     <span><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</span>
                 </a>
             </li>

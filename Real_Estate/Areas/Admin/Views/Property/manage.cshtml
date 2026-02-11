@@ -1,6 +1,8 @@
 ﻿@model List<Property>
 @using Real_Estate.Models
-
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -414,9 +416,13 @@
 
           
             <li class="menu-item">
-                <a href="#" class="menu-link">
+                <a asp-area="Identity"
+                   asp-controller="Account"
+                   asp-action="Logout"
+                   class="menu-link">
                     <span><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</span>
                 </a>
+
             </li>
         </ul>
     </aside>

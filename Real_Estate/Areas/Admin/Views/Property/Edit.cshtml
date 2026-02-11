@@ -330,7 +330,10 @@
             <!-- Other Links -->
 
             <li class="menu-item">
-                <a href="#" class="menu-link">
+                <a asp-area="Identity"
+                   asp-controller="Account"
+                   asp-action="Logout"
+                   class="menu-link">
                     <span><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</span>
                 </a>
             </li>
@@ -546,7 +549,23 @@
                 <input asp-for="@Model.Floor" type="number" class="form-control" />
             </div>
 
-            <div class="row">
+            <div class="form-group">
+                <label>الدوله</label>
+                <input asp-for="@Model.Location!.Country" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>المدينه</label>
+                <input asp-for="@Model.Location!.City" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>المنطقة</label>
+                <input asp-for="@Model.Location!.Area" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>الشارع</label>
+                <input asp-for="@Model.Location!.Street" class="form-control" />
+            </div>
+          @*   <div class="row">
                 <div class="form-group">
                     <label>المدينه</label>
                     <select asp-for="LocationId" class="form-control">
@@ -558,7 +577,7 @@
                     </select>
 
                 </div>
-            </div>
+            </div> *@
             @*
             <div class="form-group">
                 <label>المنطقة</label>
