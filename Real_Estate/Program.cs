@@ -1,4 +1,5 @@
 ﻿using Real_Estate.DI_Service;
+using Real_Estate.Seeder;
 
 namespace Real_Estate
 {
@@ -19,8 +20,10 @@ namespace Real_Estate
             builder.Services.AddScopedServices();
 
             var app = builder.Build();
+            var scope = app.Services.CreateScope();
+            var dbInitializer = scope.ServiceProvider.GetService<DBInitializer>();
+            dbInitializer?.Initialize();
 
-         
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");

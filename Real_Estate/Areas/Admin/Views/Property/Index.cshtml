@@ -45,7 +45,7 @@
             </ul>
             <div class="nav-buttons" style="display: flex !important; align-items: center; gap: 15px;">
                 <a href="Identity" title="تسجيل الدخول" style="font-size: 1.1rem; color: var(--primary-color);">
-                    </i>
+
                 </a>
                 <!-- زر تسجيل الدخول -->
                 <button id="loginBtn" onclick="openLoginModal()" style="font-size:1.1rem; color:var(--primary-color); background:none; border:none; cursor:pointer;">
@@ -69,20 +69,18 @@
                         style="background:none; border:none; cursor:pointer; font-size: 1rem; color: var(--primary-color); font-weight: bold; border: 1px solid var(--primary-color); border-radius: 5px; padding: 2px 8px;">
                     EN
                 </button>
-                @if (User.Identity.IsAuthenticated)
-                {
-                    <!-- Profile Dropdown -->
-                    <div class="profile-dropdown-container">
-                        <div class="nav-profile-img" onclick="toggleProfileDropdown()">
-                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                 alt="Profile" id="navProfilePic">
-                        </div>
-                        <div class="profile-dropdown" id="profileDropdown">
-                            <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
-                            <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
-                        </div>
+
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown-container">
+                    <div class="nav-profile-img" onclick="toggleProfileDropdown()">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                             alt="Profile" id="navProfilePic">
                     </div>
-                }
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                        <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                    </div>
+                </div>
 
 
 
@@ -372,9 +370,9 @@
                         </div>
                     }
                 </div>
-
-                <!-- Button removed since we show all properties -->
             </div>
+            <!-- Button removed since we show all properties -->
+        </div>
     </section>
 
     <!-- Login Modal -->
