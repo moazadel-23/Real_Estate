@@ -23,13 +23,12 @@ namespace Real_Estate.Areas.Admin.Controllers
         {
             var properties = await _propertyRepository.GetAllAsync();
 
-            // فلترة حسب النوع
+       
             if (!string.IsNullOrEmpty(type))
             {
                 properties = properties.Where(p => p.Type.ToString().ToLower() == type.ToLower());
             }
 
-            // فلترة حسب السعر
             if (!string.IsNullOrEmpty(priceRange))
             {
                 switch (priceRange)
@@ -84,9 +83,9 @@ namespace Real_Estate.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Details(int id, string type)
+        public async Task<IActionResult> Details(int id)
         {
-            var property = await _propertyRepository.GetOneAsync(
+            var  property = await _propertyRepository.GetOneAsync(
                 p => p.Id == id,
                 include: new Expression<Func<Models.Property, object>>[]
                 {
@@ -97,13 +96,17 @@ namespace Real_Estate.Areas.Admin.Controllers
 
             if (property == null) return NotFound();
 
-            if (!string.IsNullOrEmpty(type))
+            List<Property> relatedProperty = new List<Property>();
+           
+           
+                relatedProperty = (await _propertyRepository.GetAllAsync())
+                    .Where(e => e.Type == property.Type && e.Id != property.Id).ToList();
+
+            return View(new PropertyLocVM
             {
-                //property = property.Where(e => e.Type.ToString().ToLower() == type.ToLower());
-
-            }
-
-            return View(property);
+                 Property = property,
+                 RelatedProperty = relatedProperty,
+            });
         }
 
 
