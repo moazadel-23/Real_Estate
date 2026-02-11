@@ -18,6 +18,7 @@ namespace Real_Estate.DI_Service
             services.AddScoped<IRepository<Location>, Repository<Location>>();
             services.AddScoped<IRepository<PropertySubImage>, Repository<PropertySubImage>>();
             services.AddScoped<IRepository<UserOtp>, Repository<UserOtp>>();
+            services.AddScoped<IRepository<Favorite>, Repository<Favorite>>();
             services.AddTransient<IEmailSender, EmailSender>();
 
         }

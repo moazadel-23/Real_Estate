@@ -45,7 +45,7 @@
             </ul>
             <div class="nav-buttons" style="display: flex !important; align-items: center; gap: 15px;">
                 <a href="Identity" title="تسجيل الدخول" style="font-size: 1.1rem; color: var(--primary-color);">
-                    </i>
+                    @* </i> *@
                 </a>
                 <!-- زر تسجيل الدخول -->
                 <button id="loginBtn" onclick="openLoginModal()" style="font-size:1.1rem; color:var(--primary-color); background:none; border:none; cursor:pointer;">
@@ -69,7 +69,7 @@
                         style="background:none; border:none; cursor:pointer; font-size: 1rem; color: var(--primary-color); font-weight: bold; border: 1px solid var(--primary-color); border-radius: 5px; padding: 2px 8px;">
                     EN
                 </button>
-                @if (User.Identity.IsAuthenticated)
+                @if (User?.Identity?.IsAuthenticated == true)
                 {
                     <!-- Profile Dropdown -->
                     <div class="profile-dropdown-container">
@@ -106,9 +106,13 @@
             </div>
             <ul class="sidebar-links">
                 <li>
-                    <a href="index.html" class="active">
+                    <a asp-area="Admin"
+                       asp-controller="Property"
+                       asp-action="Index"
+                       class="active">
                         <i class="fa-solid fa-house"></i> <span data-i18n="nav_home">الرئيسية</span>
                     </a>
+
                 </li>
                 <li>
                     <a href="#featured">
@@ -314,13 +318,14 @@
                     {
                         <div class="property-card">
                             <div class="card-image">
-                                <button class="card-fav-btn fav-btn-@item.Id" onclick="toggleFavorite(@item.Id, event)">
+                                <button class="card-fav-btn fav-btn-@item.Id"
+                                        onclick="toggleFavorite(@item.Id, this)">
                                     <i class="fa-solid fa-heart"></i>
                                 </button>
 
+
                                 <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })">
                                     <span class="card-badge">@item.Type</span>
-
                                     <img src="/img/@item.MainImg" alt="Property Image" />
                                 </a>
                             </div>
@@ -366,7 +371,6 @@
                                        style="padding:8px 15px;font-size:0.9rem;flex:1;text-align:center;">
                                         <i class="fa-solid fa-eye"></i> تفاصيل
                                     </a>
-
                                 </div>
                             </div>
                         </div>
@@ -375,6 +379,7 @@
 
                 <!-- Button removed since we show all properties -->
             </div>
+		</div>
     </section>
 
     <!-- Login Modal -->
@@ -569,6 +574,28 @@
         </div>
     </footer>
     <script src="~/js/script.js"></script>
+    <script>
+                function toggleFavorite(propertyId, button) {
+            if (!button) return;
+
+            fetch('/Favorite/ToggleFavorite?propertyId=' + propertyId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert(data.message);
+                        return;
+                    }
+
+                    if (data.action === 'added') {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                })
+                .catch(() => alert('حدث خطأ أثناء تعديل المفضلة'));
+        }
+
+    </script>
 </body>
 
 </html>

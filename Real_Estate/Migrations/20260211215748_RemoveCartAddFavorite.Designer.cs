@@ -12,8 +12,8 @@ using Real_Estate.DataAccess;
 namespace Real_Estate.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260207165535_addFullName")]
-    partial class addFullName
+    [Migration("20260211215748_RemoveCartAddFavorite")]
+    partial class RemoveCartAddFavorite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,23 +27,24 @@ namespace Real_Estate.Migrations
 
             modelBuilder.Entity("Real_Estate.Models.Favorite", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PropertyId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("favorites");
                 });
@@ -229,6 +230,27 @@ namespace Real_Estate.Migrations
                     b.ToTable("users");
                 });
 
+            modelBuilder.Entity("Real_Estate.Models.UserOtp", b =>
+                {
+                    b.Property<int>("Otp")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Otp", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserOtps");
+                });
+
             modelBuilder.Entity("Real_Estate.Models.Favorite", b =>
                 {
                     b.HasOne("Real_Estate.Models.Property", "Property")
@@ -239,7 +261,9 @@ namespace Real_Estate.Migrations
 
                     b.HasOne("Real_Estate.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Property");
 
@@ -260,7 +284,7 @@ namespace Real_Estate.Migrations
             modelBuilder.Entity("Real_Estate.Models.PropertySubImage", b =>
                 {
                     b.HasOne("Real_Estate.Models.Property", "Property")
-                        .WithMany()
+                        .WithMany("PropertySubImgs")
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -268,9 +292,25 @@ namespace Real_Estate.Migrations
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("Real_Estate.Models.UserOtp", b =>
+                {
+                    b.HasOne("Real_Estate.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Real_Estate.Models.Location", b =>
                 {
                     b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Real_Estate.Models.Property", b =>
+                {
+                    b.Navigation("PropertySubImgs");
                 });
 #pragma warning restore 612, 618
         }

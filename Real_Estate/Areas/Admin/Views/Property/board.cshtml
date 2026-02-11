@@ -136,9 +136,12 @@
                             </td>
                             <td>@item.Type</td>
                             <td>
-                                <a href="Edit/@item.Id" class="action-btn edit-btn">
-                                    <i class="fa-solid fa-pen"></i> تعديل
-                                </a>
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="action-btn edit-btn">
+                                        <i class="fa-solid fa-pen"></i> تعديل
+                                    </a>
+
                                     <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
                                         <button class="action-btn delete-btn" style="border:none; cursor:pointer;">
                                             <i class="fa-solid fa-trash"></i> حذف

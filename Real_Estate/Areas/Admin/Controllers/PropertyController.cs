@@ -176,7 +176,11 @@ namespace Real_Estate.Areas.Admin.Controllers
         {
             var property = await _propertyRepository.GetOneAsync(
                 e => e.Id == id,
-                include: new Expression<Func<Models.Property, object>>[] { p => p.PropertySubImgs }
+                include: new Expression<Func<Models.Property, object>>[]
+                {
+                    p => p.PropertySubImgs,
+                    p => p.Location!
+                }
             );
 
             if (property == null) return NotFound();
@@ -196,7 +200,7 @@ namespace Real_Estate.Areas.Admin.Controllers
         {
             if (id != property.Id)
                 return BadRequest();
-
+            
             if (!ModelState.IsValid)
             {
                 var locations = await _locationRepository.GetAllAsync();
@@ -216,7 +220,7 @@ namespace Real_Estate.Areas.Admin.Controllers
             oldProperty.Price = property.Price;
             oldProperty.AreaSize = property.AreaSize;
             oldProperty.Type = property.Type;
-            oldProperty.LocationId = property.LocationId;
+            //oldProperty.LocationId = property.LocationId;
             oldProperty.Bedrooms = property.Bedrooms;
             oldProperty.Bathrooms = property.Bathrooms;
             oldProperty.Description = property.Description;
@@ -283,6 +287,7 @@ namespace Real_Estate.Areas.Admin.Controllers
             }
 
             _propertyRepository.Update(oldProperty, cancellationToken: cancellationToken);
+
             await _propertyRepository.CommitChange(cancellationToken);
 
             return RedirectToAction("board", "Property", new { area = "Admin" });
