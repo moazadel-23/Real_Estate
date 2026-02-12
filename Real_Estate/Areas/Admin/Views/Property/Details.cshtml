@@ -707,6 +707,12 @@
                 }
         }
 
+        .related-ads-section {
+            padding-top: 20px; /* أقل من 80px */
+            padding-bottom: 20px; /* لو تحبي */
+            margin: 0; /* للتأكد */
+        }
+
         @@keyframes floatBubble {
 
             0%,
@@ -809,15 +815,15 @@
                     <div class="location-modern minimal">
                         <div class="loc-item">
                             <i class="fa-solid fa-city"></i>
-                            <span>@Model.Location!.City</span>
+                            <span>@Model.Property.Location!.City</span>
                         </div>
                         <div class="loc-item">
                             <i class="fa-solid fa-map"></i>
-                            <span>@Model.Location!.Area</span>
+                            <span>@Model.Property.Location!.Area</span>
                         </div>
                         <div class="loc-item">
                             <i class="fa-solid fa-road"></i>
-                            <span>@Model.Location!.Street</span>
+                            <span>@Model.Property.Location!.Street</span>
                         </div>
                     </div>
 
@@ -1006,8 +1012,8 @@
                     document.addEventListener('DOMContentLoaded', function () {
 
                         // لو العقار له Location استخدمه، غير كده قيمة افتراضية
-                        const lat = @(Model.Location != null ? Model.Location.Latitude : 30.0444)
-                        const lng = @(Model.Location != null ? Model.Location.Longitude : 31.2357);
+                        const lat = @(Model.Location != null ? Model.Property.Location!.Latitude : 30.0444)
+                        const lng = @(Model.Location != null ? Model.Property.Location!.Longitude : 31.2357);
 
                         // إنشاء الخريطة
                         var map = L.map('propertyMap').setView([lat, lng], 15);
@@ -1019,7 +1025,7 @@
 
                         // Marker على موقع العقار
                         L.marker([lat, lng]).addTo(map)
-                            .bindPopup('<b>@Model.Property.Title</b><br>موقع العقار')
+                            .bindPopup('موقع العقار')
                             .openPopup();
                     });
                 </script>

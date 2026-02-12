@@ -1397,7 +1397,10 @@ footer {
     position: relative;
     overflow: hidden;
     width: 100%;
+    height: 250px; /* ﬁ··  «·ÿÊ· „‰ «·ﬁÌ„… «·«› —«÷Ì… */
+    border-radius: 10px; /* ·Ê  Õ»  Œ·Ì «·ÕÊ«› „œÊ—… */
 }
+
 
 .slider-track {
     display: flex;
@@ -1536,10 +1539,15 @@ footer {
     margin-bottom: 10px;
 }
 
-.prop-price .price {
-    font-weight: bold;
-    font-size: 1.1rem;
+.prop-price .currency {
+    font-size: 0.9rem;
 }
+
+.prop-price .price {
+    font-size: 1rem;
+    font-weight: 600; /* ·Ê Õ«»» ÌŒ·Ì «·—ﬁ„ Ê«÷Õ —€„ ’€—Â */
+}
+
 
 .card-title {
     font-size: 1rem;
