@@ -211,13 +211,17 @@
                 </a>
                 <ul class="submenu">
                     <li class="submenu-item">
-                        <a href="board" class="submenu-link">
-                            <i class="fa-solid fa-user-tie"></i> إدارة العقارات
+                        <a href="@Url.Action("board", "Property", new { area = "Admin" })"
+                           class="submenu-link">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>إدارة العقارات</span>
                         </a>
                     </li>
                     <li class="submenu-item">
-                        <a href="Create" class="submenu-link">
-                            <i class="fa-solid fa-plus-circle"></i> إضافة عقار
+                        <a href="@Url.Action("Create", "Property", new { area = "Admin" })"
+                           class="submenu-link">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>إضافة عقار</span>
                         </a>
                     </li>
                 </ul>

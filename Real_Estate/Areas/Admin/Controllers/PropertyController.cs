@@ -19,7 +19,7 @@ namespace Real_Estate.Areas.Admin.Controllers
             _propertySubImageRepository = propertySubImageRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> Index(string type, string priceRange)
+        public async Task<IActionResult> Index(string type, string priceRange, int page = 1)
         {
             var properties = await _propertyRepository.GetAllAsync();
 
@@ -49,6 +49,9 @@ namespace Real_Estate.Areas.Admin.Controllers
             ViewBag.SelectedType = type;
             ViewBag.SelectedPrice = priceRange;
 
+            ViewBag.totalPages = Math.Ceiling(properties.Count() / 12.0);
+            properties = properties.Skip(((page - 1) * 12)).Take(12);
+            ViewBag.CurrentPage = page;
             return View(properties.AsEnumerable());
         }
 

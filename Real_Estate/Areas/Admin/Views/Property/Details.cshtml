@@ -41,7 +41,7 @@
         .property-slider {
             position: relative;
             width: 75%;
-            margin: 0 20px 30px auto;
+            margin: 0 20px 10px auto;
             /* Shifted right with small gap ("Simple difference") */
             height: 450px;
             /* Significantly reduced height */
@@ -52,7 +52,7 @@
 
         .card-aligned {
             width: 75%;
-            margin: 0 20px 30px auto;
+            margin: 0 20px 10px auto;
             /* Shifted right with small gap */
         }
 
@@ -244,7 +244,7 @@
 
         /* Cards */
         .content-card {
-            padding: 18px;
+            padding: 10px;
             border-radius: 14px;
         }
 
@@ -440,16 +440,13 @@
         }
 
             .prop-price .currency {
-                font-size: 1.2rem;
-                font-weight: 600;
+                font-size: 0.9rem;
+                /* أصغر شوية */
+                font-weight: 400;
+                /* عادي */
                 color: #333;
             }
 
-            .prop-price .price {
-                font-size: 2rem;
-                font-weight: 800;
-                color: #222;
-            }
 
         /* Title */
         .prop-title {
@@ -708,9 +705,12 @@
         }
 
         .related-ads-section {
-            padding-top: 20px; /* أقل من 80px */
-            padding-bottom: 20px; /* لو تحبي */
-            margin: 0; /* للتأكد */
+            padding-top: 20px;
+            /* أقل من 80px */
+            padding-bottom: 20px;
+            /* لو تحبي */
+            margin: 0;
+            /* للتأكد */
         }
 
         @@keyframes floatBubble {
@@ -886,301 +886,254 @@
                     </h3>
 
                     <div class="property-slider-related" style="position: relative;">
-                        <!-- Navigation Buttons -->
-                  @*       <button class="related-nav prev"
-                                style="position: absolute; left: -15px; top: 50%; transform: translateY(-50%); z-index: 10; width: 35px; height: 35px; border-radius: 50%; border: none; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #333;">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                        <button class="related-nav next"
-                                style="position: absolute; right: -15px; top: 50%; transform: translateY(-50%); z-index: 10; width: 35px; height: 35px; border-radius: 50%; border: none; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: #333;">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
- *@
-                        <section class="section" id="featured">
-                            <div class="container">
-                                <!-- Slider Wrapper -->
-                                <div class="slider-wrapper">
-                                    <!-- Left Arrow -->
-                                    <button class="slider-arrow left" onclick="slideLeft()">
-                                        <i class="fa-solid fa-chevron-left"></i>
-                                    </button>
+                        <!-- Navigation Buttons Removed for Grid Layout -->
 
-                                    <!-- Scroll Container -->
-                                    <div class="properties-scroll-container" id="propertiesContainer">
-                                        @foreach (var item in Model.RelatedProperty)
-                                        {
-                                            <div class="property-card">
-                                                <div class="card-image">
-                                                    <button class="card-fav-btn fav-btn-@item.Id" onclick="toggleFavorite(@item.Id, event)">
-                                                        <i class="fa-solid fa-heart"></i>
-                                                    </button>
+                        <div class="related-ads-grid"
+                             style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
 
-                                                    <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })">
-                                                        <span class="card-badge">@item.Type</span>
-                                                        <img src="/img/@item.MainImg" alt="Property Image" />
-                                                    </a>
-                                                </div>
+                            @foreach (var item in Model.RelatedProperty)
+                            {
+                                <div class="property-card">
+                                    <div class="card-image">
+                                        <button class="card-fav-btn fav-btn-@item.Id"
+                                                onclick="toggleFavorite(@item.Id, event)">
+                                            <i class="fa-solid fa-heart"></i>
+                                        </button>
 
-                                                <div class="card-content">
-                                                    <div class="card-header">
-                                                        <div class="prop-price">
-                                                            <span class="price">@item.Price.ToString("N0")</span>
-                                                            <span class="currency">ج.م</span>
-                                                        </div>
-                                                        <span class="card-floor">
-                                                            <i class="fa-solid fa-layer-group"></i> @item.Floor
-                                                        </span>
-                                                    </div>
-
-                                                    <h3 class="card-title" dir="auto">@item.Title</h3>
-
-                                                    @{
-                                                        TimeSpan diff = DateTime.Now - item.CreatedAt;
-                                                        string timeAgo;
-
-                                                        if (diff.TotalDays >= 1)
-                                                            timeAgo = Math.Floor(diff.TotalDays) + (Math.Floor(diff.TotalDays) > 1 ? " days ago" : " day ago");
-                                                        else if (diff.TotalHours >= 1)
-                                                            timeAgo = Math.Floor(diff.TotalHours) + (Math.Floor(diff.TotalHours) > 1 ? " hours ago" : " hour ago");
-                                                        else if (diff.TotalMinutes >= 1)
-                                                            timeAgo = Math.Floor(diff.TotalMinutes) + (Math.Floor(diff.TotalMinutes) > 1 ? " minutes ago" : " minute ago");
-                                                        else
-                                                            timeAgo = "just now";
-                                                    }
-                                                    <span class="property-time">@timeAgo</span>
-
-                                                    <div class="card-features">
-                                                        <div class="feature" title="غرف النوم">
-                                                            <i class="fa-solid fa-bed"></i>
-                                                            <span>@item.Bedrooms</span>
-                                                        </div>
-                                                        <div class="feature" title="المساحة">
-                                                            <i class="fa-solid fa-ruler-combined"></i>
-                                                            <span>@item.AreaSize</span>
-                                                        </div>
-                                                        <div class="feature" title="حمام">
-                                                            <i class="fa-solid fa-bath"></i>
-                                                            <span>@item.Bathrooms</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
+                                        <a href="@Url.Action(" Details", "Property", new { area = "Admin", id = item.Id })">
+                                            <span class="card-badge">@item.Type</span>
+                                            <img src="/img/@item.MainImg" alt="Property Image" />
+                                        </a>
                                     </div>
 
-                                    <!-- Right Arrow -->
-                                    <button class="slider-arrow right" onclick="slideRight()">
-                                        <i class="fa-solid fa-chevron-right"></i>
-                                    </button>
+                                    <div class="card-content">
+                                        <div class="card-header">
+                                            <div class="prop-price">
+                                                <span class="price">@item.Price.ToString("N0")</span>
+                                                <span class="currency">ج.م</span>
+                                            </div>
+                                            <span class="card-floor">
+                                                <i class="fa-solid fa-layer-group"></i> @item.Floor
+                                            </span>
+                                        </div>
+
+                                        <h3 class="card-title" dir="auto">@item.Title</h3>
+
+                                        @{
+                                            TimeSpan diff = DateTime.Now - item.CreatedAt;
+                                            string timeAgo;
+
+                                            if (diff.TotalDays >= 1)
+                                                timeAgo = Math.Floor(diff.TotalDays) + (Math.Floor(diff.TotalDays) > 1 ?
+                                                " days ago" : " day ago");
+                                            else if (diff.TotalHours >= 1)
+                                                timeAgo = Math.Floor(diff.TotalHours) + (Math.Floor(diff.TotalHours) > 1
+                                                ? " hours ago" : " hour ago");
+                                            else if (diff.TotalMinutes >= 1)
+                                                timeAgo = Math.Floor(diff.TotalMinutes) + (Math.Floor(diff.TotalMinutes)
+                                                > 1 ? " minutes ago" : " minute ago");
+                                            else
+                                                timeAgo = "just now";
+                                        }
+                                        <span class="property-time">@timeAgo</span>
+
+                                        <div class="card-features">
+                                            <div class="feature" title="غرف النوم">
+                                                <i class="fa-solid fa-bed"></i>
+                                                <span>@item.Bedrooms</span>
+                                            </div>
+                                            <div class="feature" title="المساحة">
+                                                <i class="fa-solid fa-ruler-combined"></i>
+                                                <span>@item.AreaSize</span>
+                                            </div>
+                                            <div class="feature" title="حمام">
+                                                <i class="fa-solid fa-bath"></i>
+                                                <span>@item.Bathrooms</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+
+                            // لو العقار له Location استخدمه، غير كده قيمة افتراضية
+                            const lat = @(Model.Location != null ? Model.Property.Location!.Latitude : 30.0444)
+                            const lng = @(Model.Location != null ? Model.Property.Location!.Longitude : 31.2357);
+
+                            // إنشاء الخريطة
+                            var map = L.map('propertyMap').setView([lat, lng], 15);
+
+                            // تحميل الخريطة
+                            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '© OpenStreetMap'
+                            }).addTo(map);
+
+                            // Marker على موقع العقار
+                            L.marker([lat, lng]).addTo(map)
+                                .bindPopup('موقع العقار')
+                                .openPopup();
+                        });
+                    </script>
+
+
+                </div>
+
+                <!-- Sidebar (Left) -->
+                <div class="sidebar-col">
+
+                    <!-- Agency Card -->
+                    <div class="agent-card content-card card-aligned"
+                         style="text-align: right; padding: 25px; margin-bottom: 20px;">
+                        <h4 style="margin-bottom: 20px; font-size: 1.1rem; color: #333; font-weight: 700;">
+                            مدرجة من قبل
+                            وكالة
+                        </h4>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <div>
+                                <span style="font-weight: 700; font-size: 1.1rem; color: #000; display: block;">
+                                    New
+                                    Avenue
+                                </span>
+                                <div style="color: #888; font-size: 0.8rem;">
+                                    عضو منذ مارس 2024
                                 </div>
                             </div>
-                        </section>
-                        <script>
-                            const container = document.getElementById("propertiesContainer");
-                            const scrollAmount = 320; // تقريبًا عرض البطاقة + gap
 
-                            function slideLeft() {
-                                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-                            }
-
-                            function slideRight() {
-                                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                            }
-                        </script>
-                    </div>
-                </div>
-                <!-- Logic for Related Ads Slider -->
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const relGrid = document.querySelector('.related-ads-grid');
-                        const relNext = document.querySelector('.related-nav.next');
-                        const relPrev = document.querySelector('.related-nav.prev');
-
-                        if (relGrid && relNext && relPrev) {
-                            relPrev.addEventListener('click', () => {
-                                relGrid.scrollBy({ left: -280, behavior: 'smooth' });
-                            });
-
-                            relNext.addEventListener('click', () => {
-                                relGrid.scrollBy({ left: 280, behavior: 'smooth' });
-                            });
-                        }
-                    });
-                </script>
-
-                <script>
-                    document.addEventListener('DOMContentLoaded', function () {
-
-                        // لو العقار له Location استخدمه، غير كده قيمة افتراضية
-                        const lat = @(Model.Location != null ? Model.Property.Location!.Latitude : 30.0444)
-                        const lng = @(Model.Location != null ? Model.Property.Location!.Longitude : 31.2357);
-
-                        // إنشاء الخريطة
-                        var map = L.map('propertyMap').setView([lat, lng], 15);
-
-                        // تحميل الخريطة
-                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                            attribution: '© OpenStreetMap'
-                        }).addTo(map);
-
-                        // Marker على موقع العقار
-                        L.marker([lat, lng]).addTo(map)
-                            .bindPopup('موقع العقار')
-                            .openPopup();
-                    });
-                </script>
-
-
-            </div>
-
-            <!-- Sidebar (Left) -->
-            <div class="sidebar-col">
-
-                <!-- Agency Card -->
-                <div class="agent-card content-card card-aligned"
-                     style="text-align: right; padding: 25px; margin-bottom: 20px;">
-                    <h4 style="margin-bottom: 20px; font-size: 1.1rem; color: #333; font-weight: 700;">
-                        مدرجة من قبل
-                        وكالة
-                    </h4>
-
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                        <div>
-                            <span style="font-weight: 700; font-size: 1.1rem; color: #000; display: block;">
-                                New
-                                Avenue
-                            </span>
-                            <div style="color: #888; font-size: 0.8rem;">
-                                عضو منذ مارس 2024
-                            </div>
+                            <img src="https://ui-avatars.com/api/?name=New+Avenue&background=0D8ABC&color=fff"
+                                 style="width: 50px; height: 50px; border-radius: 5px;" alt="Agency Logo">
                         </div>
+                    </div>
 
-                        <img src="https://ui-avatars.com/api/?name=New+Avenue&background=0D8ABC&color=fff"
-                             style="width: 50px; height: 50px; border-radius: 5px;" alt="Agency Logo">
+                    <!-- Safety Card -->
+                    <div class="content-card card-aligned" style="padding: 25px;">
+                        <h4 style="margin-bottom: 15px; font-size: 1.1rem; color: #333; font-weight: 700;">
+                            سلامتك تهمنا
+                        </h4>
+                        <ul class="safety-tips" style="padding: 0; line-height: 1.6;">
+                            <li><i class="fa-solid fa-check"></i> لا تقم بإرسال مبالغ مالية قبل المعاينة</li>
+                            <li><i class="fa-solid fa-check"></i> عاين العقار بنفسك</li>
+                            <li><i class="fa-solid fa-check"></i> تأكد من صحة المستندات القانونية</li>
+                        </ul>
+                        <a href="#"
+                           style="color: #3498db; font-size: 0.85rem; text-decoration: underline; display: block; margin-top: 10px;">
+                            عرض
+                            كل النصائح
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container footer-container">
+                <div class="footer-col">
+                    <h3>السكن الفاخر</h3>
+                    <p>منصتك الأولى للبحث عن العقارات الفاخرة والمتميزة.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
                     </div>
                 </div>
-
-                <!-- Safety Card -->
-                <div class="content-card card-aligned" style="padding: 25px;">
-                    <h4 style="margin-bottom: 15px; font-size: 1.1rem; color: #333; font-weight: 700;">سلامتك تهمنا</h4>
-                    <ul class="safety-tips" style="padding: 0; line-height: 1.6;">
-                        <li><i class="fa-solid fa-check"></i> لا تقم بإرسال مبالغ مالية قبل المعاينة</li>
-                        <li><i class="fa-solid fa-check"></i> عاين العقار بنفسك</li>
-                        <li><i class="fa-solid fa-check"></i> تأكد من صحة المستندات القانونية</li>
+                <div class="footer-col">
+                    <h3>روابط سريعة</h3>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="index.html#featured">العقارات</a></li>
+                        <li><a href="#">من نحن</a></li>
+                        <li><a href="#">اتصل بنا</a></li>
                     </ul>
-                    <a href="#"
-                       style="color: #3498db; font-size: 0.85rem; text-decoration: underline; display: block; margin-top: 10px;">
-                        عرض
-                        كل النصائح
-                    </a>
                 </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-container">
-            <div class="footer-col">
-                <h3>السكن الفاخر</h3>
-                <p>منصتك الأولى للبحث عن العقارات الفاخرة والمتميزة.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <div class="footer-col">
+                    <h3>تواصل معنا</h3>
+                    <ul style="color:#ccc;">
+                        <li><i class="fa-solid fa-phone"></i> +966 50 000 0000</li>
+                        <li><i class="fa-solid fa-envelope"></i> info@luxuryhomes.com</li>
+                    </ul>
                 </div>
             </div>
-            <div class="footer-col">
-                <h3>روابط سريعة</h3>
-                <ul>
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="index.html#featured">العقارات</a></li>
-                    <li><a href="#">من نحن</a></li>
-                    <li><a href="#">اتصل بنا</a></li>
-                </ul>
+            <div class="footer-bottom">
+                <p>&copy; 2026 جميع الحقوق محفوظة - السكن الفاخر</p>
             </div>
-            <div class="footer-col">
-                <h3>تواصل معنا</h3>
-                <ul style="color:#ccc;">
-                    <li><i class="fa-solid fa-phone"></i> +966 50 000 0000</li>
-                    <li><i class="fa-solid fa-envelope"></i> info@luxuryhomes.com</li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 جميع الحقوق محفوظة - السكن الفاخر</p>
-        </div>
-    </footer>
+        </footer>
 
-    <script src="/js/script.js"></script>
+        <script src="/js/script.js"></script>
 
 
-    <!-- Slider Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const track = document.getElementById('sliderTrack');
-            const slides = Array.from(track.children);
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
-            const counter = document.getElementById('slideCounter');
+        <!-- Slider Script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const track = document.getElementById('sliderTrack');
+                const slides = Array.from(track.children);
+                const nextBtn = document.getElementById('nextBtn');
+                const prevBtn = document.getElementById('prevBtn');
+                const counter = document.getElementById('slideCounter');
 
-            let currentIndex = 0;
-            const totalSlides = slides.length;
+                let currentIndex = 0;
+                const totalSlides = slides.length;
 
-            function updateSlider() {
-                // بما إن الموقع RTL، بنستخدم القيمة الموجبة للتحريك لليسار
-                // وبنستخدم النسب المئوية (%) عشان تكون متجاوبة (Responsive) أكتر
-                track.style.transform = `translateX(${currentIndex * 100}%)`;
+                function updateSlider() {
+                    // بما إن الموقع RTL، بنستخدم القيمة الموجبة للتحريك لليسار
+                    // وبنستخدم النسب المئوية (%) عشان تكون متجاوبة (Responsive) أكتر
+                    track.style.transform = `translateX(${currentIndex * 100}%)`;
 
-                if (counter) {
-                    counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+                    if (counter) {
+                        counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+                    }
                 }
-            }
 
-            nextBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex + 1) % totalSlides;
-                updateSlider();
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                    updateSlider();
+                });
+
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                    updateSlider();
+                });
+
+                // تحديث السلايدر عند تغيير حجم الشاشة لضمان الثبات
+                window.addEventListener('resize', updateSlider);
+
+                // --- كود الخريطة (Leaflet) ---
+                if (document.getElementById('propertyMap')) {
+                    var map = L.map('propertyMap').setView([24.7136, 46.6753], 13);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    L.marker([24.7136, 46.6753]).addTo(map)
+                        .bindPopup('موقع العقار التقريبي')
+                        .openPopup();
+                }
             });
-
-            prevBtn.addEventListener('click', () => {
-                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
-                updateSlider();
-            });
-
-            // تحديث السلايدر عند تغيير حجم الشاشة لضمان الثبات
-            window.addEventListener('resize', updateSlider);
-
-            // --- كود الخريطة (Leaflet) ---
-            if (document.getElementById('propertyMap')) {
-                var map = L.map('propertyMap').setView([24.7136, 46.6753], 13);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-
-                L.marker([24.7136, 46.6753]).addTo(map)
-                    .bindPopup('موقع العقار التقريبي')
-                    .openPopup();
-            }
-        });
-    </script>
-    <!-- WhatsApp Card Widget -->
-    <div class="whatsapp-card">
-        <div class="wa-header">
-            تواصل الآن لمزيد من المعلومات
+        </script>
+        <!-- WhatsApp Card Widget -->
+        <div class="whatsapp-card">
+            <div class="wa-header">
+                تواصل الآن لمزيد من المعلومات
+            </div>
+            <div class="wa-body">
+                <a href="https://wa.me/201000000000" target="_blank" class="wa-btn-large">
+                    <i class="fa-brands fa-whatsapp"></i> <span class="wa-btn-text">واتس آب</span>
+                </a>
+            </div>
+            <div class="wa-footer">
+                <i class="fa-regular fa-clock"></i>
+                <span>آخر تواصل: @DateTime.Now.ToString("dd MMMM yyyy")</span>
+            </div>
         </div>
-        <div class="wa-body">
-            <a href="https://wa.me/201000000000" target="_blank" class="wa-btn-large">
-                <i class="fa-brands fa-whatsapp"></i> <span class="wa-btn-text">واتس آب</span>
-            </a>
-        </div>
-        <div class="wa-footer">
-            <i class="fa-regular fa-clock"></i>
-            <span>آخر تواصل: @DateTime.Now.ToString("dd MMMM yyyy")</span>
-        </div>
-    </div>
 </body>
 
 </html>

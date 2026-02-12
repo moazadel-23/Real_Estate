@@ -29,7 +29,7 @@ body.dark-mode {
     /* Dark Mode Specific Overrides */
     body.dark-mode .navbar,
     body.dark-mode .sidebar-panel {
-        background-color: var(--white);
+        background-color: var(--Blue);
         color: var(--text-color);
     }
 
@@ -43,13 +43,13 @@ body.dark-mode {
     }
 
     body.dark-mode .search-box input {
-        background: var(--white);
+        background: var(--Blue);
         color: var(--text-color);
         border-color: #334155;
     }
 
     body.dark-mode .property-card {
-        background: var(--white);
+        background: var(--Blue);
         border: 1px solid #334155;
     }
 
@@ -1579,8 +1579,8 @@ footer {
 
 .slider-arrow {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 20%;
+    transform: translateY(-20%);
     background: rgba(255,255,255,0.8);
     border: none;
     border-radius: 50%;
@@ -1601,4 +1601,4 @@ footer {
         right: -20px;
     }
 
-</style >
+
