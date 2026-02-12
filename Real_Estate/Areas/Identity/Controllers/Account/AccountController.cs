@@ -154,5 +154,10 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
                 return View();
             return RedirectToAction(nameof(LogIn));
         }
+
+        public IActionResult RegisterSeller()
+        {
+            return View();
+        }
     }
 }

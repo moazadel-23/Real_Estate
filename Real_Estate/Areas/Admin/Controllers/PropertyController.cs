@@ -19,17 +19,16 @@ namespace Real_Estate.Areas.Admin.Controllers
             _propertySubImageRepository = propertySubImageRepository;
         }
         [HttpGet]
-        public async Task<IActionResult> Index(string type, string priceRange)
+        public async Task<IActionResult> Index(string type, string priceRange, int page = 1)
         {
             var properties = await _propertyRepository.GetAllAsync();
 
-            // فلترة حسب النوع
+       
             if (!string.IsNullOrEmpty(type))
             {
                 properties = properties.Where(p => p.Type.ToString().ToLower() == type.ToLower());
             }
 
-            // فلترة حسب السعر
             if (!string.IsNullOrEmpty(priceRange))
             {
                 switch (priceRange)
@@ -50,6 +49,9 @@ namespace Real_Estate.Areas.Admin.Controllers
             ViewBag.SelectedType = type;
             ViewBag.SelectedPrice = priceRange;
 
+            ViewBag.totalPages = Math.Ceiling(properties.Count() / 12.0);
+            properties = properties.Skip(((page - 1) * 12)).Take(12);
+            ViewBag.CurrentPage = page;
             return View(properties.AsEnumerable());
         }
 
@@ -86,7 +88,7 @@ namespace Real_Estate.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var property = await _propertyRepository.GetOneAsync(
+            var  property = await _propertyRepository.GetOneAsync(
                 p => p.Id == id,
                 include: new Expression<Func<Models.Property, object>>[]
                 {
@@ -97,7 +99,17 @@ namespace Real_Estate.Areas.Admin.Controllers
 
             if (property == null) return NotFound();
 
-            return View(property);
+            List<Property> relatedProperty = new List<Property>();
+           
+           
+                relatedProperty = (await _propertyRepository.GetAllAsync())
+                    .Where(e => e.Type == property.Type && e.Id != property.Id).ToList();
+
+            return View(new PropertyLocVM
+            {
+                 Property = property,
+                 RelatedProperty = relatedProperty,
+            });
         }
 
 

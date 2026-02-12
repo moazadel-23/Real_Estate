@@ -79,6 +79,31 @@
                 border-radius: 5px;
                 object-fit: cover;
             }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+            .action-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .action-btn:hover i {
+                transform: rotate(-15deg);
+            }
+
+        .action-btn {
+            transition: all 0.3s ease;
+        }
+
+            .action-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            }
+
         </style>
     </head>
 
@@ -111,7 +136,6 @@
                             <th>الصور</th>
                             <th>العنوان</th>
                             <th>السعر</th>
-                            <th>الموقع</th>
                             <th>النوع</th>
                             <th>الإجراءات</th>
                         </tr>
@@ -128,27 +152,33 @@
                             </td>
                             <td>@item.Title</td>
                             <td>@item.Price</td>
-                            <td>
+                           @*  <td>
                                 @if (item.Location != null)
                                 {
                                 <span>@item.Location.City</span>
                                 }
-                            </td>
+                            </td> *@
                             <td>@item.Type</td>
-                            <td>
-                                    <a asp-action="Edit"
-                                       asp-route-id="@item.Id"
-                                       class="action-btn edit-btn">
-                                        <i class="fa-solid fa-pen"></i> تعديل
-                                    </a>
+                                <td>
+                                    <div style="display:flex; gap:10px; align-items:center;">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="action-btn edit-btn">
+                                            <i class="fa-solid fa-pen"></i> تعديل
+                                        </a>
 
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;">
-                                        <button class="action-btn delete-btn" style="border:none; cursor:pointer;">
-                                            <i class="fa-solid fa-trash"></i> حذف
-                                        </button>
-                                    </form>
+                                        <form asp-action="Delete"
+                                              asp-route-id="@item.Id"
+                                              method="post"
+                                              style="margin:0;">
+                                            <button class="action-btn delete-btn"
+                                                    style="border:none; cursor:pointer;">
+                                                <i class="fa-solid fa-trash"></i> حذف
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
 
-                            </td>
                         </tr>
                         }
                         }
