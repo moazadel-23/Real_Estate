@@ -156,9 +156,12 @@
                 <button id="loginBtn" onclick="openLoginModal()" style="font-size:1.1rem; color:var(--primary-color); background:none; border:none; cursor:pointer;">
                     تسجيل
                 </button>
-                <a href="favorites.html" title="المفضلة" style="font-size: 1.1rem; color: var(--primary-color);">
+                <a href="@Url.Action("Index", "Favorite", new { area = "Customer" })"
+                   title="المفضلة"
+                   style="font-size: 1.1rem; color: var(--primary-color);">
                     <i class="fa-solid fa-heart"></i>
                 </a>
+
 
                 <!-- Theme Toggle -->
                 <button id="themeToggle" onclick="toggleTheme()"
@@ -180,8 +183,12 @@
                                  alt="Profile" id="navProfilePic">
                         </div>
                         <div class="profile-dropdown" id="profileDropdown">
-                            <a href="profile.html"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
-                            <a href="#" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج</a>
+                            <a href="@Url.Action("Index", "Profile", new { area = "Identity" })">
+                                <i class="fa-solid fa-user"></i> الملف الشخصي
+                            </a>
+                                <a href="@Url.Action("LogIn", "Account", new { area = "Identity" })">
+                                    <i class="fa-solid fa-right-from-bracket"></i> تسجيل خروج
+                                </a>
                         </div>
                     </div>
                 }
@@ -421,10 +428,20 @@
                     {
                         <div class="property-card">
                             <div class="card-image">
-                                <button class="card-fav-btn fav-btn-@item.Id"
-                                        onclick="toggleFavorite(@item.Id, this)">
-                                    <i class="fa-solid fa-heart"></i>
-                                </button>
+                                <form asp-area="Customer"
+                                      asp-controller="Favorite"
+                                      asp-action="AddToFavorite"
+                                      method="post">
+
+                                    <input type="hidden" name="PropertyId" value="@item.Id" />
+                                    @Html.AntiForgeryToken()
+
+                                    <button class="card-fav-btn fav-btn-@item.Id" type="submit">
+                                        <i class="fa-solid fa-heart"></i>
+                                    </button>
+
+                                </form>
+
 
 
                                 <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })">
@@ -813,24 +830,33 @@
     </footer>
     <script src="~/js/script.js"></script>
     <script>
-                function toggleFavorite(propertyId, button) {
-            if (!button) return;
+                   // script.js
+        async function toggleFavorite(propertyId, button) {
+            try {
+                const response = await fetch('/Customer/Favorite/Add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: new URLSearchParams({
+                        propertyId: propertyId
+                    })
+                });
 
-            fetch('/Favorite/ToggleFavorite?propertyId=' + propertyId, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success) {
-                        alert(data.message);
-                        return;
-                    }
-
-                    if (data.action === 'added') {
-                        button.classList.add('active');
-                    } else {
-                        button.classList.remove('active');
-                    }
-                })
-                .catch(() => alert('حدث خطأ أثناء تعديل المفضلة'));
+                if (response.ok) {
+                    // Toggle heart color
+                    button.classList.toggle('favorited');
+                } else if (response.status === 401) {
+                    alert("يجب تسجيل الدخول أولاً.");
+                    window.location.href = '/Account/Login';
+                } else {
+                    alert("حدث خطأ أثناء إضافة العقار للمفضلة.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("حدث خطأ في الاتصال بالخادم.");
+            }
         }
 
     </script>

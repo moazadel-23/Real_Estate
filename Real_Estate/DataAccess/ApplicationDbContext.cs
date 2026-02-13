@@ -1,6 +1,8 @@
-﻿namespace Real_Estate.DataAccess
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
+namespace Real_Estate.DataAccess
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         DbSet<Property> Properties { get; set; }
         DbSet<PropertySubImage> PropertySubImage { get; set; }

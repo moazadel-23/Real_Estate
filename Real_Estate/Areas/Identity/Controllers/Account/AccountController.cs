@@ -14,11 +14,13 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
         private readonly UserManager<User> userManager;
         private readonly IEmailSender emailSender;
         private readonly IRepository<UserOtp> userOtpRepository;
+        private readonly SignInManager<User> signInManager;
 
-        public AccountController(UserManager<User> _userManager, IEmailSender _emailSender, IRepository<UserOtp> _userOtpRepository)
+        public AccountController(UserManager<User> _userManager, IEmailSender _emailSender, IRepository<UserOtp> _userOtpRepository, SignInManager<User> _signInManager)
         {
             userManager = _userManager;
             emailSender = _emailSender;
+            signInManager = _signInManager;
             userOtpRepository = _userOtpRepository;
         }
 
@@ -27,31 +29,31 @@ namespace Real_Estate.Areas.Identity.Controllers.Account
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> LogIn(LoginVM login)
         {
-
             var user = await userManager.FindByEmailAsync(login.Email);
             if (user is null)
             {
                 TempData["LogInError"] = "خطأ في البريد الالكتروني او كلمة المرور";
                 ViewBag.Email = login.Email;
-                ViewBag.Password = login.Password;
                 return View();
             }
-            var result = userManager.CheckPasswordAsync(user, login.Password);
-            if (!result.Result)
+
+            var passwordValid = await userManager.CheckPasswordAsync(user, login.Password);
+            if (!passwordValid)
             {
                 TempData["LogInError"] = "خطأ في البريد الالكتروني او كلمة المرور";
                 ViewBag.Email = login.Email;
-                ViewBag.Password = login.Password;
                 return View();
             }
 
-            return RedirectToAction("index", "Property", new { area = "Admin" });
+            await signInManager.SignInAsync(user, isPersistent: true); 
 
-
+            return RedirectToAction("Index", "Property", new { area = "Admin" });
         }
+
         [HttpGet]
         public IActionResult Register()
         {
