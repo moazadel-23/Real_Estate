@@ -346,28 +346,7 @@
             <p>&copy; 2026 جميع الحقوق محفوظة - السكن الفاخر</p>
         </div>
     </footer>
-    <script>
-        document.querySelectorAll('.favorite-form').forEach(form => {
-            form.addEventListener('submit', function(e){
-                e.preventDefault(); // يمنع إعادة تحميل الصفحة
-                var formData = new FormData(this);
-
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => {
-                    if(response.ok){
-                        // شيل الكارت مباشرة من الصفحة
-                        this.closest('.property-card').remove();
-                    } else {
-                        alert("حدث خطأ، حاول مرة أخرى.");
-                    }
-                })
-                .catch(err => console.error(err));
-            });
-        });
-    </script>
+  
 </body>
 
 </html>

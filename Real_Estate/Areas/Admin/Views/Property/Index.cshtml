@@ -245,14 +245,17 @@
                         </span>
                     </a>
                 </li>
-                <li style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
-                    <a href="@Url.Action("Manage", "Property", new { area = "Admin" })"
-                       style="color: var(--accent-color);">
-                        <i class="fa-solid fa-user-shield"></i>
-                        <span data-i18n="nav_admin">لوحة الادمن</span>
-                    </a>
+                @if (User.IsInRole("SuperAdmin"))
+                {
+                    <li style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+                        <a href="@Url.Action("Manage", "Property", new { area = "Admin" })"
+                           style="color: var(--accent-color);">
+                            <i class="fa-solid fa-user-shield"></i>
+                            <span>لوحة الادمن</span>
+                        </a>
+                    </li>
+                }
 
-                </li>
             </ul>
         </div>
     </div>

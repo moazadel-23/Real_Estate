@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Real_Estate.Repository;
 using System.Linq.Expressions;
 
@@ -6,6 +7,8 @@ using System.Linq.Expressions;
 namespace Real_Estate.Areas.Admin.Controllers
 {
     [Area("Admin")]
+   
+
     public class PropertyController : Controller
     {
         private readonly IRepository<Models.Property> _propertyRepository;
@@ -54,13 +57,14 @@ namespace Real_Estate.Areas.Admin.Controllers
             ViewBag.CurrentPage = page;
             return View(properties.AsEnumerable());
         }
-
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> board()
         {
             var properties = await _propertyRepository.GetAllAsync();
             return View(properties.AsEnumerable());
         }
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> manage(string type)
         {
             var properties = await _propertyRepository.GetAllAsync();
@@ -116,6 +120,7 @@ namespace Real_Estate.Areas.Admin.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Create()
         {
             var locations = await _locationRepository.GetAllAsync();

@@ -1,10 +1,13 @@
 ﻿using Real_Estate.DI_Service;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Real_Estate.Models;
+using System.Threading.Tasks;
 namespace Real_Estate
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +23,17 @@ namespace Real_Estate
 
             var app = builder.Build();
 
-         
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+                if (!await roleManager.RoleExistsAsync("SuperAdmin"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+                }
+            }
+
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");

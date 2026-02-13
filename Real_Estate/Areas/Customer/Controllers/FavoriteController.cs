@@ -47,20 +47,30 @@ namespace Real_Estate.Controllers
             return View(properties);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToFavorite(int PropertyId, CancellationToken cancellationToken)
         {
             var user = await _userManager.GetUserAsync(User);
-            if(user is null)
+            if (user is null)
                 return NotFound();
+
+            var existingFavorite = await _favoriteRepository
+                .GetOneAsync(f => f.PropertyId == PropertyId && f.UserId == user.Id);
+
+            if (existingFavorite != null)
+            {
+                return RedirectToAction("Index", "Property", new { area = "Admin" });
+            }
 
             await _favoriteRepository.AddAsync(new Favorite
             {
                 PropertyId = PropertyId,
                 UserId = user.Id
             });
-            await _favoriteRepository.CommitChange(cancellationToken : cancellationToken);
-            TempData["Message"] = "Property added to favorites.";
-            return RedirectToAction("Index");
+
+            await _favoriteRepository.CommitChange(cancellationToken);
+
+            return RedirectToAction("Index", "Property", new { area = "Admin" });
         }
 
         [HttpPost]
@@ -81,6 +91,7 @@ namespace Real_Estate.Controllers
 
             return RedirectToAction("Index");
         }
+
 
     }
 }
