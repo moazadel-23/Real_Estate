@@ -240,8 +240,6 @@
             </div>
         </div>
     </nav>
- 
-
 
     <!-- Page Title -->
     <section class="page-title-section fade-in">
@@ -277,15 +275,11 @@
                             </button>
 
                         </form>
+
                     </div>
 
                     <div class="property-info">
                         <h3>@item.Title</h3>
-                        <p class="location">
-                            <i class="fa-solid fa-location-dot"></i>
-                            @item.Location
-                        </p>
-
                         <div class="property-details">
                             <span><i class="fa-solid fa-bed"></i> @item.Bedrooms غرف</span>
                             <span><i class="fa-solid fa-bath"></i> @item.Bathrooms حمام</span>
@@ -352,8 +346,28 @@
             <p>&copy; 2026 جميع الحقوق محفوظة - السكن الفاخر</p>
         </div>
     </footer>
+    <script>
+        document.querySelectorAll('.favorite-form').forEach(form => {
+            form.addEventListener('submit', function(e){
+                e.preventDefault(); // يمنع إعادة تحميل الصفحة
+                var formData = new FormData(this);
 
-    <script src="~/js/script.js"></script>
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    if(response.ok){
+                        // شيل الكارت مباشرة من الصفحة
+                        this.closest('.property-card').remove();
+                    } else {
+                        alert("حدث خطأ، حاول مرة أخرى.");
+                    }
+                })
+                .catch(err => console.error(err));
+            });
+        });
+    </script>
 </body>
 
 </html>

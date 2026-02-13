@@ -156,12 +156,14 @@
                 <button id="loginBtn" onclick="openLoginModal()" style="font-size:1.1rem; color:var(--primary-color); background:none; border:none; cursor:pointer;">
                     تسجيل
                 </button>
+                  @if (User?.Identity?.IsAuthenticated == true)
+                  {
                 <a href="@Url.Action("Index", "Favorite", new { area = "Customer" })"
                    title="المفضلة"
                    style="font-size: 1.1rem; color: var(--primary-color);">
                     <i class="fa-solid fa-heart"></i>
                 </a>
-
+                   }
 
                 <!-- Theme Toggle -->
                 <button id="themeToggle" onclick="toggleTheme()"
@@ -229,11 +231,7 @@
                         <i class="fa-solid fa-building"></i> <span data-i18n="nav_properties">العقارات</span>
                     </a>
                 </li>
-                <li>
-                    <a href="favorites.html">
-                        <i class="fa-solid fa-heart"></i> <span data-i18n="nav_favorites">المفضلة</span>
-                    </a>
-                </li>
+            
                 <li>
                     <a href="#services">
                         <i class="fa-solid fa-bell-concierge"></i> <span data-i18n="nav_services">خدماتنا</span>
@@ -428,6 +426,8 @@
                     {
                         <div class="property-card">
                             <div class="card-image">
+                                @if (User?.Identity?.IsAuthenticated == true)
+                                {
                                 <form asp-area="Customer"
                                       asp-controller="Favorite"
                                       asp-action="AddToFavorite"
@@ -441,6 +441,7 @@
                                     </button>
 
                                 </form>
+                                }
 
 
 

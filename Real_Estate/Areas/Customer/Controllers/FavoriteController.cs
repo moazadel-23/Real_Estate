@@ -36,7 +36,7 @@ namespace Real_Estate.Controllers
 
             var favorites = await _favoriteRepository.GetAllAsync(
                 f => f.UserId == user.Id,
-                include: new Expression<Func<Favorite, object>>[] { f => f.Property }
+                include: new Expression<Func<Favorite, object>>[] { e => e.Property }
             );
 
             var properties = favorites
@@ -46,7 +46,7 @@ namespace Real_Estate.Controllers
 
             return View(properties);
         }
-
+        [HttpPost]
         public async Task<IActionResult> AddToFavorite(int PropertyId, CancellationToken cancellationToken)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -62,5 +62,25 @@ namespace Real_Estate.Controllers
             TempData["Message"] = "Property added to favorites.";
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFromFavorite(int propertyId, CancellationToken cancellationToken)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+                return NotFound();
+
+            var favorite = await _favoriteRepository.GetOneAsync(e => e.PropertyId == propertyId && e.UserId == user.Id);
+            if (favorite != null)
+            {
+                _favoriteRepository.Delete(favorite);
+                await _favoriteRepository.CommitChange(cancellationToken: cancellationToken);
+                TempData["Message"] = "Property removed from favorites.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
