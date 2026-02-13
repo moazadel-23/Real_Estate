@@ -171,7 +171,7 @@
                         style="background:none; border:none; cursor:pointer; font-size: 1rem; color: var(--primary-color); font-weight: bold; border: 1px solid var(--primary-color); border-radius: 5px; padding: 2px 8px;">
                     EN
                 </button>
-                @if (User.Identity.IsAuthenticated)
+                @if (User?.Identity?.IsAuthenticated == true)
                 {
                     <!-- Profile Dropdown -->
                     <div class="profile-dropdown-container">
@@ -421,13 +421,14 @@
                     {
                         <div class="property-card">
                             <div class="card-image">
-                                <button class="card-fav-btn fav-btn-@item.Id" onclick="toggleFavorite(@item.Id, event)">
+                                <button class="card-fav-btn fav-btn-@item.Id"
+                                        onclick="toggleFavorite(@item.Id, this)">
                                     <i class="fa-solid fa-heart"></i>
                                 </button>
 
+
                                 <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })">
                                     <span class="card-badge">@item.Type</span>
-
                                     <img src="/img/@item.MainImg" alt="Property Image" />
                                 </a>
                             </div>
@@ -495,6 +496,7 @@
 
                 <!-- Button removed since we show all properties -->
             </div>
+		</div>
     </section>
     <div class="pagination">
         <div class="pagination">
@@ -810,6 +812,28 @@
         </div>
     </footer>
     <script src="~/js/script.js"></script>
+    <script>
+                function toggleFavorite(propertyId, button) {
+            if (!button) return;
+
+            fetch('/Favorite/ToggleFavorite?propertyId=' + propertyId, { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert(data.message);
+                        return;
+                    }
+
+                    if (data.action === 'added') {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                })
+                .catch(() => alert('حدث خطأ أثناء تعديل المفضلة'));
+        }
+
+    </script>
 </body>
 
 </html>

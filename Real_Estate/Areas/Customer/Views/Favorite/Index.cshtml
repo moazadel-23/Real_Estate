@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Real_Estate.Models.Property>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="section" id="featured">
+    <div class="container">
+        <div class="section-header">
+            <h2>العقارات المميزة</h2>
+        </div>
+
+        <div class="properties-grid">
+            @foreach (var item in Model)
+            {
+                <div class="property-card">
+                    <div class="card-image">
+                        @if (User?.Identity?.IsAuthenticated == true)
+                        {
+                            <button class="card-fav-btn fav-btn-@item.Id @(item.IsFavorite ? "active" : "")"
+                                    onclick="toggleFavorite(@item.Id, this)">
+                                <i class="@(item.IsFavorite ? "fa-solid" : "fa-regular") fa-heart"></i>
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="card-fav-btn disabled" title="سجل دخول لإضافة للمفضلة">
+                                <i class="fa-regular fa-heart"></i>
+                            </button>
+                        }
+
+                        <a href="@Url.Action("Details", "Property", new { area = "Admin", id = item.Id })">
+                            <span class="card-badge">@item.Type</span>
+                            <img src="/img/@item.MainImg" alt="@item.Title" />
+                        </a>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="card-price">@item.Price.ToString("N0") ج.م</div>
+                        <h3>@item.Title</h3>
+                        <p class="card-description" style="display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+                            @item.Description
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<script>
+    function toggleFavorite(propertyId, button) {
+        if (!button) return;
+
+        fetch('/Favorite/ToggleFavorite?propertyId=' + propertyId, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+
+            // تغيير شكل القلب مباشرة
+            const icon = button.querySelector("i");
+            if (data.action === "added") {
+                button.classList.add("active");
+                icon.classList.remove("fa-regular");
+                icon.classList.add("fa-solid");
+            } else {
+                button.classList.remove("active");
+                icon.classList.remove("fa-solid");
+                icon.classList.add("fa-regular");
+            }
+        })
+        .catch(() => alert('حدث خطأ أثناء تعديل المفضلة'));
+    }
+</script>

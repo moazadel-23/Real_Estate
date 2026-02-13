@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Real_Estate.Migrations
 {
     /// <inheritdoc />
-    public partial class addDetails : Migration
+    public partial class RemoveCartAddFavorite : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,8 +35,7 @@ namespace Real_Estate.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -90,17 +89,37 @@ namespace Real_Estate.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserOtps",
+                columns: table => new
+                {
+                    Otp = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpireAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOtps", x => new { x.Otp, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_UserOtps_users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "favorites",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PropertyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_favorites", x => x.UserId);
+                    table.PrimaryKey("PK_favorites", x => x.Id);
                     table.ForeignKey(
                         name: "FK_favorites_Properties_PropertyId",
                         column: x => x.PropertyId,
@@ -108,10 +127,11 @@ namespace Real_Estate.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_favorites_users_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_favorites_users_UserId",
+                        column: x => x.UserId,
                         principalTable: "users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -141,9 +161,9 @@ namespace Real_Estate.Migrations
                 column: "PropertyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_favorites_UserId1",
+                name: "IX_favorites_UserId",
                 table: "favorites",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Properties_LocationId",
@@ -154,6 +174,11 @@ namespace Real_Estate.Migrations
                 name: "IX_PropertySubImage_PropertyId",
                 table: "PropertySubImage",
                 column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserOtps_UserId",
+                table: "UserOtps",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -166,10 +191,13 @@ namespace Real_Estate.Migrations
                 name: "PropertySubImage");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "UserOtps");
 
             migrationBuilder.DropTable(
                 name: "Properties");
+
+            migrationBuilder.DropTable(
+                name: "users");
 
             migrationBuilder.DropTable(
                 name: "Locations");

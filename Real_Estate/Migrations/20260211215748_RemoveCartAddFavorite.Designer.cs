@@ -12,8 +12,8 @@ using Real_Estate.DataAccess;
 namespace Real_Estate.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260208004801_addotptable")]
-    partial class addotptable
+    [Migration("20260211215748_RemoveCartAddFavorite")]
+    partial class RemoveCartAddFavorite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,23 +27,24 @@ namespace Real_Estate.Migrations
 
             modelBuilder.Entity("Real_Estate.Models.Favorite", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("PropertyId");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("favorites");
                 });
@@ -260,7 +261,9 @@ namespace Real_Estate.Migrations
 
                     b.HasOne("Real_Estate.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Property");
 
@@ -281,7 +284,7 @@ namespace Real_Estate.Migrations
             modelBuilder.Entity("Real_Estate.Models.PropertySubImage", b =>
                 {
                     b.HasOne("Real_Estate.Models.Property", "Property")
-                        .WithMany()
+                        .WithMany("PropertySubImgs")
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -303,6 +306,11 @@ namespace Real_Estate.Migrations
             modelBuilder.Entity("Real_Estate.Models.Location", b =>
                 {
                     b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("Real_Estate.Models.Property", b =>
+                {
+                    b.Navigation("PropertySubImgs");
                 });
 #pragma warning restore 612, 618
         }
